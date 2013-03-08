@@ -1,7 +1,7 @@
 /*global process:true require:true */
 
 if (typeof module !== 'undefined' && typeof require !== 'undefined') {
-	var path = '../../../../js/standalone/udacity/maths';
+	var path = '../src';
 	var display = require(path + '/display.js').display;
 	var parenMode = require(path + '/display.js').parenMode;
 	var outputType = require(path + '/display.js').outputType;
@@ -193,7 +193,7 @@ var test = (function() {
 		}
 		var expressions = [evaluatedExpression1, evaluatedExpression2];
 
-		var result = processExpressions.strictestEquality(expressions)[0];
+		var result = processExpressions.strictestEquality(expressions, true)[0];
 
 		if (result !== value) {
 			console.error('fail: ' + eqString1 + ' and ' + eqString2 + ' were ' +
