@@ -286,6 +286,11 @@ var nodeWrapper = (function() {
 					processExpressions.compare(parsedExpessions), stringifyCompareValue);
 			} else if (command === 'compute') {
 				return stringifyArray(processExpressions.compute(parsedExpessions));
+			} else if (command === 'getIdentifiers') {
+				if (parsedExpessions.length !== 1) {
+					return 'need exactly one expression';
+				}
+				return stringifyArray(evaluate.getAllIdentifiers(parsedExpessions[0]));
 			} else if (command === 'getTerms' || command === 'getTermsNoSort') {
 				if (parsedExpessions.length !== 1) {
 					return 'need exactly one expression';
@@ -294,9 +299,10 @@ var nodeWrapper = (function() {
 				var termsAndOp = evaluate.getAllTermsAtLevel(parsedExpessions[0], sort);
 				if (typeof termsAndOp.operator === 'undefined') { termsAndOp.operator = 'none'; }
 				output = outputType.text;
-				return termsAndOp.operator + ',' +
+				var result = termsAndOp.operator + ',' +
 					stringifyArray(termsAndOp.terms, stringifyExpression);
 				output = outputType.latex;
+				return result;
 			}
 			return 'Unknown command: ' + command;
 		}
