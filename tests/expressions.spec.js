@@ -18,7 +18,6 @@ if (typeof module !== 'undefined' && typeof require !== 'undefined') {
 
 describe("A suite", function() {
 	it("contains spec with an expectation", function() {
-		var onlyShowWrong = false;
 		function logTestResults(result, answer) {
 			expect(result).toBe(answer);
 		}
@@ -98,10 +97,6 @@ describe("A suite", function() {
 			testParseAndDisplay('x=(-2)^2(-3)^2-(-6)^2(-2)^2', 'x=(((-2)^2)*((-3)^2))-(((-6)^2)*((-2)^2))',
 				'x=(-2)^2*(-3)^2-(-6)^2*(-2)^2', 'x=(-2)^2*(-3)^2-(-6)^2*(-2)^2');
 
-			// Now errors!
-			if (!onlyShowWrong) {
-				console.error('The following tests should all produce errors (previous ones should not).');
-			}
 			// mismatched parens console error
 			logTestResults(parser.parseEquation('x=-4+(-5*-5'), errorNode);
 			logTestResults(parser.parseEquation('x=-4+(5*-5))'), errorNode);
@@ -723,6 +718,7 @@ describe("A suite", function() {
 				testActualMathSixProblems();
 			}
 		};
+		console.log('There should be exactly 8 tests which produce errors.');
 		self.runAllTests();
   });
 });
