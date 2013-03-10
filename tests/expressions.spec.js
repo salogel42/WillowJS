@@ -36,25 +36,20 @@ describe("WillowJS tests", function() {
 	    expect(console.error.calls.length).toEqual(expectedErrors);
 	});
 
-	// helper functions.  logTestResults should die eventually.
-	function logTestResults(result, answer) {
-		expect(result).toBe(answer);
-	}
 	function testNodeWrapper(command, expressionStringArray, expectedResult) {
 		var parsedExpessions = processExpressions.parseExpressions(expressionStringArray);
-		logTestResults(nodeWrapper.runCommand(command, parsedExpessions, false, false),
-			expectedResult);
+		expect(nodeWrapper.runCommand(command, parsedExpessions, false, false)).toBe(expectedResult);
 	}
 	function testParseAndDisplay(eqString, resFull, resTerms, resNec, type, parseFunction, showDiv) {
 		if (typeof showDiv === 'undefined') { showDiv = divSign.never; }
 		if (typeof type === 'undefined') { type = outputType.text; }
 		if (typeof parseFunction === 'undefined') { parseFunction = parser.parseEquation; }
-		logTestResults(display.displayExpression(parseFunction(eqString),
-			type, parenMode.full, showDiv), resFull);
-		logTestResults(display.displayExpression(parseFunction(eqString),
-			type, parenMode.terms, showDiv), resTerms);
-		logTestResults(display.displayExpression(parseFunction(eqString),
-			type, parenMode.necessary, showDiv), resNec);
+		expect(display.displayExpression(parseFunction(eqString),
+			type, parenMode.full, showDiv)).toBe(resFull);;
+		expect(display.displayExpression(parseFunction(eqString),
+			type, parenMode.terms, showDiv)).toBe(resTerms);
+		expect(display.displayExpression(parseFunction(eqString),
+			type, parenMode.necessary, showDiv)).toBe(resNec);
 	}
 
 	it("Manual construction and display test", function() {
@@ -68,10 +63,8 @@ describe("WillowJS tests", function() {
 		var rhs = expr.createSimpleExpression('number', 5, 1);
 		var eq = expr.createCompoundExpression(lhs, rhs, '=', 1);
 
-		logTestResults(display.displayExpression(eq, outputType.text, parenMode.necessary),
-			'4+(1+x)3=5');
-		logTestResults(display.displayExpression(eq, outputType.mathml, parenMode.necessary),
-			'<math xmlns="http://www.w3.org/1998/Math/MathML" id=nodemath`><mrow id=node6>' +
+		expect(display.displayExpression(eq, outputType.text, parenMode.necessary)).toBe('4+(1+x)3=5');
+		expect(display.displayExpression(eq, outputType.mathml, parenMode.necessary)).toBe('<math xmlns="http://www.w3.org/1998/Math/MathML" id=nodemath`><mrow id=node6>' +
 			'<mn id=node5>4</mn><mo class="op" id=node6>+</mo><mrow id=node4><mfenced id=node2>' +
 			'<mrow><mn id=node1>1</mn><mo class="op" id=node2>+</mo><mi id=node0>x</mi></mrow>' +
 			'</mfenced><mn id=node3>3</mn></mrow></mrow><mo class="op" id=node8>=</mo>' +
@@ -118,34 +111,34 @@ describe("WillowJS tests", function() {
 	// test each error-producing line independently so we can be sure which error went with which
 	// call.
 	it("Mismatched parens", function() {
-		logTestResults(parser.parseEquation('x=-4+(-5*-5'), errorNode);
+		expect(parser.parseEquation('x=-4+(-5*-5')).toBe(errorNode);
 		expect(console.error).toHaveBeenCalledWith('Mismatched parentheses!');
 		expectedErrors++;
 	});
 	it("Extra chars", function() {
-		logTestResults(parser.parseEquation('x=-4+(5*-5))'), errorNode);
+		expect(parser.parseEquation('x=-4+(5*-5))')).toBe(errorNode);
 		expect(console.error).toHaveBeenCalledWith('Expression contained extra characters: )');
 		expectedErrors++;
 	});
 	it("Should be equation", function() {
-		logTestResults(parser.parseEquation('23x'), errorNode);
+		expect(parser.parseEquation('23x')).toBe(errorNode);
 		expect(console.error).toHaveBeenCalledWith(
 			'Please enter an equation, not an expression (should contain an "=" or inequality).');
 		expectedErrors++;
 	});
 	it("too many open parens", function() {
-		logTestResults(parser.parseEquation('((x)3=4)'), errorNode);
+		expect(parser.parseEquation('((x)3=4)')).toBe(errorNode);
 		expect(console.error).toHaveBeenCalledWith('Mismatched parentheses!');
 		expect(console.error).toHaveBeenCalledWith('Expression contained extra characters: )');
 		expectedErrors = 2;
 	});
 	it("close paren before open paren", function() {
-		logTestResults(parser.parseEquation(')re +43=3'), errorNode);
+		expect(parser.parseEquation(')re +43=3')).toBe(errorNode);
 		expect(console.error).toHaveBeenCalledWith('Badly formed identifier: )');
 		expectedErrors++;
 	});
 	it("too many operators in a row", function() {
-		logTestResults(parser.parseEquation('2+=3'), errorNode);
+		expect(parser.parseEquation('2+=3')).toBe(errorNode);
 		expect(console.error).toHaveBeenCalledWith('Badly formed identifier: ');
 		expectedErrors++;
 	});
@@ -167,23 +160,22 @@ describe("WillowJS tests", function() {
 				testEvaluateEvaluated(solvedExpression[i], expectedResult[i], parenMode.necessary);
 			}
 			if (expectedResult.length !== solvedExpression.length) {
-				logTestResults('length' + solvedExpression.length, 'length' + expectedResult.length);
+				expect('length' + solvedExpression.length).toBe('length' + expectedResult.length);
 			}
 		}
 		function testEvaluateEvaluated(evaluatedExpression, expectedResult, mode) {
 			if (expectedResult === errorNode || evaluatedExpression === errorNode ||
 				expectedResult === null || evaluatedExpression === null) {
-				logTestResults(evaluatedExpression, expectedResult);
+				expect(evaluatedExpression).toBe(expectedResult);
 			} else {
-				logTestResults(display.displayExpression(evaluatedExpression, outputType.text, mode),
-					expectedResult);
+				expect(display.displayExpression(evaluatedExpression, outputType.text, mode)).toBe(expectedResult);
 			}
 		}
 		function testEquivalence(eqString1, eqString2, expectedComm, expectedFull, expectEoI) {
 			var evaluatedExpression1 = parser.parseEquationOrExpression(eqString1);
 			var evaluatedExpression2 = parser.parseEquationOrExpression(eqString2);
 			if (evaluatedExpression1 === null || evaluatedExpression2 === null) {
-				logTestResults(evaluatedExpression1, evaluatedExpression2);
+				expect(evaluatedExpression1).toBe(evaluatedExpression2);
 				return;
 			}
 
@@ -208,7 +200,7 @@ describe("WillowJS tests", function() {
 			var evaluatedExpression2 = parser.parseEquationOrExpression(eqString2);
 			if (evaluatedExpression1 === null || evaluatedExpression1 === errorNode ||
 				evaluatedExpression2 === null || evaluatedExpression2 === errorNode) {
-				logTestResults(evaluatedExpression1, evaluatedExpression2);
+				expect(evaluatedExpression1).toBe(evaluatedExpression2);
 				return;
 			}
 			var expressions = [evaluatedExpression1, evaluatedExpression2];
@@ -230,7 +222,7 @@ describe("WillowJS tests", function() {
 			var exp = parser.parseEquation(eqString);
 			var result = evaluate.evaluateFull(exp.lhs);
 			if (result !== null) { exp.lhs = result; }
-			logTestResults(display.displayExpression(exp, outputType.text, parenMode.terms), expectedResult);
+			expect(display.displayExpression(exp, outputType.text, parenMode.terms)).toBe(expectedResult);
 		}
 		function testEvaluateLeftSimpleEquations() {
 			testEvaluateLeftSubExpression('x=3+2', 'x=3+2');
@@ -241,7 +233,7 @@ describe("WillowJS tests", function() {
 		function testCommuteRightSubExpression(eqString, expectedResult) {
 			var exp = parser.parseEquation(eqString);
 			exp.rhs.commute();
-			logTestResults(display.displayExpression(exp, outputType.text, parenMode.full), expectedResult);
+			expect(display.displayExpression(exp, outputType.text, parenMode.full)).toBe(expectedResult);
 		}
 		function testCommuteRightSubEquations() {
 			testCommuteRightSubExpression('x=3+2', 'x=2+3');
@@ -256,7 +248,7 @@ describe("WillowJS tests", function() {
 			var exp = parser.parseEquation(eqString);
 			if (side === 'left') { exp.rhs.lhs.associate(); }
 			else { exp.rhs.rhs.associate(); }
-			logTestResults(display.displayExpression(exp, outputType.text, parenMode.full), expectedResult);
+			expect(display.displayExpression(exp, outputType.text, parenMode.full)).toBe(expectedResult);
 		}
 		function testAssociateRightSubExpressions() {
 			testAssociateRightSubExpression('x=((3+2)+4)', 'x=3+(2+4)', 'left');
@@ -303,12 +295,12 @@ describe("WillowJS tests", function() {
 		function testDistributeRightSubExpression(eqString, expectedResult) {
 			var exp = parser.parseEquation(eqString);
 			exp.rhs.distributeRight();
-			logTestResults(display.displayExpression(exp, outputType.text, parenMode.full), expectedResult);
+			expect(display.displayExpression(exp, outputType.text, parenMode.full)).toBe(expectedResult);
 		}
 		function testDistributeLeftRightSubExpression(eqString, expectedResult) {
 			var exp = parser.parseEquation(eqString);
 			exp.rhs.distributeLeft();
-			logTestResults(display.displayExpression(exp, outputType.text, parenMode.full), expectedResult);
+			expect(display.displayExpression(exp, outputType.text, parenMode.full)).toBe(expectedResult);
 		}
 		function testDistributeRightSubExpressions() {
 			testDistributeRightSubExpression('x=(a+b)*c', 'x=(a*c)+(b*c)');
@@ -335,7 +327,7 @@ describe("WillowJS tests", function() {
 				exp = evaluate.pullIdentfierToLhs(exp, identifierNode);
 				result = display.displayExpression(exp, outputType.text, parenMode.full);
 			}
-			logTestResults(result, expectedResult);
+			expect(result).toBe(expectedResult);
 		}
 		function testPullIdentfiersToLhs() {
 			//*
@@ -358,18 +350,17 @@ describe("WillowJS tests", function() {
 		function testFactorRight() {
 			var exp = parser.parseExpressionWrapper('\\frac{1}{y+y}c+\\frac{2}{y+y}c');
 			exp = exp.factorRight();
-			logTestResults(display.displayExpression(exp, outputType.text, parenMode.terms), '(1/(y+y)+2/(y+y))c');
+			expect(display.displayExpression(exp, outputType.text, parenMode.terms)).toBe('(1/(y+y)+2/(y+y))c');
 			exp.lhs.factorRight();
-			logTestResults(display.displayExpression(exp, outputType.text, parenMode.terms), '((1+2)/(y+y))c');
+			expect(display.displayExpression(exp, outputType.text, parenMode.terms)).toBe('((1+2)/(y+y))c');
 		}
 		function testEvaluateArithmeticExpression(exprressionString, expectedResult) {
 			var exp = parser.parseExpressionWrapper(exprressionString);
-			if (expectedResult === null || exp === null) { logTestResults(exp, expectedResult); }
+			if (expectedResult === null || exp === null) { expect(exp).toBe(expectedResult); }
 			exp = exp.evaluateArithmetic(true);
-			if (exp === null) { logTestResults(exp, expectedResult); }
+			if (exp === null) { expect(exp).toBe(expectedResult); }
 			else {
-				logTestResults(display.displayExpression(exp, outputType.text, parenMode.necessary),
-					expectedResult);
+				expect(display.displayExpression(exp, outputType.text, parenMode.necessary)).toBe(expectedResult);
 			}
 		}
 		function testEvaluateFractions() {
@@ -415,15 +406,14 @@ describe("WillowJS tests", function() {
 		function testSyntacticEquals(exprressionString, otherExpString, expectedResult) {
 			var exp = parser.parseExpressionWrapper(exprressionString);
 			var otherExp = parser.parseExpressionWrapper(otherExpString);
-			if (exp === null || otherExp === null) { logTestResults(null, expectedResult); }
-			logTestResults(exp.syntacticEquals(otherExp), expectedResult);
+			if (exp === null || otherExp === null) { expect(null).toBe(expectedResult); }
+			expect(exp.syntacticEquals(otherExp)).toBe(expectedResult);
 		}
 		function testCommuteEquals(exprressionString, otherExpString, expectedResult) {
 			var exp = parser.parseExpressionWrapper(exprressionString);
 			var otherExp = parser.parseExpressionWrapper(otherExpString);
-			if (exp === null || otherExp === null) { logTestResults(null, expectedResult); }
-			logTestResults(equality.equivalentModuloCommutativity(exp, otherExp, false),
-				expectedResult);
+			if (exp === null || otherExp === null) { expect(null).toBe(expectedResult); }
+			expect(equality.equivalentModuloCommutativity(exp, otherExp, false)).toBe(expectedResult);
 		}
 		function testManyCommuteEquals() {
 			testSyntacticEquals('-(2x)', '-(2x)', true);
@@ -501,11 +491,10 @@ describe("WillowJS tests", function() {
 			}
 			for (var i = 0; i < result.length; i++) {
 				if (expected[i] === errorNode || result[i] === errorNode || expected[i] === null) {
-					logTestResults(result[i], expected[i]);
+					expect(result[i]).toBe(expected[i]);
 				} else {
-					logTestResults(
-						display.displayExpression(result[i], outputType.text, parenMode.necessary),
-						expected[i]);
+					expect(display.displayExpression(
+						result[i], outputType.text, parenMode.necessary)).toBe(expected[i]);
 				}
 			}
 		}
