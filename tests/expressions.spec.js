@@ -661,6 +661,14 @@ var test = (function() {
 		testNodeWrapper('getTerms', ['\\sqrt{-x}'], '\\sqrt,-x');
 		testNodeWrapper('getTerms', ['(x-1)3(xy)'], '*,(x-1),x,y,3');
 	}
+	function testGetIdentifiers() {
+		testNodeWrapper('getIdentifiers', ['2/7'], '');
+		testNodeWrapper('getIdentifiers', ['x/7'], 'x');
+		testNodeWrapper('getIdentifiers', ['5x^2*2'], 'x');
+		testNodeWrapper('getIdentifiers', ['x^2/(2*x*y)'], 'x,x,y');
+		testNodeWrapper('getIdentifiers', ['\\sqrt{-x}'], 'x');
+		testNodeWrapper('getIdentifiers', ['\\pi*(x-1)3(xy)'], '\\pi,x,x,y');
+	}
 	function testLaTeXOutput() {
 		testParseAndDisplay('(x+1)(x+2)', '\\left(x+1\\right)\\cdot\\left(x+2\\right)',
 			'\\left(x+1\\right)\\left(x+2\\right)',
@@ -749,6 +757,7 @@ var test = (function() {
 			testSolve();
 			testCompare();
 			testGetTerms();
+			testGetIdentifiers();
 			testLaTeXOutput();
 			testActualMathSixProblems();
 			console.log('failCount = ' + failCount);

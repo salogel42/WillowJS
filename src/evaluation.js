@@ -1484,6 +1484,18 @@ var evaluate = (function() {
 				operator : node.op,
 				terms : terms
 			};
+		},
+		getAllIdentifiers: function(node) {
+			if (node.type === 'identifier') { return [node.value]; }
+			if (node.type === 'unary') { return self.getAllIdentifiers(node.child); }
+			if (node.type === 'compound') {
+				return self.getAllIdentifiers(node.lhs).concat(self.getAllIdentifiers(node.rhs));
+			}
+			if (node.type === 'ternary') {
+				return self.getAllIdentifiers(node.left).concat(
+					self.getAllIdentifiers(node.middle).concat(self.getAllIdentifiers(node.right)));
+			}
+			return [];
 		}
 	};
 
