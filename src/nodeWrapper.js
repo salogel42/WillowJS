@@ -128,6 +128,10 @@
  * node nodeWrapper.js compareOp newline '3c' '3' '4' '-1' '\sqrt{3}-2' '4/7' '4-5' '-8/(4*2)'
  * output: incomparable,>,<,=
  *
+ * getIdentifiers: Returns a list of all the identifiers used in the expression. No duplicate
+ *                 removal, but I'm considering that a feature in case you care about how many
+ *                 times a variable appears in an expression.  Assumes that you'll do any sorting
+ *                 or other processing on the python end.
  */
 
 
