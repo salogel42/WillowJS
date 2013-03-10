@@ -16,95 +16,140 @@ if (typeof module !== 'undefined' && typeof require !== 'undefined') {
 	var nodeWrapper = require(path + '/nodeWrapper.js').nodeWrapper;
 }
 
-describe("A suite", function() {
-	it("contains spec with an expectation", function() {
-		function logTestResults(result, answer) {
-			expect(result).toBe(answer);
-		}
+describe("WillowJS tests", function() {
+	// Can't decide if I like having this or not.
+//	jasmine.getEnv().addReporter(new jasmine.ConsoleReporter(console.log));
 
-		function testNodeWrapper(command, expressionStringArray, expectedResult) {
-			var parsedExpessions = processExpressions.parseExpressions(expressionStringArray);
-			logTestResults(nodeWrapper.runCommand(command, parsedExpessions, false, false),
-				expectedResult);
-		}
 
-		function testManualConstructionAndDisplay() {
-			var xExpr = expr.createSimpleExpression('identifier', 'x', 1);
-			xExpr = expr.createCompoundExpression(expr.createCompoundExpression(
-				expr.createSimpleExpression('number', 1, 1), xExpr, '+', 1),
-				expr.createSimpleExpression('number',3, 1),
-				'*');
-			var lhs = expr.createCompoundExpression(
-				expr.createSimpleExpression('number', 4, 1), xExpr, '+', 1);
-			var rhs = expr.createSimpleExpression('number', 5, 1);
-			var eq = expr.createCompoundExpression(lhs, rhs, '=', 1);
+	// Keep track of how many errors we think should've come up over the course of the test,
+	// and at the end make sure we were right.  Normally, there should not be any errors, but
+	// some tests purposefully make certain errors happen, and those should be checked within
+	// the test to make sure it was the right error.
+	var expectedErrors;
 
-			logTestResults(display.displayExpression(eq, outputType.text, parenMode.necessary),
-				'4+(1+x)3=5');
-			logTestResults(display.displayExpression(eq, outputType.mathml, parenMode.necessary),
-				'<math xmlns="http://www.w3.org/1998/Math/MathML" id=nodemath`><mrow id=node6>' +
-				'<mn id=node5>4</mn><mo class="op" id=node6>+</mo><mrow id=node4><mfenced id=node2>' +
-				'<mrow><mn id=node1>1</mn><mo class="op" id=node2>+</mo><mi id=node0>x</mi></mrow>' +
-				'</mfenced><mn id=node3>3</mn></mrow></mrow><mo class="op" id=node8>=</mo>' +
-				'<mn id=node7>5</mn></math>');
-		}
-		function testParseAndDisplay(eqString, resFull, resTerms, resNec, type, parseFunction, showDiv) {
-			if (typeof showDiv === 'undefined') { showDiv = divSign.never; }
-			if (typeof type === 'undefined') { type = outputType.text; }
-			if (typeof parseFunction === 'undefined') { parseFunction = parser.parseEquation; }
-			logTestResults(display.displayExpression(parseFunction(eqString),
-				type, parenMode.full, showDiv), resFull);
-			logTestResults(display.displayExpression(parseFunction(eqString),
-				type, parenMode.terms, showDiv), resTerms);
-			logTestResults(display.displayExpression(parseFunction(eqString),
-				type, parenMode.necessary, showDiv), resNec);
-		}
-		function testParseAndDisplayParenModeNecessary() {
-			// test order of operations and removal of whitespace
-			testParseAndDisplay('x=5 + (4 +5)', 'x=5+(4+5)', 'x=5+(4+5)', 'x=5+4+5');
-			testParseAndDisplay('x=5 \\:+\\: (4 +5)', 'x=5+(4+5)', 'x=5+(4+5)', 'x=5+4+5');
-			testParseAndDisplay('x=5 - (4-5)', 'x=5-(4-5)', 'x=5-(4-5)', 'x=5-(4-5)');
-			testParseAndDisplay('x=5 - (4+5)', 'x=5-(4+5)', 'x=5-(4+5)', 'x=5-(4+5)');
-			testParseAndDisplay('x=5+(4-5)', 'x=5+(4-5)', 'x=5+(4-5)', 'x=5+4-5');
-			testParseAndDisplay('x=(4-5)+5', 'x=(4-5)+5', 'x=(4-5)+5', 'x=4-5+5');
-			testParseAndDisplay('x=(4/5)*5', 'x=4/5*5', 'x=4/5*5', 'x=4/5*5');
-			testParseAndDisplay('x=(y/x)*5', 'x=(y/x)*5', 'x=(y/x)5', 'x=y/x5');
-			testParseAndDisplay('x=4/(5*5)', 'x=4/(5*5)', 'x=4/(5*5)', 'x=4/(5*5)');
-			testParseAndDisplay('x=4/(5-5)', 'x=4/(5-5)', 'x=4/(5-5)', 'x=4/(5-5)');
-			testParseAndDisplay('x=(4/5)-5', 'x=4/5-5', 'x=4/5-5', 'x=4/5-5');
-			testParseAndDisplay('x=(x/y)-5', 'x=(x/y)-5', 'x=x/y-5', 'x=x/y-5');
-			testParseAndDisplay('x=(4+5)*5', 'x=(4+5)*5', 'x=(4+5)5', 'x=(4+5)5');
-			testParseAndDisplay('x=4+(5*5)', 'x=4+(5*5)', 'x=4+5*5', 'x=4+5*5');
+	beforeEach(function() {
+		expectedErrors = 0;
+		spyOn(console, 'error');
+	});
 
-			// start with a negative number, expronent
-			testParseAndDisplay('x=-4+(5*5)^2', 'x=(-4)+((5*5)^2)', 'x=-4+(5*5)^2', 'x=-4+(5*5)^2');
-			// TODO(sdspikes): maybe make * disappear since these are both numbers, not unary
-			testParseAndDisplay('x=-4+(-5*-5)',
-				'x=(-4)+((-5)*(-5))', 'x=-4+(-5)*(-5)', 'x=-4+(-5)*(-5)');
-			testParseAndDisplay('x=-4+(-a)*(-b)*x',
-				'x=(-4)+(((-a)*(-b))*x)', 'x=-4+(-a(-b))x', 'x=-4+(-a)(-b)x');
-			testParseAndDisplay('x=-4+(-a)*(-b)x',
-				'x=(-4)+(((-a)*(-b))*x)', 'x=-4+(-a(-b))x', 'x=-4+(-a)(-b)x');
-			testParseAndDisplay('x(4+3)y=3', '(x*(4+3))*y=3', '(x(4+3))y=3', 'x(4+3)y=3');
-			testParseAndDisplay('3x+4y=7', '(3*x)+(4*y)=7', '3x+4y=7', '3x+4y=7');
-			testParseAndDisplay('(-f)/5=8', '(-f)/5=8', '-f/5=8', '-f/5=8');
-			testParseAndDisplay('(f^x)^2 + x^(y^2)=8',
-				'((f^x)^2)+(x^(y^2))=8', '(f^x)^2+x^(y^2)=8', 'f^x^2+x^(y^2)=8');
-			testParseAndDisplay('2--(6)=3', '2-(-6)=3', '2-(-6)=3', '2-(-6)=3');
-			testParseAndDisplay('x=-2--6', 'x=(-2)-(-6)', 'x=-2-(-6)', 'x=-2-(-6)');
-			testParseAndDisplay('x=-2-(-6+3)', 'x=(-2)-((-6)+3)', 'x=-2-(-6+3)', 'x=-2-(-6+3)');
-			testParseAndDisplay('x=-2-(-6*3)', 'x=(-2)-((-6)*3)', 'x=-2-(-6)*3', 'x=-2-(-6)*3');
-			testParseAndDisplay('x=(-2)^2(-3)^2-(-6)^2(-2)^2', 'x=(((-2)^2)*((-3)^2))-(((-6)^2)*((-2)^2))',
-				'x=(-2)^2*(-3)^2-(-6)^2*(-2)^2', 'x=(-2)^2*(-3)^2-(-6)^2*(-2)^2');
+	afterEach(function() {
+	    expect(console.error.calls.length).toEqual(expectedErrors);
+	});
 
-			// mismatched parens console error
-			logTestResults(parser.parseEquation('x=-4+(-5*-5'), errorNode);
-			logTestResults(parser.parseEquation('x=-4+(5*-5))'), errorNode);
-			logTestResults(parser.parseEquation('23x'), errorNode);
-			logTestResults(parser.parseEquation('((x)3=4)'), errorNode);
-			logTestResults(parser.parseEquation(')re +43=3'), errorNode);
-			logTestResults(parser.parseEquation('2+=3'), errorNode);
-		}
+	// helper functions.  logTestResults should die eventually.
+	function logTestResults(result, answer) {
+		expect(result).toBe(answer);
+	}
+	function testNodeWrapper(command, expressionStringArray, expectedResult) {
+		var parsedExpessions = processExpressions.parseExpressions(expressionStringArray);
+		logTestResults(nodeWrapper.runCommand(command, parsedExpessions, false, false),
+			expectedResult);
+	}
+	function testParseAndDisplay(eqString, resFull, resTerms, resNec, type, parseFunction, showDiv) {
+		if (typeof showDiv === 'undefined') { showDiv = divSign.never; }
+		if (typeof type === 'undefined') { type = outputType.text; }
+		if (typeof parseFunction === 'undefined') { parseFunction = parser.parseEquation; }
+		logTestResults(display.displayExpression(parseFunction(eqString),
+			type, parenMode.full, showDiv), resFull);
+		logTestResults(display.displayExpression(parseFunction(eqString),
+			type, parenMode.terms, showDiv), resTerms);
+		logTestResults(display.displayExpression(parseFunction(eqString),
+			type, parenMode.necessary, showDiv), resNec);
+	}
+
+	it("Manual construction and display test", function() {
+		var xExpr = expr.createSimpleExpression('identifier', 'x', 1);
+		xExpr = expr.createCompoundExpression(expr.createCompoundExpression(
+			expr.createSimpleExpression('number', 1, 1), xExpr, '+', 1),
+			expr.createSimpleExpression('number',3, 1),
+			'*');
+		var lhs = expr.createCompoundExpression(
+			expr.createSimpleExpression('number', 4, 1), xExpr, '+', 1);
+		var rhs = expr.createSimpleExpression('number', 5, 1);
+		var eq = expr.createCompoundExpression(lhs, rhs, '=', 1);
+
+		logTestResults(display.displayExpression(eq, outputType.text, parenMode.necessary),
+			'4+(1+x)3=5');
+		logTestResults(display.displayExpression(eq, outputType.mathml, parenMode.necessary),
+			'<math xmlns="http://www.w3.org/1998/Math/MathML" id=nodemath`><mrow id=node6>' +
+			'<mn id=node5>4</mn><mo class="op" id=node6>+</mo><mrow id=node4><mfenced id=node2>' +
+			'<mrow><mn id=node1>1</mn><mo class="op" id=node2>+</mo><mi id=node0>x</mi></mrow>' +
+			'</mfenced><mn id=node3>3</mn></mrow></mrow><mo class="op" id=node8>=</mo>' +
+			'<mn id=node7>5</mn></math>');
+	});
+	it("Parse and display paren mode necessary test", function() {
+		// test order of operations and removal of whitespace
+		testParseAndDisplay('x=5 + (4 +5)', 'x=5+(4+5)', 'x=5+(4+5)', 'x=5+4+5');
+		testParseAndDisplay('x=5 \\:+\\: (4 +5)', 'x=5+(4+5)', 'x=5+(4+5)', 'x=5+4+5');
+		testParseAndDisplay('x=5 - (4-5)', 'x=5-(4-5)', 'x=5-(4-5)', 'x=5-(4-5)');
+		testParseAndDisplay('x=5 - (4+5)', 'x=5-(4+5)', 'x=5-(4+5)', 'x=5-(4+5)');
+		testParseAndDisplay('x=5+(4-5)', 'x=5+(4-5)', 'x=5+(4-5)', 'x=5+4-5');
+		testParseAndDisplay('x=(4-5)+5', 'x=(4-5)+5', 'x=(4-5)+5', 'x=4-5+5');
+		testParseAndDisplay('x=(4/5)*5', 'x=4/5*5', 'x=4/5*5', 'x=4/5*5');
+		testParseAndDisplay('x=(y/x)*5', 'x=(y/x)*5', 'x=(y/x)5', 'x=y/x5');
+		testParseAndDisplay('x=4/(5*5)', 'x=4/(5*5)', 'x=4/(5*5)', 'x=4/(5*5)');
+		testParseAndDisplay('x=4/(5-5)', 'x=4/(5-5)', 'x=4/(5-5)', 'x=4/(5-5)');
+		testParseAndDisplay('x=(4/5)-5', 'x=4/5-5', 'x=4/5-5', 'x=4/5-5');
+		testParseAndDisplay('x=(x/y)-5', 'x=(x/y)-5', 'x=x/y-5', 'x=x/y-5');
+		testParseAndDisplay('x=(4+5)*5', 'x=(4+5)*5', 'x=(4+5)5', 'x=(4+5)5');
+		testParseAndDisplay('x=4+(5*5)', 'x=4+(5*5)', 'x=4+5*5', 'x=4+5*5');
+
+		// start with a negative number, expronent
+		testParseAndDisplay('x=-4+(5*5)^2', 'x=(-4)+((5*5)^2)', 'x=-4+(5*5)^2', 'x=-4+(5*5)^2');
+		// TODO(sdspikes): maybe make * disappear since these are both numbers, not unary
+		testParseAndDisplay('x=-4+(-5*-5)',
+			'x=(-4)+((-5)*(-5))', 'x=-4+(-5)*(-5)', 'x=-4+(-5)*(-5)');
+		testParseAndDisplay('x=-4+(-a)*(-b)*x',
+			'x=(-4)+(((-a)*(-b))*x)', 'x=-4+(-a(-b))x', 'x=-4+(-a)(-b)x');
+		testParseAndDisplay('x=-4+(-a)*(-b)x',
+			'x=(-4)+(((-a)*(-b))*x)', 'x=-4+(-a(-b))x', 'x=-4+(-a)(-b)x');
+		testParseAndDisplay('x(4+3)y=3', '(x*(4+3))*y=3', '(x(4+3))y=3', 'x(4+3)y=3');
+		testParseAndDisplay('3x+4y=7', '(3*x)+(4*y)=7', '3x+4y=7', '3x+4y=7');
+		testParseAndDisplay('(-f)/5=8', '(-f)/5=8', '-f/5=8', '-f/5=8');
+		testParseAndDisplay('(f^x)^2 + x^(y^2)=8',
+			'((f^x)^2)+(x^(y^2))=8', '(f^x)^2+x^(y^2)=8', 'f^x^2+x^(y^2)=8');
+		testParseAndDisplay('2--(6)=3', '2-(-6)=3', '2-(-6)=3', '2-(-6)=3');
+		testParseAndDisplay('x=-2--6', 'x=(-2)-(-6)', 'x=-2-(-6)', 'x=-2-(-6)');
+		testParseAndDisplay('x=-2-(-6+3)', 'x=(-2)-((-6)+3)', 'x=-2-(-6+3)', 'x=-2-(-6+3)');
+		testParseAndDisplay('x=-2-(-6*3)', 'x=(-2)-((-6)*3)', 'x=-2-(-6)*3', 'x=-2-(-6)*3');
+		testParseAndDisplay('x=(-2)^2(-3)^2-(-6)^2(-2)^2', 'x=(((-2)^2)*((-3)^2))-(((-6)^2)*((-2)^2))',
+			'x=(-2)^2*(-3)^2-(-6)^2*(-2)^2', 'x=(-2)^2*(-3)^2-(-6)^2*(-2)^2');
+	});
+	// test each error-producing line independently so we can be sure which error went with which
+	// call.
+	it("Mismatched parens", function() {
+		logTestResults(parser.parseEquation('x=-4+(-5*-5'), errorNode);
+		expect(console.error).toHaveBeenCalledWith('Mismatched parentheses!');
+		expectedErrors++;
+	});
+	it("Extra chars", function() {
+		logTestResults(parser.parseEquation('x=-4+(5*-5))'), errorNode);
+		expect(console.error).toHaveBeenCalledWith('Expression contained extra characters: )');
+		expectedErrors++;
+	});
+	it("Should be equation", function() {
+		logTestResults(parser.parseEquation('23x'), errorNode);
+		expect(console.error).toHaveBeenCalledWith(
+			'Please enter an equation, not an expression (should contain an "=" or inequality).');
+		expectedErrors++;
+	});
+	it("too many open parens", function() {
+		logTestResults(parser.parseEquation('((x)3=4)'), errorNode);
+		expect(console.error).toHaveBeenCalledWith('Mismatched parentheses!');
+		expect(console.error).toHaveBeenCalledWith('Expression contained extra characters: )');
+		expectedErrors = 2;
+	});
+	it("close paren before open paren", function() {
+		logTestResults(parser.parseEquation(')re +43=3'), errorNode);
+		expect(console.error).toHaveBeenCalledWith('Badly formed identifier: )');
+		expectedErrors++;
+	});
+	it("too many operators in a row", function() {
+		logTestResults(parser.parseEquation('2+=3'), errorNode);
+		expect(console.error).toHaveBeenCalledWith('Badly formed identifier: ');
+		expectedErrors++;
+	});
+	it("All other tests", function() {
 		function testEvaluateEquation(eqString, expectedResult) {
 			var evaluatedExpression = evaluate.evaluateFull(parser.parseEquation(eqString));
 			testEvaluateEvaluated(evaluatedExpression, expectedResult, parenMode.terms);
@@ -251,6 +296,8 @@ describe("A suite", function() {
 			testEvaluate('x=0^0', 'x=1');
 			// should produce an error
 			testEvaluate('x=1/0', errorNode); // parse error
+			expect(console.error).toHaveBeenCalledWith('Divided by 0');
+			expectedErrors++;
 	//		testEvaluate('x=y/0', errorNode); // eval error
 		}
 		function testDistributeRightSubExpression(eqString, expectedResult) {
@@ -686,8 +733,6 @@ describe("A suite", function() {
 		var self = {
 			runAllTests: function() {
 				//*
-				testManualConstructionAndDisplay();
-				testParseAndDisplayParenModeNecessary();
 				testEvaluateSimpleEquations();
 				testEvaluateLeftSimpleEquations();
 				testCommuteRightSubEquations();
@@ -718,7 +763,6 @@ describe("A suite", function() {
 				testActualMathSixProblems();
 			}
 		};
-		console.log('There should be exactly 8 tests which produce errors.');
 		self.runAllTests();
-  });
+	});
 });
