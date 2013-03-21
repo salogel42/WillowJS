@@ -85,12 +85,12 @@ var processExpressions = (function() {
 		simplifyExpressionsNumeric: function(parsedExpessions) {
 			return buildArray(parsedExpessions, expr.computeWithApproxNumericValue);
 		},
-		dividePolynomials: function(parsedExpessions) {
+		dividePolynomials: function(parsedExpessions, remainders) {
 			var simplifiedExpressions = [];
 			for(var i = 0; i < parsedExpessions.length - 1; i += 2) {
 				var dividend = evaluate.evaluateRec(parsedExpessions[i]);
 				var divisor = evaluate.evaluateRec(parsedExpessions[i + 1]);
-				simplifiedExpressions.push(evaluate.doSyntheticDivision(dividend, divisor, true));
+				simplifiedExpressions.push(evaluate.doSyntheticDivision(dividend, divisor, remainders));
 			}
 			return simplifiedExpressions;
 		},

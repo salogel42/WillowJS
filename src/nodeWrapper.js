@@ -272,7 +272,10 @@ var nodeWrapper = (function() {
 			} else if (command === 'fullEq') {
 				return processExpressions.checkFullEqualityEquationOrInequality(parsedExpessions);
 			} else if (command === 'polydiv') {
-				return stringifyArray(processExpressions.dividePolynomials(parsedExpessions),
+				return stringifyArray(processExpressions.dividePolynomials(parsedExpessions, true),
+					stringifyExpression);
+			} else if (command === 'polydivNoRem') {
+				return stringifyArray(processExpressions.dividePolynomials(parsedExpessions, false),
 					stringifyExpression);
 			} else if (command === 'eqBreakdown') {
 				return stringifyArray(processExpressions.strictestEquality(parsedExpessions, true),
