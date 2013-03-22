@@ -469,7 +469,7 @@ describe("WillowJS tests", function() {
 		testEvaluate('(-1*-4-2x)/(2*-1)', 'x-2');
 	});
 	function testPolyDiv(parsedExpressions, expected) {
-		var result = processExpressions.dividePolynomials(parsedExpressions);
+		var result = processExpressions.dividePolynomials(parsedExpressions, true);
 		if (result.length !== expected.length) {
 			console.error('Badly formed test!');
 		}
