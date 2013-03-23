@@ -10,7 +10,7 @@ them unminified in a browser), you'll need to install [node.js](http://nodejs.or
 
 Then, to run the tests (from the base directory), do
 
-	jasmine-node willowjs/tests
+	jasmine-node tests
 
 If you want to create uglified (minified) versions of the js files in `build/` (i.e. to use on a website)
 run the `grunt` command.
