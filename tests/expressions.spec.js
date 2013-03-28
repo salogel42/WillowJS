@@ -67,7 +67,8 @@ describe("WillowJS tests", function() {
 		var eq = expression.createCompoundExpression(lhs, rhs, '=', 1);
 
 		expect(display.displayExpression(eq, outputType.text, parenMode.necessary)).toBe('4+(1+x)3=5');
-		expect(display.displayExpression(eq, outputType.mathml, parenMode.necessary)).toBe('<math xmlns="http://www.w3.org/1998/Math/MathML" id=nodemath`><mrow id=node6>' +
+		expect(display.displayExpression(eq, outputType.mathml, parenMode.necessary)).toBe(
+			'<math xmlns="http://www.w3.org/1998/Math/MathML" id=node9><mrow id=node6>' +
 			'<mn id=node5>4</mn><mo class="op" id=node6>+</mo><mrow id=node4><mfenced id=node2>' +
 			'<mrow><mn id=node1>1</mn><mo class="op" id=node2>+</mo><mi id=node0>x</mi></mrow>' +
 			'</mfenced><mn id=node3>3</mn></mrow></mrow><mo class="op" id=node8>=</mo>' +

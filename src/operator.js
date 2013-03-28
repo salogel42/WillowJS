@@ -151,7 +151,7 @@ var operator = (function() {
 						return expression.createCompoundExpression(lhs, rhs, '*');
 					}
 					if (lhs.type === 'compound') {
-						if (operatorProperties.getPrecedence(lhs.op) === 2) {
+						if (getPrecedence(lhs.op) === 2) {
 							// (2/x)*3 = (2*3)/x
 							if (lhs.lhs.type === 'number' &&
 								!fractionUtils.isValueRadical(lhs.lhs.value)) {
@@ -168,7 +168,7 @@ var operator = (function() {
 						}
 					}
 					if (rhs.type === 'compound') {
-						if (operatorProperties.getPrecedence(rhs.op) === 2) {
+						if (getPrecedence(rhs.op) === 2) {
 							// 2*(3/x) = (2*3)/x
 							if (rhs.lhs.type === 'number' &&
 								!fractionUtils.isValueRadical(rhs.lhs.value)) {

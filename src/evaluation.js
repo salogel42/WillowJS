@@ -47,7 +47,8 @@ var evaluate = (function() {
 	}
 	function invertNode(node) {
 		if (node.type === 'number') {
-			return expression.createSimpleExpression('number', fractionUtils.invertFraction(node.value));
+			return expression.createSimpleExpression(
+				'number', fractionUtils.invertFraction(node.value));
 		}
 		if (node.type === 'compound' && node.op === '/') {
 			if (node.lhs.type === 'number' && node.lhs.value === 1) {
@@ -77,7 +78,7 @@ var evaluate = (function() {
 
 	function makeCommutativeIfNecessaryRec(node, op) {
 		if ((node.type === 'compound' || node.type === 'ternary') &&
-			operatorProperties.getPrecedence(node.op) === operatorProperties.getPrecedence(op)) {
+			getPrecedence(node.op) === getPrecedence(op)) {
 			var newNode = node;
 			if (node.type === 'compound') {
 				newNode = expression.createCompoundExpression(
@@ -198,8 +199,12 @@ var evaluate = (function() {
 		var twoPower = getPower(nodeTwo);
 		if (op === '/') { twoPower = arithmeticEvaluation(expression.createCompoundExpression(
 			expression.createSimpleExpression('number', -1), twoPower, '*')); }
-		return arithmeticEvaluation(expression.createCompoundExpression(identifierNode,
-			evaluate.evaluateRec(expression.createCompoundExpression(onePower, twoPower, '+')), '^'));
+		return arithmeticEvaluation(
+			expression.createCompoundExpression(
+				identifierNode,
+				evaluate.evaluateRec(expression.createCompoundExpression(onePower, twoPower, '+')),
+				'^')
+			);
 	}
 	function multiplyNodesMaybeNull(nodeOne, nodeTwo, op, valuate) {
 		if (nodeTwo === null) { return nodeOne; }
@@ -256,12 +261,13 @@ var evaluate = (function() {
 					if (components.identifierGroup.type === 'compound' &&
 						components.identifierGroup.op === '^') {
 						newLhs = expression.createCompoundExpression(components.identifierGroup.lhs,
-							expression.createCompoundExpression(components.identifierGroup.rhs, node.rhs,
-								'*'),
+							expression.createCompoundExpression(
+								components.identifierGroup.rhs, node.rhs, '*'),
 							'^');
 					}
-					return expression.createCompoundExpression(newLhs, expression.createCompoundExpression(
-						components.restOfExpression, node.rhs, '^'), '*');
+					return expression.createCompoundExpression(newLhs,
+						expression.createCompoundExpression(
+							components.restOfExpression, node.rhs, '^'), '*');
 				}
 			}
 			return node;
@@ -509,7 +515,8 @@ var evaluate = (function() {
 		if (utils.isSimpleExpression(node)) { return [node]; }
 		if (utils.isUnaryNegative(node)) {
 			if (getPrecedence(op) !== 2) {
-				return [expression.createUnaryExpression(sortTerms(node.child, associateRight), '-')];
+				return [expression.createUnaryExpression(
+					sortTerms(node.child, associateRight), '-')];
 			} else {
 				return getAllTermsAtLevelSorted(node.child, associateRight).concat(
 					[expression.createSimpleExpression('number', -1)]);
@@ -604,7 +611,8 @@ var evaluate = (function() {
 					result.rhs, '/');
 				} else if (node.op === '/' && result.type === 'compound' && result.op === '/') {
 					result = expression.createCompoundExpression(result.lhs,
-						sortTerms(expression.createCompoundExpression(result.rhs, terms[j], '*')), '/');
+						sortTerms(expression.createCompoundExpression(result.rhs, terms[j], '*')),
+						'/');
 				} else if (node.op === '/' && terms[j].type === 'compound' &&
 					terms[j].op === '/') {
 					result = arithmeticEvaluation(
@@ -775,33 +783,37 @@ var evaluate = (function() {
 						rightExp = equality.additiveInverseOfNumber(rightExp);
 					}
 					return expression.createCompoundExpression(
-						fullMultiply(expression.createCompoundExpression(node.lhs, node.rhs.lhs, '^'),
+						fullMultiply(
+							expression.createCompoundExpression(node.lhs, node.rhs.lhs, '^'),
 							multiplyDivision),
 						fullMultiply(expression.createCompoundExpression(node.lhs, rightExp, '^'),
 							multiplyDivision), '*');
 				} else if (node.rhs.op === '*' && node.lhs.type === 'number' &&
 					getCoefficient(node.rhs) !== 1) {
 					//TODO(sdspikes) : think about /
-					return fullMultiply(expression.createCompoundExpression(
-						fullMultiply(expression.createCompoundExpression(node.lhs, node.rhs.lhs, '^'),
-							multiplyDivision), node.rhs.rhs, '^'), multiplyDivision);
+					return fullMultiply(expression.createCompoundExpression(fullMultiply(
+						expression.createCompoundExpression(node.lhs, node.rhs.lhs, '^'),
+						multiplyDivision), node.rhs.rhs, '^'), multiplyDivision);
 
 				}
 			}//*/
 			if (node.op === '^' && node.lhs.type === 'compound') {
 				if (node.lhs.op === '^') {
 					return fullMultiply(expression.createCompoundExpression(node.lhs.lhs,
-						fullMultiply(expression.createCompoundExpression(node.lhs.rhs, node.rhs, '*'),
+						fullMultiply(
+							expression.createCompoundExpression(node.lhs.rhs, node.rhs, '*'),
 							multiplyDivision), '^'), multiplyDivision);
 				} else if (getPrecedence(node.lhs.op) === 2) {
 					return fullMultiply(expression.createCompoundExpression(
-						fullMultiply(expression.createCompoundExpression(node.lhs.lhs, node.rhs, '^'),
+						fullMultiply(
+							expression.createCompoundExpression(node.lhs.lhs, node.rhs, '^'),
 							multiplyDivision),
-						fullMultiply(expression.createCompoundExpression(node.lhs.rhs, node.rhs, '^'),
+						fullMultiply(
+							expression.createCompoundExpression(node.lhs.rhs, node.rhs, '^'),
 							multiplyDivision),
 						node.lhs.op), multiplyDivision);
-				} else if (getPrecedence(node.lhs.op) === 1 && node.rhs.type === 'number' &&
-					!fractionUtils.isValueFraction(node.rhs.value) &&
+				} else if (getPrecedence(node.lhs.op) === 1 &&
+					node.rhs.type === 'number' && !fractionUtils.isValueFraction(node.rhs.value) &&
 					!fractionUtils.isValueRadical(node.rhs.value)) {
 					return fullMultiply(evaluate.splitPowerNumberExponent(node), multiplyDivision);
 				}
@@ -809,8 +821,8 @@ var evaluate = (function() {
 			// Allows for x^(-2)-x^(-2) evaluating to 0
 			if (node.op === '^') {
 				if (fractionUtils.isNodeNegative(node.rhs)) {
-					return invertNode(fullMultiply(expression.createCompoundExpression(
-						node.lhs, fullMultiply(expression.createUnaryExpression(node.rhs, '-')), '^')));
+					return invertNode(fullMultiply(expression.createCompoundExpression(node.lhs,
+						fullMultiply(expression.createUnaryExpression(node.rhs, '-')), '^')));
 				}
 			}
 			if (node.op === '*') {
@@ -819,10 +831,12 @@ var evaluate = (function() {
 						fractionUtils.isNodeFraction(node.rhs)) {
 						return groupRepeats(expression.createCompoundExpression(fullMultiply(
 							expression.createCompoundExpression(node.lhs.lhs,
-								expression.createSimpleExpression('number', node.rhs.value.top), '*'),
+								expression.createSimpleExpression('number', node.rhs.value.top),
+								'*'),
 							multiplyDivision),
 							fullMultiply(expression.createCompoundExpression(node.lhs.rhs,
-								expression.createSimpleExpression('number', node.rhs.value.bottom), '*'),
+								expression.createSimpleExpression('number', node.rhs.value.bottom),
+								'*'),
 							multiplyDivision),
 							'/'));
 					}
@@ -830,10 +844,12 @@ var evaluate = (function() {
 						fractionUtils.isNodeFraction(node.lhs)) {
 						return groupRepeats(expression.createCompoundExpression(fullMultiply(
 							expression.createCompoundExpression(node.rhs.lhs,
-								expression.createSimpleExpression('number', node.lhs.value.top), '*'),
+								expression.createSimpleExpression('number', node.lhs.value.top),
+								'*'),
 							multiplyDivision),
 							fullMultiply(expression.createCompoundExpression(node.rhs.rhs,
-								expression.createSimpleExpression('number', node.lhs.value.bottom), '*'),
+								expression.createSimpleExpression('number', node.lhs.value.bottom),
+								'*'),
 							multiplyDivision),
 							'/'));
 					}
@@ -861,18 +877,22 @@ var evaluate = (function() {
 				if (node.lhs.type === 'compound' && getPrecedence(node.lhs.op) === 1) {
 					node.lhs = expr.makeCommutativeIfNecessary(node.lhs);
 					return fullMultiply(expression.createCompoundExpression(
-						fullMultiply(expression.createCompoundExpression(node.lhs.lhs, node.rhs, '*'),
+						fullMultiply(
+							expression.createCompoundExpression(node.lhs.lhs, node.rhs, '*'),
 							multiplyDivision),
-						fullMultiply(expression.createCompoundExpression(node.lhs.rhs, node.rhs, '*'),
+						fullMultiply(
+							expression.createCompoundExpression(node.lhs.rhs, node.rhs, '*'),
 							multiplyDivision),
 						node.lhs.op), multiplyDivision);
 				}
 				if (node.rhs.type === 'compound' && getPrecedence(node.rhs.op) === 1) {
 					node.rhs = expr.makeCommutativeIfNecessary(node.rhs);
 					return fullMultiply(expression.createCompoundExpression(
-						fullMultiply(expression.createCompoundExpression(node.lhs, node.rhs.lhs, '*'),
+						fullMultiply(
+							expression.createCompoundExpression(node.lhs, node.rhs.lhs, '*'),
 							multiplyDivision),
-						fullMultiply(expression.createCompoundExpression(node.lhs, node.rhs.rhs, '*'),
+						fullMultiply(
+							expression.createCompoundExpression(node.lhs, node.rhs.rhs, '*'),
 							multiplyDivision),
 						node.rhs.op), multiplyDivision);
 				}
@@ -896,7 +916,9 @@ var evaluate = (function() {
 	}
 
 	function leftMostTerm(node) {
-		if (node.type !== 'compound' || getPrecedence(node.op) !== 1) { return node; }
+		if (node.type !== 'compound' || getPrecedence(node.op) !== 1) {
+			return node;
+		}
 		return leftMostTerm(node.lhs);
 	}
 
@@ -941,9 +963,7 @@ var evaluate = (function() {
 	function leftMostTermInMult(node) {
 		if (node.numeric) { return node; }
 		if (node.type !== 'compound') { return node; }
-		if (isExpandedFraction(node)) {
-			return operator['/'].evaluate(node.lhs, node.rhs);
-		}
+		if (isExpandedFraction(node)) { return operator['/'].evaluate(node.lhs, node.rhs); }
 		if (getPrecedence(node.op) !== 2) { return node; }
 		return leftMostTermInMult(node.lhs);
 	}
@@ -1167,7 +1187,8 @@ var evaluate = (function() {
 	function flipNegativePowerIntoOneOver(node) {
 		if (node.type === 'compound' && node.op === '^' && (utils.isUnaryNegative(node.rhs) ||
 			(node.rhs.type === 'number' && fractionUtils.isNegative(node.rhs.value)))) {
-			return expression.createCompoundExpression(expression.createSimpleExpression('number', 1),
+			return expression.createCompoundExpression(
+				expression.createSimpleExpression('number', 1),
 				invertExponent(node), '/');
 		}
 		return node;
@@ -1223,8 +1244,7 @@ var evaluate = (function() {
 			var quotient = self.doSyntheticDivision(node, other, true);
 			return (quotient.type === 'number' && (originalOp === '=' ||
 				(getPrecedence(originalOp) !== 0 && quotient.value === 1) ||
-				(getPrecedence(originalOp) === 0 &&
-					!fractionUtils.isNegative(quotient.value))));
+				(getPrecedence(originalOp) === 0 && !fractionUtils.isNegative(quotient.value))));
 		}
 		if (node.type === 'ternary' && other.type === 'ternary') {
 			return equivalentEquationOrInequalityHelper(
@@ -1281,7 +1301,8 @@ var evaluate = (function() {
 		}
 		if (node.lhs.type === 'compound') {
 			if (!containsIdentifier(node.lhs.rhs, identifierNode)) {
-				return putTermsWithoutIdentifierOnRhs(expression.createCompoundExpression(node.lhs.lhs,
+				return putTermsWithoutIdentifierOnRhs(
+					expression.createCompoundExpression(node.lhs.lhs,
 					expression.createCompoundExpression(
 						node.rhs, node.lhs.rhs, operatorProperties.inverseOp(node.lhs.op)),
 					node.op), identifierNode);
@@ -1294,9 +1315,10 @@ var evaluate = (function() {
 						identifierNode);
 				}
 				var newLeft = expr.makeCommutativeIfNecessary(node.lhs);
-				return putTermsWithoutIdentifierOnRhs(expression.createCompoundExpression(newLeft.rhs,
-					expression.createCompoundExpression(
-						node.rhs, newLeft.lhs, operatorProperties.inverseOp(node.lhs.op)),
+				return putTermsWithoutIdentifierOnRhs(
+					expression.createCompoundExpression(newLeft.rhs,
+						expression.createCompoundExpression(
+							node.rhs, newLeft.lhs, operatorProperties.inverseOp(node.lhs.op)),
 					node.op), identifierNode);
 			}
 		}
@@ -1356,8 +1378,7 @@ var evaluate = (function() {
 			if (node.op === '*') { newNode = node.rhs; }
 			if (node.op === '^') { newNode = expression.createSimpleExpression('number', 1); }
 			if (node.op === '/') { return errorNode; }
-		} else if (getPrecedence(node.op) === 2 && utils.isNegativeOne(node.rhs) &&
-			!expand) {
+		} else if (getPrecedence(node.op) === 2 && utils.isNegativeOne(node.rhs) && !expand) {
 			newNode = expression.createUnaryExpression(node.lhs, '-');
 		} else if (node.op === '*' && utils.isNegativeOne(node.lhs) && !expand) {
 			newNode = expression.createUnaryExpression(node.rhs, '-');
@@ -1370,8 +1391,7 @@ var evaluate = (function() {
 				if (operatorProperties[node.op].commutative &&
 					node.lhs.value === operatorProperties[node.op].identity) {
 					newNode = node.rhs;
-				} else if (node.lhs.value === 0 &&
-					operatorProperties[node.op].precedence > 1) {
+				} else if (node.lhs.value === 0 && getPrecedence(node.op) > 1) {
 					newNode = node.lhs;
 				}
 			}
@@ -1474,7 +1494,8 @@ var evaluate = (function() {
 			}
 			var newExponent = operator['-'].evaluateValues(node.rhs.value, 1);
 			if (fractionUtils.isNodeNegative(newExponent)) { return node; }
-			return expression.createCompoundExpression(node.lhs, expression.createCompoundExpression(node.lhs,
+			return expression.createCompoundExpression(node.lhs,
+				expression.createCompoundExpression(node.lhs,
 					newExponent, '^'), '*');
 		},
 

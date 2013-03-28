@@ -226,7 +226,8 @@ var equality = (function() {
 			if (node.type === 'identifier') { return expr.copyNode(node); }
 			if (node.type === 'number') {
 				if (fractionUtils.isNegativeNumber(node)) {
-					return expression.createUnaryExpression(self.additiveInverseOfNumber(node), '-');
+					return expression.createUnaryExpression(
+						self.additiveInverseOfNumber(node), '-');
 				}
 				return expr.copyNode(node);
 			}
@@ -244,7 +245,8 @@ var equality = (function() {
 				var normalizedLhs = self.normalizeTermSign(node.lhs);
 				var normalizedRhs = self.normalizeTermSign(node.rhs);
 				if (getPrecedence(node.op) !== 2) {
-					return expression.createCompoundExpression(normalizedLhs, normalizedRhs, node.op);
+					return expression.createCompoundExpression(
+						normalizedLhs, normalizedRhs, node.op);
 				}
 				if (utils.isUnaryNegative(normalizedLhs) && utils.isUnaryNegative(normalizedRhs)) {
 					return expression.createCompoundExpression(
@@ -256,8 +258,8 @@ var equality = (function() {
 				}
 				if (utils.isUnaryNegative(normalizedLhs)) { normalizedLhs = normalizedLhs.child; }
 				if (utils.isUnaryNegative(normalizedRhs)) { normalizedRhs = normalizedRhs.child; }
-				return expression.createUnaryExpression(
-					expression.createCompoundExpression(normalizedLhs, normalizedRhs, node.op), '-');
+				return expression.createUnaryExpression(expression.createCompoundExpression(
+					normalizedLhs, normalizedRhs, node.op), '-');
 			}
 		},
 		equivalentModuloCommutativity: function(node, other, requireCoefficientPlacement) {

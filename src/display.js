@@ -7,6 +7,7 @@ if (typeof module !== 'undefined' && typeof require !== 'undefined') {
 	var operatorProperties = require('./operatorProperties.js').operatorProperties;
 	var getPrecedence = operatorProperties.getPrecedence;
 	var errorNode = require('./utils.js').errorNode;
+	var expression = require('./expression.js').expression;
 }
 
 var parenMode = {
@@ -75,7 +76,8 @@ var display = (function() {
 			return parentOpPrecedence > childOpPrecedence ||
 				(parentOpPrecedence === childOpPrecedence && side === 'right' &&
 				(parent.op === '-' || parent.op === '^' ||
-					(parent.op === '/' && (showDivSign !== divSign.never || output === outputType.text))));
+					(parent.op === '/' &&
+						(showDivSign !== divSign.never || output === outputType.text))));
 		}
 		return !(((parent.op === '/' || childOp === '/') && showDivSign === divSign.never) &&
 			output !== outputType.text) &&
@@ -310,11 +312,11 @@ var display = (function() {
 		 *                                    text
 		 *                                    latex (default)
 		 *                                    mathml
-		 * @param  {parenMode} desiredMode    Mode options:
+		 * @param  {parenMode}  desiredMode   Mode options:
 		 *                                    full
 		 *                                    terms
 		 *                                    necessary (default)
-		 * @param  {divSign} divAsFraction    Div options:
+		 * @param  {divSign}    divAsFraction Div options:
 		 *                                    never (default)
 		 *                                    notNumeric
 		 *                                    always
@@ -328,8 +330,9 @@ var display = (function() {
 			var result = displayNode(exp);
 			if (output === outputType.mathml) {
 				var id = 'math`';
-				if (typeof expr !== 'undefined' && typeof expr.nextId !== 'undefined') {
-					id = expr.nextId++;
+				if (typeof expression !== 'undefined' &&
+					typeof expression.nextId !== 'undefined') {
+					id = expression.nextId++;
 				}
 				result = '<math xmlns="http://www.w3.org/1998/Math/MathML" id=node' + id + '>' +
 					result + '</math>';

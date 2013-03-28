@@ -6,6 +6,7 @@ if (typeof module !== 'undefined' && typeof require !== 'undefined') {
 	var fractionUtils = require('./fractionUtils').fractionUtils;
 	var expression = require('./expression.js').expression;
 	var operatorProperties = require('./operatorProperties.js').operatorProperties;
+	var getPrecedence = operatorProperties.getPrecedence;
 	var operator = require('./operator.js').operator;
 }
 
@@ -41,7 +42,7 @@ var expressionUtils = (function() {
 			if (node.type === 'compound') {
 				var lhs = self.computeWithApproxNumericValue(node.lhs);
 				var rhs = self.computeWithApproxNumericValue(node.rhs);
-				if (operatorProperties.getPrecedence(node.op) === 0) {
+				if (getPrecedence(node.op) === 0) {
 					return expression.createCompoundExpression(lhs, rhs, node.op);
 				}
 				computed = operator[node.op].evaluate(lhs, rhs);
@@ -123,8 +124,7 @@ var expressionUtils = (function() {
 				var parent = node.parent;
 				if (parent === null) { return null; }
 				var side = utils.getSide(node);
-				if (operatorProperties.getPrecedence(node.op) !==
-					operatorProperties.getPrecedence(parent.op) ||
+				if (getPrecedence(node.op) !== getPrecedence(parent.op) ||
 					(side === 'right' && node.op !== parent.op)) { return null; }
 				var grandparent = parent.parent;
 				var parentSide = utils.getSide(parent);
@@ -166,8 +166,7 @@ var expressionUtils = (function() {
 			if (node.type === 'compound' && node.op === '*') {
 				var parent = node.parent;
 				var side = utils.getSide(node);
-				if (node.rhs.type === 'compound' &&
-					operatorProperties.getPrecedence(node.rhs.op) === 1) {
+				if (node.rhs.type === 'compound' && getPrecedence(node.rhs.op) === 1) {
 					newNode = expression.createCompoundExpression(
 						expression.createCompoundExpression(node.lhs, node.rhs.lhs, node.op),
 						expression.createCompoundExpression(node.lhs, node.rhs.rhs, node.op),
@@ -182,8 +181,7 @@ var expressionUtils = (function() {
 			if (node.type === 'compound' && node.op === '*' || node.op === '/') {
 				var parent = node.parent;
 				var side = utils.getSide(node);
-				if (node.lhs.type === 'compound' &&
-					operatorProperties.getPrecedence(node.lhs.op) === 1) {
+				if (node.lhs.type === 'compound' && getPrecedence(node.lhs.op) === 1) {
 					newNode = expression.createCompoundExpression(
 						expression.createCompoundExpression(node.lhs.lhs, node.rhs, node.op),
 						expression.createCompoundExpression(node.lhs.rhs, node.rhs, node.op),
@@ -196,10 +194,10 @@ var expressionUtils = (function() {
 		// TODO(sdspikes): add tests
 		factorLeft : function(node) {
 			var newNode = null;
-			if (node.type === 'compound' && operatorProperties.getPrecedence(node.op) === 1) {
+			if (node.type === 'compound' && getPrecedence(node.op) === 1) {
 				var newLhs = self.makeCommutativeIfNecessary(node.lhs);
 				var newRhs = self.makeCommutativeIfNecessary(node.rhs);
-				if (node.lhs.type === 'compound' && operatorProperties.getPrecedence(newLhs.op) === 2 &&
+				if (node.lhs.type === 'compound' && getPrecedence(newLhs.op) === 2 &&
 					newRhs.type === 'compound' && newRhs.op === newLhs.op &&
 					newLhs.lhs.syntacticEquals(newRhs.lhs)) {
 					var parent = node.parent;
@@ -214,8 +212,8 @@ var expressionUtils = (function() {
 		},
 		factorRight : function(node) {
 			var newNode = null;
-			if (node.type === 'compound' && operatorProperties.getPrecedence(node.op) === 1 &&
-				node.lhs.type === 'compound' && operatorProperties.getPrecedence(node.lhs.op) === 2 &&
+			if (node.type === 'compound' && getPrecedence(node.op) === 1 &&
+				node.lhs.type === 'compound' && getPrecedence(node.lhs.op) === 2 &&
 				node.rhs.type === 'compound' && node.rhs.op === node.lhs.op &&
 				node.lhs.rhs.syntacticEquals(node.rhs.rhs)) {
 				var parent = node.parent;
