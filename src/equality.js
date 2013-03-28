@@ -1,11 +1,12 @@
 /*global require:true exports:true */
 
 if (typeof module !== 'undefined' && typeof require !== 'undefined') {
-	var getPrecedence = require('./expr.js').getPrecedence;
 	var utils = require('./utils.js');
 	var errorNode = utils.errorNode;
 	utils = utils.utils;
-	var operatorProperties = require('./expr.js').operatorProperties;
+	var operatorProperties = require('./operatorProperties.js').operatorProperties;
+	var getPrecedence = operatorProperties.getPrecedence;
+	var operator = require('./operator.js').operator;
 	var expr = require('./expr.js').expr;
 	var fractionUtils = require('./fractionUtils.js').fractionUtils;
 	var expression = require('./expression.js').expression;
@@ -209,7 +210,7 @@ var equality = (function() {
 		// "Public"
 		additiveInverseOfNumber: function(node) {
 			if (node.type !== 'number') { return null; }
-			return operatorProperties['-'].unaryEvaluate(node);
+			return operator['-'].unaryEvaluate(node);
 		},
 		convertFractionToCompoundExpression: function(node) {
 			if (fractionUtils.isNodeFraction(node)) {

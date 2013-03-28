@@ -15,6 +15,7 @@ if (typeof module !== 'undefined' && typeof require !== 'undefined') {
 	var processExpressions = require(path + '/processExpressions.js').processExpressions;
 	var nodeWrapper = require(path + '/nodeWrapper.js').nodeWrapper;
 	var expression = require(path + '/expression.js').expression;
+	var operatorProperties = require(path + '/operatorProperties.js').operatorProperties;
 }
 
 describe("WillowJS tests", function() {

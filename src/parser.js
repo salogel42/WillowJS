@@ -3,9 +3,8 @@
 if (typeof module !== 'undefined' && typeof require !== 'undefined') {
 	var fractionUtils = require('./fractionUtils.js').fractionUtils;
 	var utils = require('./utils.js').utils;
-	var expr = require('./expr.js').expr;
 	var errorNode = require('./utils.js').errorNode;
-	var operatorProperties = require('./expr.js').operatorProperties;
+	var operatorProperties = require('./operatorProperties.js').operatorProperties;
 	var expression = require('./expression.js').expression;
 }
 

@@ -4,7 +4,8 @@
 if (typeof module !== 'undefined' && typeof require !== 'undefined') {
 	var fractionUtils = require('./fractionUtils.js').fractionUtils;
 	var utils = require('./utils.js').utils;
-	var getPrecedence = require('./expr.js').getPrecedence;
+	var operatorProperties = require('./operatorProperties.js').operatorProperties;
+	var getPrecedence = operatorProperties.getPrecedence;
 	var errorNode = require('./utils.js').errorNode;
 }
 
