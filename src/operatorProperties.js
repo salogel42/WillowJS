@@ -71,7 +71,7 @@ var operatorProperties = (function() {
 		getPrecedence: function(op) {
 			op = utils.getEquivalentOp(op);
 			return operatorProperties[op].precedence;
-		},
+		}
 	};
 	
 	return self;

@@ -5,6 +5,7 @@ if (typeof module !== 'undefined' && typeof require !== 'undefined') {
 	var utils = require('./utils.js').utils;
 	var errorNode = require('./utils.js').errorNode;
 	var operatorProperties = require('./operatorProperties.js').operatorProperties;
+	var getPrecedence = operatorProperties.getPrecedence;
 	var expression = require('./expression.js').expression;
 }
 
@@ -331,17 +332,21 @@ var parser = (function() {
 		}
 		return result;
 	}
+	function getNextOp(exp) {
+		if (exp && exp !== errorNode && exp.expressionString && exp.expressionString.length !== 0) {
+			return exp.expressionString.charAt(0);
+		}
+		return null;
+	}
 	function parseExpression(expressionString, prec) {
 		expressionString = expressionString.replace(STARTING_SPACE,'');
 		// Get the first subexpression
 		var exp = parseSubExpression(expressionString);
-		while (exp !== errorNode && exp.expressionString.length !== 0 &&
-			OPERATOR.test(exp.expressionString.charAt(0)) &&
-			operatorProperties[exp.expressionString.charAt(0)].precedence > prec) {
-			var op = exp.expressionString.charAt(0);
+
+		var op;
+		while ((op = getNextOp(exp)) !== null && OPERATOR.test(op) && getPrecedence(op) > prec) {
 			// Now that we have the first expression, and know there are more, get the next one.
-			var rhs = parseExpression(exp.expressionString.substring(1),
-				operatorProperties[op].precedence);
+			var rhs = parseExpression(exp.expressionString.substring(1), getPrecedence(op));
 			if (rhs === errorNode) { return errorNode; }
 			// Since it was a valid expression, fold it in to a compound expression with all the
 			// ones we have found so far at this level.

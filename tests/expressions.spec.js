@@ -15,7 +15,6 @@ if (typeof module !== 'undefined' && typeof require !== 'undefined') {
 	var processExpressions = require(path + '/processExpressions.js').processExpressions;
 	var nodeWrapper = require(path + '/nodeWrapper.js').nodeWrapper;
 	var expression = require(path + '/expression.js').expression;
-	var operatorProperties = require(path + '/operatorProperties.js').operatorProperties;
 }
 
 describe("WillowJS tests", function() {
@@ -35,7 +34,7 @@ describe("WillowJS tests", function() {
 	});
 
 	afterEach(function() {
-	    expect(console.error.calls.length).toEqual(expectedErrors);
+		expect(console.error.calls.length).toEqual(expectedErrors);
 	});
 
 	// Helpers for the first few tests.
@@ -48,7 +47,7 @@ describe("WillowJS tests", function() {
 		if (typeof type === 'undefined') { type = outputType.text; }
 		if (typeof parseFunction === 'undefined') { parseFunction = parser.parseEquation; }
 		expect(display.displayExpression(parseFunction(eqString),
-			type, parenMode.full, showDiv)).toBe(resFull);;
+			type, parenMode.full, showDiv)).toBe(resFull);
 		expect(display.displayExpression(parseFunction(eqString),
 			type, parenMode.terms, showDiv)).toBe(resTerms);
 		expect(display.displayExpression(parseFunction(eqString),
@@ -523,7 +522,7 @@ describe("WillowJS tests", function() {
 		testEvaluate('2^{1/4}3^{1/4}', '\\sqrt[4]{6}');
 		testEvaluate('2^{1/2}3^{1/3}', '\\sqrt[6]{72}');
 		testEvaluate('(-3)^{1/2}', '\\sqrt{-3}');
-		testEvaluate('(\\sqrt{4-4*5*7}-2)/(2*7)', '1/7*\\sqrt{-34}-1/7')
+		testEvaluate('(\\sqrt{4-4*5*7}-2)/(2*7)', '1/7*\\sqrt{-34}-1/7');
 		testEqualityBreakdown('3i', '(-9)^{1/2}', equalityType.full);
 		testEqualityBreakdown('3i', '3(-1)^{1/2}', equalityType.full);
 		testEqualityBreakdown('3i', '3\\sqrt(-1)', equalityType.verbatim);

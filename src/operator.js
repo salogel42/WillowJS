@@ -6,6 +6,7 @@ if (typeof module !== 'undefined' && typeof require !== 'undefined') {
 	var fractionUtils = require('./fractionUtils').fractionUtils;
 	var expression = require('./expression.js').expression;
 	var operatorProperties = require('./operatorProperties.js').operatorProperties;
+	var getPrecedence = operatorProperties.getPrecedence;
 }
 
 var operator = (function() {
@@ -307,7 +308,7 @@ var operator = (function() {
 			result = operator['*'].evaluateValues(result.rational, result.radical);
 			result.simplified = true;
 			return result;
-		},
+		}
 	};
 	/**
 	 * Add a unaryEvaluate function to '-' and '\\sqrt' (I don't do it in the constructor
@@ -332,7 +333,7 @@ var operator = (function() {
 
 	self['|'].unaryEvaluate = function(child) {
 		return makeNumber(fractionUtils.abs(child.value));
-	}
+	};
 	
 	return self;
 }());
