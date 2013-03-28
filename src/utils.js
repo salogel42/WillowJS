@@ -15,6 +15,11 @@ var utils = (function() {
 	}
 
 	var self = {
+		getEquivalentOp : function(op) {
+			if (op === '\\cdot') { return '*'; }
+			if (op === '\\div') { return '/'; }
+			return op;
+		},
 		isUnaryNegative: function(node) {
 			return node.type === 'unary' && node.op === '-';
 		},

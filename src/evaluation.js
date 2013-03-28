@@ -14,6 +14,7 @@ if (typeof module !== 'undefined' && typeof require !== 'undefined') {
 	var fractionUtils = require('./fractionUtils.js').fractionUtils;
 	var parser = require('./parser.js').parser;
 	var operatorProperties = require('./expr.js').operatorProperties;
+	var expression = require('./expression.js').expression;
 }
 
 var equalityType = {
@@ -45,17 +46,17 @@ var evaluate = (function() {
 	}
 	function invertNode(node) {
 		if (node.type === 'number') {
-			return expr.createSimpleExpression('number', fractionUtils.invertFraction(node.value));
+			return expression.createSimpleExpression('number', fractionUtils.invertFraction(node.value));
 		}
 		if (node.type === 'compound' && node.op === '/') {
 			if (node.lhs.type === 'number' && node.lhs.value === 1) {
 				return node.rhs;
 			} else {
-				return expr.createCompoundExpression(node.rhs, node.lhs, '/');
+				return expression.createCompoundExpression(node.rhs, node.lhs, '/');
 			}
 		} else {
-			return expr.createCompoundExpression(
-				expr.createSimpleExpression('number', 1), node, '/');
+			return expression.createCompoundExpression(
+				expression.createSimpleExpression('number', 1), node, '/');
 		}
 	}
 	function invertNodes(nodeArray) {
@@ -87,7 +88,7 @@ var evaluate = (function() {
 					Math.abs(node.rhs.value.top) > Math.abs(node.rhs.value.bottom)))) {
 				var resultIdentifiers = [];
 				for (var i = 0; i < identifiers.length; i++) {
-					resultIdentifiers.push(expr.createCompoundExpression(identifiers[i],
+					resultIdentifiers.push(expression.createCompoundExpression(identifiers[i],
 						node.rhs, '^'));
 				}
 				return resultIdentifiers;
@@ -140,37 +141,37 @@ var evaluate = (function() {
 	// maybe also pass identifierNode and make sure the base is correct identifier?
 	function getPower(node) {
 		if (node.type === 'compound' && node.op === '^') { return node.rhs; }
-		return expr.createSimpleExpression('number', 1);
+		return expression.createSimpleExpression('number', 1);
 	}
 	function combineGroupedIdentifiers(nodeOne, nodeTwo, op, identifierNode) {
 		if (nodeTwo === null) { return nodeOne; }
 		if (nodeOne === null) {
 			if (op !== '/') { return nodeTwo; }
 			var power = getPower(nodeTwo);
-			return expr.createCompoundExpression(identifierNode,
-				expr.arithmeticEvaluation(expr.createCompoundExpression(
-					expr.createSimpleExpression('number', -1), power, '*')),
+			return expression.createCompoundExpression(identifierNode,
+				arithmeticEvaluation(expression.createCompoundExpression(
+					expression.createSimpleExpression('number', -1), power, '*')),
 				'^');
 		}
 		if (nodeOne.type === 'identifier' && nodeTwo.type === 'identifier' &&
 			nodeOne.value === nodeTwo.value) {
 			if (op === '*') {
-				return expr.createCompoundExpression(nodeOne,
-					expr.createSimpleExpression('number', 2), '^');
+				return expression.createCompoundExpression(nodeOne,
+					expression.createSimpleExpression('number', 2), '^');
 			}
-			if (op === '/') { return expr.createSimpleExpression('number', 1); }
+			if (op === '/') { return expression.createSimpleExpression('number', 1); }
 		}
 		var onePower = getPower(nodeOne);
 		var twoPower = getPower(nodeTwo);
-		if (op === '/') { twoPower = expr.arithmeticEvaluation(expr.createCompoundExpression(
-			expr.createSimpleExpression('number', -1), twoPower, '*')); }
-		return expr.arithmeticEvaluation(expr.createCompoundExpression(identifierNode,
-			evaluate.evaluateRec(expr.createCompoundExpression(onePower, twoPower, '+')), '^'));
+		if (op === '/') { twoPower = arithmeticEvaluation(expression.createCompoundExpression(
+			expression.createSimpleExpression('number', -1), twoPower, '*')); }
+		return arithmeticEvaluation(expression.createCompoundExpression(identifierNode,
+			evaluate.evaluateRec(expression.createCompoundExpression(onePower, twoPower, '+')), '^'));
 	}
 	function multiplyNodesMaybeNull(nodeOne, nodeTwo, op, valuate) {
 		if (nodeTwo === null) { return nodeOne; }
 		if (nodeOne === null) { return (op === '/') ? invertNode(nodeTwo): nodeTwo; }
-		var result = expr.createCompoundExpression(nodeOne, nodeTwo, op);
+		var result = expression.createCompoundExpression(nodeOne, nodeTwo, op);
 		return valuate ? evaluate.evaluateRec(result) : result;
 	}
 	function isIdentifierGroup(node, identifierNode) {
@@ -200,8 +201,8 @@ var evaluate = (function() {
 		printDebug(' to left of ', node, debugGroup);
 		if (isIdentifierGroup(node, identifierNode)) { return node; }
 		if (utils.isUnaryNegative(node)) {
-			return expr.createCompoundExpression(node.child,
-				expr.createSimpleExpression('number', -1), '*');
+			return expression.createCompoundExpression(node.child,
+				expression.createSimpleExpression('number', -1), '*');
 		}
 		if (node.type !== 'compound' || getPrecedence(node.op) < 2) { return node; }
 		if (node.op === '^' && !identifierNode.syntacticEquals(node.lhs)) {
@@ -211,22 +212,22 @@ var evaluate = (function() {
 			// should not ever happen, i think?
 			if (identifierNode.syntacticEquals(newBase)) {
 				return groupRepeatedIdentifierOnLhs(
-					expr.createCompoundExpression(newBase, node.rhs, '^'), identifierNode);
+					expression.createCompoundExpression(newBase, node.rhs, '^'), identifierNode);
 			}
 			if (newBase.type === 'compound' && newBase.op === '*') {
 				var components =
 					separateGroupedIdentifierAndRestOfExpression(newBase, identifierNode);
 				if (components.identifierGroup !== null) {
-					var newLhs = expr.createCompoundExpression(
+					var newLhs = expression.createCompoundExpression(
 						components.identifierGroup, node.rhs, '^');
 					if (components.identifierGroup.type === 'compound' &&
 						components.identifierGroup.op === '^') {
-						newLhs = expr.createCompoundExpression(components.identifierGroup.lhs,
-							expr.createCompoundExpression(components.identifierGroup.rhs, node.rhs,
+						newLhs = expression.createCompoundExpression(components.identifierGroup.lhs,
+							expression.createCompoundExpression(components.identifierGroup.rhs, node.rhs,
 								'*'),
 							'^');
 					}
-					return expr.createCompoundExpression(newLhs, expr.createCompoundExpression(
+					return expression.createCompoundExpression(newLhs, expression.createCompoundExpression(
 						components.restOfExpression, node.rhs, '^'), '*');
 				}
 			}
@@ -263,8 +264,8 @@ var evaluate = (function() {
 		var right = getCommonCoefficient(node.rhs);
 		if (getPrecedence(node.op) === 2) {
 			if (left !== null && right !== null) {
-				return expr.arithmeticEvaluation(
-					expr.createCompoundExpression(left, right, node.op), false);
+				return arithmeticEvaluation(
+					expression.createCompoundExpression(left, right, node.op), false);
 			}
 			if (left !== null) { return left; }
 			if (right !== null) { return (node.op === '/') ? invertNode(right) : right; }
@@ -274,7 +275,7 @@ var evaluate = (function() {
 		if (getPrecedence(node.op) === 1) {
 			if (left !== null && right !== null &&
 				left.type === 'number' && right.type === 'number') {
-				return expr.createSimpleExpression('number',
+				return expression.createSimpleExpression('number',
 					fractionUtils.fractionGCD(left.value, right.value));
 			}
 			return null;
@@ -295,10 +296,10 @@ var evaluate = (function() {
 				bottomFactor.type === 'number') {
 				var gcd = fractionUtils.fractionGCD(topFactor.value, bottomFactor.value);
 				if (gcd !== 1) {
-					gcd = invertNode(expr.createSimpleExpression('number', gcd));
-					node = expr.createCompoundExpression(
-						fullMultiply(expr.createCompoundExpression(gcd, node.lhs, '*')),
-						fullMultiply(expr.createCompoundExpression(gcd, node.rhs, '*')),
+					gcd = invertNode(expression.createSimpleExpression('number', gcd));
+					node = expression.createCompoundExpression(
+						fullMultiply(expression.createCompoundExpression(gcd, node.lhs, '*')),
+						fullMultiply(expression.createCompoundExpression(gcd, node.rhs, '*')),
 						node.op);
 				}
 			}
@@ -443,7 +444,7 @@ var evaluate = (function() {
 
 	function makeUnaryOfEach(nodeArray, op) {
 		for (var i = 0; i < nodeArray.length; i++) {
-			nodeArray[i] = expr.createUnaryExpression(nodeArray[i], op);
+			nodeArray[i] = expression.createUnaryExpression(nodeArray[i], op);
 		}
 		return nodeArray;
 	}
@@ -475,10 +476,10 @@ var evaluate = (function() {
 		if (utils.isSimpleExpression(node)) { return [node]; }
 		if (utils.isUnaryNegative(node)) {
 			if (getPrecedence(op) !== 2) {
-				return [expr.createUnaryExpression(sortTerms(node.child, associateRight), '-')];
+				return [expression.createUnaryExpression(sortTerms(node.child, associateRight), '-')];
 			} else {
 				return getAllTermsAtLevelSorted(node.child, associateRight).concat(
-					[expr.createSimpleExpression('number', -1)]);
+					[expression.createSimpleExpression('number', -1)]);
 			}
 		}
 		if (node.type === 'unary' || node.op !== op) { return [sortTerms(node, associateRight)]; }
@@ -502,12 +503,12 @@ var evaluate = (function() {
 			// Only need to do this once, so check that associateRight is true before checking.
 			if (associateRight &&
 				fractionUtils.isNodeNegative(leftMostTermInMult(leftMostTerm(sorted)))) {
-				sorted = fullMultiply(expr.createUnaryExpression(sorted, '-'), true);
+				sorted = fullMultiply(expression.createUnaryExpression(sorted, '-'), true);
 			}
-			return expr.createUnaryExpression(sorted, '|');
+			return expression.createUnaryExpression(sorted, '|');
 		}
 		if (node.type === 'ternary') {
-			return expr.createTernaryExpression(sortTerms(node.left, associateRight),
+			return expression.createTernaryExpression(sortTerms(node.left, associateRight),
 				sortTerms(node.middle, associateRight), sortTerms(node.right, associateRight),
 				node.op1, node.op2);
 		}
@@ -532,15 +533,15 @@ var evaluate = (function() {
 				for (var i = terms.length - 3; i >= 0; i--) {
 					if (compareFunc !== null && compareFunc(currentLeft, terms[i]) === 0) {
 						currentLeft = terms[i];
-						currentLevel = expr.createCompoundExpression(
+						currentLevel = expression.createCompoundExpression(
 							terms[i], currentLevel, node.op);
 					} else {
-						result = expr.createCompoundExpression(currentLevel, result, node.op);
+						result = expression.createCompoundExpression(currentLevel, result, node.op);
 						currentLeft = terms[i];
 						currentLevel = terms[i];
 					}
 				}
-				result = expr.createCompoundExpression(currentLevel, result, node.op);
+				result = expression.createCompoundExpression(currentLevel, result, node.op);
 			}
 		} else {
 			for (var j = 1; j < terms.length; j++) {
@@ -549,51 +550,51 @@ var evaluate = (function() {
 				}
 				terms[j] = convertFractionalExponentToSqrt(terms[j]);
 				if (node.op === '+' && utils.isUnaryNegative(terms[j])) {
-					result = expr.createCompoundExpression(result, terms[j].child, '-');
+					result = expression.createCompoundExpression(result, terms[j].child, '-');
 				} else if (node.op === '+' && terms[j].type === 'number' &&
 					fractionUtils.isNegative(terms[j].value)) {
-					result = expr.createCompoundExpression(
+					result = expression.createCompoundExpression(
 						result, equality.additiveInverseOfNumber(terms[j]), '-');
 				} else if (getPrecedence(node.op) === 2 && utils.isNegativeOne(terms[j])) {
-					result = expr.createUnaryExpression(result, '-');
+					result = expression.createUnaryExpression(result, '-');
 				} else if (node.op === '*' && utils.isNegativeOne(result)) {
-					result = expr.createUnaryExpression(terms[j], '-');
+					result = expression.createUnaryExpression(terms[j], '-');
 				} else if (node.op === '*' && utils.isUnaryNegative(result)) {
-					result = expr.createUnaryExpression(
-						expr.createCompoundExpression(result.child, terms[j], node.op), '-');
+					result = expression.createUnaryExpression(
+						expression.createCompoundExpression(result.child, terms[j], node.op), '-');
 				} else if (node.op === '*' && utils.isUnaryNegative(terms[j])) {
-					result = expr.createUnaryExpression(
-						expr.createCompoundExpression(result, terms[j].child, node.op), '-');
+					result = expression.createUnaryExpression(
+						expression.createCompoundExpression(result, terms[j].child, node.op), '-');
 				} else if (node.op === '*' && result.type === 'compound' && result.op === '/') {
-					return expr.createCompoundExpression(expr.arithmeticEvaluation(
-						expr.createCompoundExpression(result.lhs, terms[j], '*')),
+					return expression.createCompoundExpression(arithmeticEvaluation(
+						expression.createCompoundExpression(result.lhs, terms[j], '*')),
 					result.rhs, '/');
 				} else if (node.op === '/' && result.type === 'compound' && result.op === '/') {
-					result = expr.createCompoundExpression(result.lhs,
-						sortTerms(expr.createCompoundExpression(result.rhs, terms[j], '*')), '/');
+					result = expression.createCompoundExpression(result.lhs,
+						sortTerms(expression.createCompoundExpression(result.rhs, terms[j], '*')), '/');
 				} else if (node.op === '/' && terms[j].type === 'compound' &&
 					terms[j].op === '/') {
-					result = expr.arithmeticEvaluation(
-						expr.createCompoundExpression(result, terms[j].rhs, '*'));
+					result = arithmeticEvaluation(
+						expression.createCompoundExpression(result, terms[j].rhs, '*'));
 					if (terms[j].lhs !== 'number' || terms[j].lhs !== 1) {
-						result = expr.createCompoundExpression(result, terms[j].lhs, '/');
+						result = expression.createCompoundExpression(result, terms[j].lhs, '/');
 					}
 				} else if (terms[j].type === 'compound'  && terms[j].op === '^' &&
 					(utils.isUnaryNegative(terms[j].rhs) || (terms[j].rhs.type === 'number' &&
 						fractionUtils.isNegative(terms[j].rhs.value)))) {
 					if (node.op === '/') {
-						result = expr.createCompoundExpression(result,
+						result = expression.createCompoundExpression(result,
 							invertExponent(terms[j]), '*');
 					} else {
-						result = expr.createCompoundExpression(result,
+						result = expression.createCompoundExpression(result,
 							flipNegativePowerIntoOneOver(terms[j]), node.op);
 					}
-				} else { result = expr.createCompoundExpression(result, terms[j], node.op); }
+				} else { result = expression.createCompoundExpression(result, terms[j], node.op); }
 				result = flipNegativePowerIntoOneOver(result);
 				printDebug('after flip: ', result, debugSort);
 				result = convertFractionalExponentToSqrt(result);
 				printDebug('after sqrt: ', result, debugSort);
-				result = expr.arithmeticEvaluation(result, false);
+				result = arithmeticEvaluation(result, false);
 				printDebug('after arith: ', result, debugSort);
 			}
 		}
@@ -612,8 +613,8 @@ var evaluate = (function() {
 			var lhsNode = simplifyNode(node.lhs);
 			var rhsNode = simplifyNode(node.rhs);
 			if (lhsNode === errorNode || rhsNode === errorNode) { return errorNode; }
-			node = expr.createCompoundExpression(lhsNode, rhsNode, node.op);
-			var newNode = node.evaluateArithmetic(true);
+			node = expression.createCompoundExpression(lhsNode, rhsNode, node.op);
+			var newNode = self.evaluateArithmetic(node, true);
 			if (newNode !== null) { return newNode; }
 
 			// If there was no simple arithmetic operation, see if you can find any identifiers
@@ -635,24 +636,24 @@ var evaluate = (function() {
 					var newLhs = node.lhs;
 					// In case we had a-(-x), we'd like to have the two sides be
 					// a and x, not a and -(-x)
-					var newRhs = expr.arithmeticEvaluation(node.rhs);
+					var newRhs = arithmeticEvaluation(node.rhs);
 					printDebug('commLhs: ', newLhs, debugSimp);
 					printDebug('commRhs: ', newRhs, debugSimp);
 					newLhs = self.pullIdentfierToLhs(newLhs, commonIdentifier);
 					if (newLhs.type === 'compound' && newLhs.op === '^') { return node; }
 					newRhs = self.pullIdentfierToLhs(newRhs, commonIdentifier);
 					if (newRhs.type === 'compound' && newRhs.op === '^') { return node; }
-					newRhs = expr.createCompoundExpression(newLhs.rhs, newRhs.rhs, node.op);
+					newRhs = expression.createCompoundExpression(newLhs.rhs, newRhs.rhs, node.op);
 					printDebug('newLhs: ', newLhs, debugSimp);
 					printDebug('newRhs: ', newRhs, debugSimp);
 
-					node = simplifyNode(expr.createCompoundExpression(
+					node = simplifyNode(expression.createCompoundExpression(
 						newLhs.lhs, evaluate.evaluateRec(newRhs), '*'));
 				} else if (node.op === '+' && utils.isUnaryNegative(node.rhs)) {
-					node = expr.createCompoundExpression(node.lhs, node.rhs.child, '-');
+					node = expression.createCompoundExpression(node.lhs, node.rhs.child, '-');
 				} else if (node.op === '+' && node.rhs.type === 'number' &&
 					fractionUtils.isNegative(node.rhs.value)) {
-					node = expr.createCompoundExpression(
+					node = expression.createCompoundExpression(
 						node.lhs, equality.additiveInverseOfNumber(node.rhs), '-');
 				}
 			}
@@ -662,23 +663,23 @@ var evaluate = (function() {
 		if (node.type === 'unary') {
 			var childNode = simplifyNode(node.child);
 			if (childNode === errorNode) { return errorNode; }
-			node = expr.createUnaryExpression(childNode, node.op);
-			return expr.arithmeticEvaluation(node, true);
+			node = expression.createUnaryExpression(childNode, node.op);
+			return arithmeticEvaluation(node, true);
 		}
 		if (node.type === 'ternary') {
 			var left = simplifyNode(node.left);
 			var middle = simplifyNode(node.middle);
 			var right = simplifyNode(node.right);
-			return expr.createTernaryExpression(left, middle, right, node.op1, node.op2);
+			return expression.createTernaryExpression(left, middle, right, node.op1, node.op2);
 		}
 		console.error('about to return errorNode');
 		return errorNode;
 	}
 
 	function expandFraction(node) {
-		return expr.createCompoundExpression(
-			expr.createSimpleExpression('number', node.value.top),
-			expr.createSimpleExpression('number', node.value.bottom),
+		return expression.createCompoundExpression(
+			expression.createSimpleExpression('number', node.value.top),
+			expression.createSimpleExpression('number', node.value.bottom),
 			'/');
 	}
 
@@ -691,7 +692,7 @@ var evaluate = (function() {
 			if (lhsSplit === null || rhsNode === null) { return node; }
 			var coefficient = multiplyNodesMaybeNull(lhsSplit.co, rhsNode.co, op, false);
 			if (coefficient !== null) {
-				coefficient = expr.arithmeticEvaluation(coefficient);
+				coefficient = arithmeticEvaluation(coefficient);
 				printDebug('coefficient: ', coefficient, debugCoeff);
 			}
 			if (op === '/' && lhsSplit.rest === null && rhsNode.rest !== null) {
@@ -706,10 +707,10 @@ var evaluate = (function() {
 	function fullMultiply(node, multiplyDivision) {
 		printDebug('fullMultiplying: ', node, debugMult);
 		if (node.type === 'identifier' || node.type === 'number') {
-			return expr.arithmeticEvaluation(node);
+			return arithmeticEvaluation(node);
 		}
 		if (node.type === 'ternary') {
-			return expr.createTernaryExpression(fullMultiply(node.left, multiplyDivision),
+			return expression.createTernaryExpression(fullMultiply(node.left, multiplyDivision),
 				fullMultiply(node.middle, multiplyDivision),
 				fullMultiply(node.right, multiplyDivision), node.op1, node.op2);
 		}
@@ -720,8 +721,8 @@ var evaluate = (function() {
 			printDebug('left: ', lhsNode, debugMult);
 			printDebug('right: ', rhsNode, debugMult);
 			if (lhsNode === errorNode || rhsNode === errorNode) { return errorNode; }
-			node = expr.createCompoundExpression(lhsNode, rhsNode, node.op);
-			var newNode = node.evaluateArithmetic(true);
+			node = expression.createCompoundExpression(lhsNode, rhsNode, node.op);
+			var newNode = self.evaluateArithmetic(node, true);
 			printDebug('arithmetic: ', newNode, debugMult);
 			if (newNode !== null) { return newNode; }
 			if (multiplyDivision) {
@@ -729,7 +730,7 @@ var evaluate = (function() {
 			}
 			if (node.op === '/') { return groupRepeats(node); }
 			if (node.op === '\\sqrt') {
-				return fullMultiply(expr.createCompoundExpression(
+				return fullMultiply(expression.createCompoundExpression(
 					node.rhs, invertNode(node.lhs), '^'));
 			}
 			//*
@@ -739,30 +740,30 @@ var evaluate = (function() {
 					if (node.rhs.op === '-') {
 						rightExp = equality.additiveInverseOfNumber(rightExp);
 					}
-					return expr.createCompoundExpression(
-						fullMultiply(expr.createCompoundExpression(node.lhs, node.rhs.lhs, '^'),
+					return expression.createCompoundExpression(
+						fullMultiply(expression.createCompoundExpression(node.lhs, node.rhs.lhs, '^'),
 							multiplyDivision),
-						fullMultiply(expr.createCompoundExpression(node.lhs, rightExp, '^'),
+						fullMultiply(expression.createCompoundExpression(node.lhs, rightExp, '^'),
 							multiplyDivision), '*');
 				} else if (node.rhs.op === '*' && node.lhs.type === 'number' &&
 					getCoefficient(node.rhs) !== 1) {
 					//TODO(sdspikes) : think about /
-					return fullMultiply(expr.createCompoundExpression(
-						fullMultiply(expr.createCompoundExpression(node.lhs, node.rhs.lhs, '^'),
+					return fullMultiply(expression.createCompoundExpression(
+						fullMultiply(expression.createCompoundExpression(node.lhs, node.rhs.lhs, '^'),
 							multiplyDivision), node.rhs.rhs, '^'), multiplyDivision);
 
 				}
 			}//*/
 			if (node.op === '^' && node.lhs.type === 'compound') {
 				if (node.lhs.op === '^') {
-					return fullMultiply(expr.createCompoundExpression(node.lhs.lhs,
-						fullMultiply(expr.createCompoundExpression(node.lhs.rhs, node.rhs, '*'),
+					return fullMultiply(expression.createCompoundExpression(node.lhs.lhs,
+						fullMultiply(expression.createCompoundExpression(node.lhs.rhs, node.rhs, '*'),
 							multiplyDivision), '^'), multiplyDivision);
 				} else if (getPrecedence(node.lhs.op) === 2) {
-					return fullMultiply(expr.createCompoundExpression(
-						fullMultiply(expr.createCompoundExpression(node.lhs.lhs, node.rhs, '^'),
+					return fullMultiply(expression.createCompoundExpression(
+						fullMultiply(expression.createCompoundExpression(node.lhs.lhs, node.rhs, '^'),
 							multiplyDivision),
-						fullMultiply(expr.createCompoundExpression(node.lhs.rhs, node.rhs, '^'),
+						fullMultiply(expression.createCompoundExpression(node.lhs.rhs, node.rhs, '^'),
 							multiplyDivision),
 						node.lhs.op), multiplyDivision);
 				} else if (getPrecedence(node.lhs.op) === 1 && node.rhs.type === 'number' &&
@@ -774,31 +775,31 @@ var evaluate = (function() {
 			// Allows for x^(-2)-x^(-2) evaluating to 0
 			if (node.op === '^') {
 				if (fractionUtils.isNodeNegative(node.rhs)) {
-					return invertNode(fullMultiply(expr.createCompoundExpression(
-						node.lhs, fullMultiply(expr.createUnaryExpression(node.rhs, '-')), '^')));
+					return invertNode(fullMultiply(expression.createCompoundExpression(
+						node.lhs, fullMultiply(expression.createUnaryExpression(node.rhs, '-')), '^')));
 				}
 			}
 			if (node.op === '*') {
 				if (!multiplyDivision) {
 					if (node.lhs.type === 'compound' && node.lhs.op === '/' &&
 						fractionUtils.isNodeFraction(node.rhs)) {
-						return groupRepeats(expr.createCompoundExpression(fullMultiply(
-							expr.createCompoundExpression(node.lhs.lhs,
-								expr.createSimpleExpression('number', node.rhs.value.top), '*'),
+						return groupRepeats(expression.createCompoundExpression(fullMultiply(
+							expression.createCompoundExpression(node.lhs.lhs,
+								expression.createSimpleExpression('number', node.rhs.value.top), '*'),
 							multiplyDivision),
-							fullMultiply(expr.createCompoundExpression(node.lhs.rhs,
-								expr.createSimpleExpression('number', node.rhs.value.bottom), '*'),
+							fullMultiply(expression.createCompoundExpression(node.lhs.rhs,
+								expression.createSimpleExpression('number', node.rhs.value.bottom), '*'),
 							multiplyDivision),
 							'/'));
 					}
 					if (node.rhs.type === 'compound' && node.rhs.op === '/' &&
 						fractionUtils.isNodeFraction(node.lhs)) {
-						return groupRepeats(expr.createCompoundExpression(fullMultiply(
-							expr.createCompoundExpression(node.rhs.lhs,
-								expr.createSimpleExpression('number', node.lhs.value.top), '*'),
+						return groupRepeats(expression.createCompoundExpression(fullMultiply(
+							expression.createCompoundExpression(node.rhs.lhs,
+								expression.createSimpleExpression('number', node.lhs.value.top), '*'),
 							multiplyDivision),
-							fullMultiply(expr.createCompoundExpression(node.rhs.rhs,
-								expr.createSimpleExpression('number', node.lhs.value.bottom), '*'),
+							fullMultiply(expression.createCompoundExpression(node.rhs.rhs,
+								expression.createSimpleExpression('number', node.lhs.value.bottom), '*'),
 							multiplyDivision),
 							'/'));
 					}
@@ -809,35 +810,35 @@ var evaluate = (function() {
 					if (node.lhs.type === 'compound' && node.lhs.op === '/') {
 						var leftLeft = node.rhs;
 						if (!(node.lhs.lhs.type === 'number' && node.lhs.lhs.value === 1)) {
-							leftLeft = fullMultiply(expr.createCompoundExpression(
+							leftLeft = fullMultiply(expression.createCompoundExpression(
 								node.lhs.lhs, node.rhs, '*'), multiplyDivision);
 						}
-						return expr.createCompoundExpression(leftLeft, node.lhs.rhs, '/');
+						return expression.createCompoundExpression(leftLeft, node.lhs.rhs, '/');
 					}
 					if (node.rhs.type === 'compound' && node.rhs.op === '/') {
 						var rightLeft = node.lhs;
 						if (!(node.rhs.lhs.type === 'number' && node.rhs.lhs.value === 1)) {
-							rightLeft = fullMultiply(expr.createCompoundExpression(
+							rightLeft = fullMultiply(expression.createCompoundExpression(
 								node.lhs, node.rhs.lhs, '*'), multiplyDivision);
 						}
-						return expr.createCompoundExpression(rightLeft, node.rhs.rhs, '/');
+						return expression.createCompoundExpression(rightLeft, node.rhs.rhs, '/');
 					}
 				}
 				if (node.lhs.type === 'compound' && getPrecedence(node.lhs.op) === 1) {
 					node.lhs = expr.makeCommutativeIfNecessary(node.lhs);
-					return fullMultiply(expr.createCompoundExpression(
-						fullMultiply(expr.createCompoundExpression(node.lhs.lhs, node.rhs, '*'),
+					return fullMultiply(expression.createCompoundExpression(
+						fullMultiply(expression.createCompoundExpression(node.lhs.lhs, node.rhs, '*'),
 							multiplyDivision),
-						fullMultiply(expr.createCompoundExpression(node.lhs.rhs, node.rhs, '*'),
+						fullMultiply(expression.createCompoundExpression(node.lhs.rhs, node.rhs, '*'),
 							multiplyDivision),
 						node.lhs.op), multiplyDivision);
 				}
 				if (node.rhs.type === 'compound' && getPrecedence(node.rhs.op) === 1) {
 					node.rhs = expr.makeCommutativeIfNecessary(node.rhs);
-					return fullMultiply(expr.createCompoundExpression(
-						fullMultiply(expr.createCompoundExpression(node.lhs, node.rhs.lhs, '*'),
+					return fullMultiply(expression.createCompoundExpression(
+						fullMultiply(expression.createCompoundExpression(node.lhs, node.rhs.lhs, '*'),
 							multiplyDivision),
-						fullMultiply(expr.createCompoundExpression(node.lhs, node.rhs.rhs, '*'),
+						fullMultiply(expression.createCompoundExpression(node.lhs, node.rhs.rhs, '*'),
 							multiplyDivision),
 						node.rhs.op), multiplyDivision);
 				}
@@ -848,13 +849,13 @@ var evaluate = (function() {
 			var childNode = fullMultiply(node.child, multiplyDivision);
 			if (childNode === errorNode) { return errorNode; }
 			if (node.op === '\\sqrt') {
-				var power = expr.createSimpleExpression('number',
+				var power = expression.createSimpleExpression('number',
 					fractionUtils.createFractionValue(1, 2));
-				return fullMultiply(expr.createCompoundExpression(childNode, power, '^'));
+				return fullMultiply(expression.createCompoundExpression(childNode, power, '^'));
 			}
-			node = expr.createUnaryExpression(childNode, node.op);
+			node = expression.createUnaryExpression(childNode, node.op);
 			if (node.op !== '-') { return node;}
-			var arith = node.evaluateArithmetic(multiplyDivision);
+			var arith = self.evaluateArithmetic(node, multiplyDivision);
 			return (arith !== null) ? fullMultiply(arith, multiplyDivision) : node;
 		}
 		return node;
@@ -886,9 +887,9 @@ var evaluate = (function() {
 			}
 			if (dividendExponentiation.power >= divisorExponentiation.power) {
 				if (debugSynth) { console.log('powers right!'); }
-				return expr.arithmeticEvaluation(
-					expr.createCompoundExpression(divisorExponentiation.base,
-					expr.createSimpleExpression('number',
+				return arithmeticEvaluation(
+					expression.createCompoundExpression(divisorExponentiation.base,
+					expression.createSimpleExpression('number',
 						(dividendExponentiation.power - divisorExponentiation.power)),
 					'^'), false);
 			}
@@ -922,13 +923,13 @@ var evaluate = (function() {
 	function allButRadical(node) {
 		if (node.type === 'number') {
 			if (fractionUtils.isValueRadical(node.value)) {
-				return expr.createSimpleExpression('number', 1);
+				return expression.createSimpleExpression('number', 1);
 			}
 		} else if (utils.isUnaryNegative(node)) {
-			return expr.arithmeticEvaluation(
-				expr.createUnaryExpression(allButRadical(node.child), '-'));
+			return arithmeticEvaluation(
+				expression.createUnaryExpression(allButRadical(node.child), '-'));
 		} else if (node.type === 'compound' && getPrecedence(node.op) === 2) {
-			return expr.arithmeticEvaluation(expr.createCompoundExpression(
+			return arithmeticEvaluation(expression.createCompoundExpression(
 				allButRadical(node.lhs), allButRadical(node.rhs), node.op));
 		}
 		return node;
@@ -946,7 +947,7 @@ var evaluate = (function() {
 		}
 		return (left.type === 'number' &&
 			(includeRadical || !fractionUtils.isValueRadical(left.value))) ?
-			left : expr.createSimpleExpression('number', 1);
+			left : expression.createSimpleExpression('number', 1);
 	}
 	function syntheticDivision(dividend, divisor, remainder) {
 		printDebug('dividend: ', dividend, debugSynth);
@@ -985,14 +986,14 @@ var evaluate = (function() {
 			printDebug('coefficients: ', multTerm, debugSynth);
 		}
 		while (dividedTerms.length > 0) {
-			multTerm = expr.createCompoundExpression(multTerm, dividedTerms.shift(), '*');
-			multTerm = expr.arithmeticEvaluation(multTerm, false);
+			multTerm = expression.createCompoundExpression(multTerm, dividedTerms.shift(), '*');
+			multTerm = arithmeticEvaluation(multTerm, false);
 		}
 		printDebug('multTerm: ', multTerm, debugSynth);
 		var mult = evaluate.evaluateRec(
-			expr.createCompoundExpression(multTerm, divisor, '*'), false);
+			expression.createCompoundExpression(multTerm, divisor, '*'), false);
 		printDebug('mult: ', mult, debugSynth);
-		var sub = evaluate.evaluateRec(expr.createCompoundExpression(dividend, mult, '-'));
+		var sub = evaluate.evaluateRec(expression.createCompoundExpression(dividend, mult, '-'));
 		printDebug('sub: ', sub, debugSynth);
 		if (sub.type === 'number' && sub.value === 0) {
 			return { result: multTerm, success: true };
@@ -1006,12 +1007,12 @@ var evaluate = (function() {
 		var newTerm = attempt.result;
 		if (!attempt.success && remainder) {
 			if (debugSynth) { console.log('there was a remainder'); }
-			newTerm = evaluate.evaluateRec(expr.createCompoundExpression(sub, divisor, '/'));
+			newTerm = evaluate.evaluateRec(expression.createCompoundExpression(sub, divisor, '/'));
 			attempt.success = true;
 		}
 		if (attempt.success) {
 			if (debugSynth) { console.log('no remainder'); }
-			attempt.result = expr.createCompoundExpression(multTerm, newTerm, '+');
+			attempt.result = expression.createCompoundExpression(multTerm, newTerm, '+');
 		}
 		return attempt;
 	}
@@ -1022,8 +1023,8 @@ var evaluate = (function() {
 		if (node.type === 'unary') {
 			var gathered = pullAllTermsOverCommonDivisor(node.child);
 			if (isFractionRhsNotNumber(gathered)) {
-				return expr.createCompoundExpression(
-					expr.createUnaryExpression(gathered.lhs, node.op), gathered.rhs, '/');
+				return expression.createCompoundExpression(
+					expression.createUnaryExpression(gathered.lhs, node.op), gathered.rhs, '/');
 			}
 		}
 		if (node.type !== 'compound' || getPrecedence(node.op) === 0 || node.op === '^') {
@@ -1052,7 +1053,7 @@ var evaluate = (function() {
 				topRight = bottomRight;
 				bottomRight = temp;
 			}
-			return expr.createCompoundExpression(
+			return expression.createCompoundExpression(
 				multiplyNodesMaybeNull(topLeft, topRight, '*', true),
 				multiplyNodesMaybeNull(bottomLeft, bottomRight, '*', true), '/');
 		}
@@ -1061,9 +1062,9 @@ var evaluate = (function() {
 			topLeft = multiplyNodesMaybeNull(topLeft, bottomRight, '*', false);
 			topRight = multiplyNodesMaybeNull(bottomLeft, topRight, '*', false);
 			var top = evaluate.evaluateRec(
-				expr.createCompoundExpression(topLeft, topRight, node.op));
+				expression.createCompoundExpression(topLeft, topRight, node.op));
 			printDebug('top: ',  top, debugSynth);
-			return expr.createCompoundExpression(top, bottom, '/');
+			return expression.createCompoundExpression(top, bottom, '/');
 		}
 	}
 
@@ -1092,7 +1093,7 @@ var evaluate = (function() {
 
 		if (node === errorNode || utils.isSimpleExpression(node)) { return node; }
 		if (node.type === 'unary') {
-			return expr.createUnaryExpression(
+			return expression.createUnaryExpression(
 				trySyntheticDivision(node.child, remainder), node.op);
 		}
 		if (node.op === '/') {
@@ -1112,7 +1113,7 @@ var evaluate = (function() {
 		var left = trySyntheticDivision(node.lhs, remainder);
 		var right = trySyntheticDivision(node.rhs, remainder);
 		if (!left.syntacticEquals(leftOrig) || !right.syntacticEquals(rightOrig)) {
-			return self.evaluateRec(expr.createCompoundExpression(left, right, node.op));
+			return self.evaluateRec(expression.createCompoundExpression(left, right, node.op));
 		}
 		return node;
 	}
@@ -1121,18 +1122,18 @@ var evaluate = (function() {
 		var result = node;
 		if (node.type === 'compound' && node.op === '^' && node.rhs.type === 'number' &&
 			fractionUtils.isNegative(node.rhs.value)) {
-			result = expr.createCompoundExpression(
+			result = expression.createCompoundExpression(
 				node.lhs, equality.additiveInverseOfNumber(node.rhs), '^');
 		}
 		if (node.type === 'compound' && node.op === '^' && utils.isUnaryNegative(node.rhs)) {
-			result = expr.createCompoundExpression(node.lhs, node.rhs.child, '^');
+			result = expression.createCompoundExpression(node.lhs, node.rhs.child, '^');
 		}
-		return expr.arithmeticEvaluation(result);
+		return arithmeticEvaluation(result);
 	}
 	function flipNegativePowerIntoOneOver(node) {
 		if (node.type === 'compound' && node.op === '^' && (utils.isUnaryNegative(node.rhs) ||
 			(node.rhs.type === 'number' && fractionUtils.isNegative(node.rhs.value)))) {
-			return expr.createCompoundExpression(expr.createSimpleExpression('number', 1),
+			return expression.createCompoundExpression(expression.createSimpleExpression('number', 1),
 				invertExponent(node), '/');
 		}
 		return node;
@@ -1141,17 +1142,17 @@ var evaluate = (function() {
 		if (node.type === 'compound' && node.op === '^') {
 			if (node.rhs.type === 'number' && fractionUtils.isValueFraction(node.rhs.value)) {
 				if (node.rhs.value === fractionUtils.createFractionValue(1, 2)) {
-					return expr.createUnaryExpression(node.lhs, '\\sqrt');
+					return expression.createUnaryExpression(node.lhs, '\\sqrt');
 				}
-				return expr.createCompoundExpression(
-					expr.createSimpleExpression('number', node.rhs.value.bottom),
-					expr.arithmeticEvaluation(expr.createCompoundExpression(node.lhs,
-						expr.createSimpleExpression('number', node.rhs.value.top), '^')),
+				return expression.createCompoundExpression(
+					expression.createSimpleExpression('number', node.rhs.value.bottom),
+					arithmeticEvaluation(expression.createCompoundExpression(node.lhs,
+						expression.createSimpleExpression('number', node.rhs.value.top), '^')),
 					'\\sqrt');
 			}
 			if (node.rhs.type === 'compound' && node.rhs.op === '/') {
-				return expr.createCompoundExpression(node.rhs.rhs,
-					expr.arithmeticEvaluation(expr.createCompoundExpression(node.lhs,
+				return expression.createCompoundExpression(node.rhs.rhs,
+					arithmeticEvaluation(expression.createCompoundExpression(node.lhs,
 						node.rhs.lhs, '^')),
 					'\\sqrt');
 			}
@@ -1180,9 +1181,9 @@ var evaluate = (function() {
 				}
 
 				node = evaluate.evaluateRec(
-					expr.createCompoundExpression(node.lhs, node.rhs, '-'));
+					expression.createCompoundExpression(node.lhs, node.rhs, '-'));
 				other = evaluate.evaluateRec(
-					expr.createCompoundExpression(otherLeft, otherRight, '-'));
+					expression.createCompoundExpression(otherLeft, otherRight, '-'));
 				if (equality.equivalentModuloCommutativity(node, other, false)) { return true; }
 			}
 			var quotient = self.doSyntheticDivision(node, other, true);
@@ -1193,11 +1194,11 @@ var evaluate = (function() {
 		}
 		if (node.type === 'ternary' && other.type === 'ternary') {
 			return equivalentEquationOrInequalityHelper(
-				expr.createCompoundExpression(node.left, node.middle, node.op1),
-				expr.createCompoundExpression(other.left, other.middle, other.op1)) &&
+				expression.createCompoundExpression(node.left, node.middle, node.op1),
+				expression.createCompoundExpression(other.left, other.middle, other.op1)) &&
 			equivalentEquationOrInequalityHelper(
-				expr.createCompoundExpression(node.middle, node.right, node.op2),
-				expr.createCompoundExpression(other.middle, other.right, other.op2));
+				expression.createCompoundExpression(node.middle, node.right, node.op2),
+				expression.createCompoundExpression(other.middle, other.right, other.op2));
 		}
 		return false;
 	}
@@ -1208,8 +1209,8 @@ var evaluate = (function() {
 			if (node.lhs.op === '-') {
 				// Flip direction of inequality, and make the other side negative instead
 				return putTermsWithoutIdentifierOnRhs(
-					expr.createCompoundExpression(node.lhs.child,
-						expr.createUnaryExpression(node.rhs, '-'),
+					expression.createCompoundExpression(node.lhs.child,
+						expression.createUnaryExpression(node.rhs, '-'),
 						operatorProperties.getInverseInequality(node.op)),
 					identifierNode);
 			}
@@ -1221,23 +1222,23 @@ var evaluate = (function() {
 				var base = newLhs.rhs;
 				if (newLhs.type === 'unary') {
 					base = node.child;
-					power = expr.createSimpleExpression('number', 2);
+					power = expression.createSimpleExpression('number', 2);
 				}
-				return putTermsWithoutIdentifierOnRhs(expr.createCompoundExpression(base,
-					expr.createCompoundExpression(node.rhs, power, '^'), node.op),
+				return putTermsWithoutIdentifierOnRhs(expression.createCompoundExpression(base,
+					expression.createCompoundExpression(node.rhs, power, '^'), node.op),
 					identifierNode);
 			}
 			// So it's a straight up exponent.
 			if (node.lhs.rhs.type === 'number') {
-				var newRhs = expr.createCompoundExpression(node.lhs.rhs, node.rhs, '\\sqrt');
+				var newRhs = expression.createCompoundExpression(node.lhs.rhs, node.rhs, '\\sqrt');
 				if (fractionUtils.isEven(node.lhs.rhs.value)) {
-					return putTermsWithoutIdentifierOnRhs(expr.createCompoundExpression(
+					return putTermsWithoutIdentifierOnRhs(expression.createCompoundExpression(
 							node.lhs.lhs, newRhs, node.op), identifierNode).concat(
-						putTermsWithoutIdentifierOnRhs(expr.createCompoundExpression(
-							node.lhs.lhs, expr.createUnaryExpression(newRhs, '-'), node.op),
+						putTermsWithoutIdentifierOnRhs(expression.createCompoundExpression(
+							node.lhs.lhs, expression.createUnaryExpression(newRhs, '-'), node.op),
 						identifierNode));
 				} else {
-					return putTermsWithoutIdentifierOnRhs(expr.createCompoundExpression(
+					return putTermsWithoutIdentifierOnRhs(expression.createCompoundExpression(
 						node.lhs.lhs, newRhs, node.op), identifierNode);
 				}
 			}
@@ -1246,21 +1247,21 @@ var evaluate = (function() {
 		}
 		if (node.lhs.type === 'compound') {
 			if (!containsIdentifier(node.lhs.rhs, identifierNode)) {
-				return putTermsWithoutIdentifierOnRhs(expr.createCompoundExpression(node.lhs.lhs,
-					expr.createCompoundExpression(
+				return putTermsWithoutIdentifierOnRhs(expression.createCompoundExpression(node.lhs.lhs,
+					expression.createCompoundExpression(
 						node.rhs, node.lhs.rhs, operatorProperties.inverseOp(node.lhs.op)),
 					node.op), identifierNode);
 			}
 			if (!containsIdentifier(node.lhs.lhs, identifierNode)) {
 				if (utils.isOneOverSomething(node.lhs)) {
 					return putTermsWithoutIdentifierOnRhs(
-						expr.createCompoundExpression(node.lhs.rhs, invertNode(node.rhs),
+						expression.createCompoundExpression(node.lhs.rhs, invertNode(node.rhs),
 							operatorProperties.getInverseInequality(node.op)),
 						identifierNode);
 				}
 				var newLeft = expr.makeCommutativeIfNecessary(node.lhs);
-				return putTermsWithoutIdentifierOnRhs(expr.createCompoundExpression(newLeft.rhs,
-					expr.createCompoundExpression(
+				return putTermsWithoutIdentifierOnRhs(expression.createCompoundExpression(newLeft.rhs,
+					expression.createCompoundExpression(
 						node.rhs, newLeft.lhs, operatorProperties.inverseOp(node.lhs.op)),
 					node.op), identifierNode);
 			}
@@ -1268,7 +1269,94 @@ var evaluate = (function() {
 		return [node];
 	}
 
+	function arithmeticEvaluation(node, expand) {
+		if (node.simplified) { return node; }
+		var newNode = expr.rationalizeDenominator(node);
+		if (!node.syntacticEquals(newNode)) { return newNode; }
+		if (node.type === 'number' && fractionUtils.isValueFraction(node.value)) {
+			newNode = expression.createSimpleExpression('number',
+				fractionUtils.simplifyFraction(node.value));
+			newNode.simplified = true;
+			return newNode;
+		}
+		if (node.type === 'number' && fractionUtils.isValueRadical(node.value)) {
+			return expr.simplifyRadicalIntoNode(node.value);
+		}
+		if (node.type === 'unary') {
+			if (node.child.type === 'number') {
+				if (fractionUtils.isValueRadical(node.child.value)) { return newNode; }
+				else { newNode = expr.operatorProperties[node.op].unaryEvaluate(node.child); }
+			} else {
+				var newChild = arithmeticEvaluation(node.child);
+				if (utils.isUnaryNegative(node) && utils.isUnaryNegative(newChild)) {
+					return newChild.child;
+				}
+				if (expand && utils.isUnaryNegative(node)) {
+					newNode = expression.createCompoundExpression(
+						expression.createSimpleExpression('number', -1),
+						newChild, '*');
+				} else {
+					newNode = expression.createUnaryExpression(newChild, node.op);
+				}
+			}
+			return newNode;
+		}
+		if (node.type !== 'compound' || expr.getPrecedence(node.op) === 0) { return node; }
+		node.lhs = expr.makeIntoFractionNodeIfApplicable(node.lhs);
+		node.rhs = expr.makeIntoFractionNodeIfApplicable(node.rhs);
+		if (node.lhs === errorNode || node.rhs === errorNode) { return errorNode; }
+		newNode = expression.createCompoundExpression(node.lhs, node.rhs, node.op);
+		if (node.lhs.numeric && node.rhs.numeric) {
+			if ((node.lhs.type !== 'number' && node.rhs.type !== 'number') &&
+				(!node.lhs.simplified || !node.rhs.simplified)) { return newNode; }
+			newNode = expr.operatorProperties[node.op].evaluate(node.lhs, node.rhs);
+			if (!newNode.syntacticEquals(node)) {
+				newNode.simplified = true;
+				return newNode;
+			}
+		}
+		if (node.rhs.type === 'number' &&
+			node.rhs.value === expr.operatorProperties[node.op].identity) {
+			newNode = node.lhs;
+		} else if (node.rhs.type === 'number' && node.rhs.value === 0) {
+			if (node.op === '*') { newNode = node.rhs; }
+			if (node.op === '^') { newNode = expression.createSimpleExpression('number', 1); }
+			if (node.op === '/') { return errorNode; }
+		} else if (expr.getPrecedence(node.op) === 2 && utils.isNegativeOne(node.rhs) &&
+			!expand) {
+			newNode = expression.createUnaryExpression(node.lhs, '-');
+		} else if (node.op === '*' && utils.isNegativeOne(node.lhs) && !expand) {
+			newNode = expression.createUnaryExpression(node.rhs, '-');
+		} else if (node.op === '^' && utils.isNegativeOne(node.rhs) && !expand) {
+			newNode = expression.createCompoundExpression(
+				expression.createSimpleExpression('number', 1), node.lhs, '/');
+		} else {
+			node = expr.makeCommutativeIfNecessary(node);
+			if (node.lhs.type === 'number') {
+				if (expr.operatorProperties[node.op].commutative &&
+					node.lhs.value === expr.operatorProperties[node.op].identity) {
+					newNode = node.rhs;
+				} else if (node.lhs.value === 0 &&
+					expr.operatorProperties[node.op].precedence > 1) {
+					newNode = node.lhs;
+				}
+			}
+		}
+		return newNode;
+	}
+
 	var self = {
+		evaluateArithmetic: function(exp, expand) {
+			if (exp.simplified) { return null; }
+			var parent = exp.parent;
+			var side = utils.getSide(exp);
+			var copy = expr.copyNode(exp);
+			var node = arithmeticEvaluation(exp, expand);
+			if (node === errorNode) { return errorNode; }
+			if (node.syntacticEquals(copy)) { return null; }
+			utils.setChild(node, parent, side);
+			return node;
+		},
 		/**
 		 * This function is used by simplify to factor out a known common identifier using the
 		 * distributive property of multiplication over addition.
@@ -1279,12 +1367,12 @@ var evaluate = (function() {
 			printDebug('Pulling ', identifierNode, debugSimp);
 			printDebug(' to the left of ', node, debugSimp);
 			if (node.syntacticEquals(identifierNode)) {
-				node = expr.createCompoundExpression(
-					node, expr.createSimpleExpression('number', 1), '*');
+				node = expression.createCompoundExpression(
+					node, expression.createSimpleExpression('number', 1), '*');
 			} else if (utils.isUnaryNegative(node)) {
 				var newChild = self.pullIdentfierToLhs(node.child, identifierNode);
-				node = expr.createCompoundExpression(
-					newChild, expr.createSimpleExpression('number', -1), '*');
+				node = expression.createCompoundExpression(
+					newChild, expression.createSimpleExpression('number', -1), '*');
 				return self.pullIdentfierToLhs(node, identifierNode);
 			} else if (node.type !== 'compound') {
 				return node;
@@ -1296,24 +1384,24 @@ var evaluate = (function() {
 				}
 				base = self.pullIdentfierToLhs(node.lhs, identifierNode);
 				if (base.type === 'compound' && identifierNode.syntacticEquals(base.lhs)) {
-					return expr.createCompoundExpression(
-						self.splitPowerNumberExponent(expr.createCompoundExpression(
+					return expression.createCompoundExpression(
+						self.splitPowerNumberExponent(expression.createCompoundExpression(
 							base.lhs, node.rhs, '^')),
-						expr.createCompoundExpression(base.rhs, node.rhs, '^'),
+						expression.createCompoundExpression(base.rhs, node.rhs, '^'),
 						'*');
 				}
 				return node;
 			} else if (identifierNode.syntacticEquals(node.lhs)) {
 				return node;
 			} else if (node.op === '*' && identifierNode.syntacticEquals(node.rhs)) {
-				return self.pullIdentfierToLhs(node.commute(), identifierNode);
+				return self.pullIdentfierToLhs(expr.commute(node), identifierNode);
 			} else {
 				var newLhs = self.pullIdentfierToLhs(node.lhs, identifierNode);
 				if (newLhs.type === 'compound' && identifierNode.syntacticEquals(newLhs.lhs)) {
 					newLhs = expr.makeCommutativeIfNecessary(newLhs);
 					node = expr.makeCommutativeIfNecessary(node);
-					node = expr.createCompoundExpression(newLhs.lhs,
-						expr.createCompoundExpression(newLhs.rhs, node.rhs, '*'), '*');
+					node = expression.createCompoundExpression(newLhs.lhs,
+						expression.createCompoundExpression(newLhs.rhs, node.rhs, '*'), '*');
 				} else { // pulling left failed, must be in the right
 					if (node.op === '/') { identifierNode = invertNode(identifierNode); }
 					var newRhs = self.pullIdentfierToLhs(node.rhs, identifierNode);
@@ -1325,8 +1413,8 @@ var evaluate = (function() {
 						newLhs = newRhs.lhs;
 						newRhs = expr.makeCommutativeIfNecessary(newRhs);
 						if (node.op === '/') { newLhs = invertNode(newLhs); }
-						node = expr.createCompoundExpression(newLhs,
-							expr.createCompoundExpression(node.lhs, newRhs.rhs, node.op),
+						node = expression.createCompoundExpression(newLhs,
+							expression.createCompoundExpression(node.lhs, newRhs.rhs, node.op),
 							'*');
 					}
 				}
@@ -1339,20 +1427,20 @@ var evaluate = (function() {
 			if (node.op !== '^' || node.rhs.type !== 'number' ||
 				fractionUtils.isValueRadical(node.rhs.value)) { return node; }
 			if (node.rhs.value === -1) {
-				return expr.createCompoundExpression(
-					expr.createSimpleExpression('number', 1), node.lhs, '/');
+				return expression.createCompoundExpression(
+					expression.createSimpleExpression('number', 1), node.lhs, '/');
 			}
 			if (node.rhs.value < -1) {
 				return flipNegativePowerIntoOneOver(node);
 			}
-			if (node.rhs.value === 0) { return expr.createSimpleExpression('number', 1); }
+			if (node.rhs.value === 0) { return expression.createSimpleExpression('number', 1); }
 			if (node.rhs.value === 1) { return node.lhs; }
 			if (node.rhs.value === 2) {
-				return expr.createCompoundExpression(node.lhs, node.lhs, '*');
+				return expression.createCompoundExpression(node.lhs, node.lhs, '*');
 			}
 			var newExponent = operatorProperties['-'].evaluateValues(node.rhs.value, 1);
 			if (fractionUtils.isNodeNegative(newExponent)) { return node; }
-			return expr.createCompoundExpression(node.lhs, expr.createCompoundExpression(node.lhs,
+			return expression.createCompoundExpression(node.lhs, expression.createCompoundExpression(node.lhs,
 					newExponent, '^'), '*');
 		},
 
@@ -1362,7 +1450,7 @@ var evaluate = (function() {
 		},
 		// The following functions destructively modify the expression tree.
 		doSyntheticDivision: function(dividend, divisor, remainder) {
-			return trySyntheticDivision(expr.createCompoundExpression(
+			return trySyntheticDivision(expression.createCompoundExpression(
 				dividend, divisor, '/'), remainder);
 		},
 		evaluateRec: function(node) {
@@ -1428,11 +1516,11 @@ var evaluate = (function() {
 			}
 			if (utils.isSimpleExpression(expression)) { return expr.copyNode(expression); }
 			if (expression.type === 'unary') {
-				return expr.createUnaryExpression(
+				return expression.createUnaryExpression(
 					self.substituteNodeForOtherNode(expression.child, node, other), expression.op);
 			}
 			if (expression.type === 'compound') {
-				return expr.createCompoundExpression(
+				return expression.createCompoundExpression(
 					self.substituteNodeForOtherNode(expression.lhs, node, other),
 					self.substituteNodeForOtherNode(expression.rhs, node, other),
 					expression.op);
@@ -1448,22 +1536,22 @@ var evaluate = (function() {
 			}
 			return newNode;
 		},
-		solveForIdentifier: function(expression, identifier) {
+		solveForIdentifier: function(exp, identifier) {
 			if (debugSolve) {
-				console.log(display.displayExpression(expression, 0, 2));
+				console.log(display.displayExpression(exp, 0, 2));
 				console.log(display.displayExpression(identifier, 0, 2));
 			}
 			// Only try if it's an equation (no double ineqality solving for now).
-			if (expression.type !== 'compound' || getPrecedence(expression.op) !== 0 ||
-				!containsIdentifier(expression, identifier)) {
-				return [expression];
+			if (exp.type !== 'compound' || getPrecedence(exp.op) !== 0 ||
+				!containsIdentifier(exp, identifier)) {
+				return [exp];
 			}
 			// First put everything on one side
-			var result = expr.copyNode(expression);
-			result = evaluate.evaluateRec(expr.createCompoundExpression(
-				expr.createCompoundExpression(result.lhs, result.rhs, '-'),
-				expr.createSimpleExpression('number', 0),
-				expression.op));
+			var result = expr.copyNode(exp);
+			result = evaluate.evaluateRec(expression.createCompoundExpression(
+				expression.createCompoundExpression(result.lhs, result.rhs, '-'),
+				expression.createSimpleExpression('number', 0),
+				exp.op));
 
 			if (debugSolve) { console.log(display.displayExpression(result, 0, 2)); }
 			// Now put terms containing identifier on the left and those that don't on the right,

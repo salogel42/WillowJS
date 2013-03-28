@@ -6,6 +6,7 @@ if (typeof module !== 'undefined' && typeof require !== 'undefined') {
 	var expr = require('./expr.js').expr;
 	var errorNode = require('./utils.js').errorNode;
 	var operatorProperties = require('./expr.js').operatorProperties;
+	var expression = require('./expression.js').expression;
 }
 
 /*  Approximate CFG used by parser
@@ -167,10 +168,10 @@ var parser = (function() {
 				console.error('Divided by 0');
 				return errorNode;
 			}
-			return expr.createSimpleExpression('number',
+			return expression.createSimpleExpression('number',
 				fractionUtils.createFractionValue(top.value, bottom.value));
 		}
-		return expr.createCompoundExpression(top, bottom, op);
+		return expression.createCompoundExpression(top, bottom, op);
 	}
 	function getSubExpressionAtSubstring(expressionString, endLocation) {
 		if (endLocation === -1) { return null; }
@@ -195,7 +196,7 @@ var parser = (function() {
 		if (typeof rightValue === 'undefined') {
 			rightValue = fractionUtils.createFractionValue(1, 2);
 		}
-		return expr.createSimpleExpression('number',
+		return expression.createSimpleExpression('number',
 			fractionUtils.createRadicalValue(leftValue, rightValue, false));
 	}
 
@@ -214,11 +215,11 @@ var parser = (function() {
 			var exp = parseExpression(expressionString.substring(1), precedence);
 			if (exp.expression === errorNode) { return errorNode; }
 			result.expressionString = exp.expressionString;
-			result.expression = expr.createUnaryExpression(exp.expression, '-');
+			result.expression = expression.createUnaryExpression(exp.expression, '-');
 			if (exp.expression.type === 'number') {
 				if (!fractionUtils.isNegative(exp.expression.value) &&
 					(typeof exp.expression.value === 'number')) {
-					result.expression = expr.createSimpleExpression(
+					result.expression = expression.createSimpleExpression(
 						'number', -1 * exp.expression.value);
 				}
 			}
@@ -231,7 +232,7 @@ var parser = (function() {
 		} else if (expressionString.charAt(0) === '\\') { // it is probably LaTeX
 			if (INFINITY.test(expressionString)) {
 				result.expressionString = expressionString.substring(6);
-				result.expression = expr.createSimpleExpression('identifier', '\\infty');
+				result.expression = expression.createSimpleExpression('identifier', '\\infty');
 			} else if (SQUARE_ROOT.test(expressionString)) {
 				expressionString = expressionString.substring(5);
 				var open = expressionString.charAt(0);
@@ -240,7 +241,7 @@ var parser = (function() {
 					var nthroot = innerExpression;
 					innerExpression = getExpressionWithinBrace(
 						innerExpression.expressionString, '{');
-					result.expression = expr.createCompoundExpression(nthroot.expression,
+					result.expression = expression.createCompoundExpression(nthroot.expression,
 						innerExpression.expression, '\\sqrt');
 					if (result.expression.lhs.type === 'number' &&
 						result.expression.rhs.type === 'number') {
@@ -251,7 +252,7 @@ var parser = (function() {
 					if (innerExpression.expression.type === 'number') {
 						result.expression = makeSqrtIntoNumber(innerExpression.expression.value);
 					} else {
-						result.expression = expr.createUnaryExpression(
+						result.expression = expression.createUnaryExpression(
 							innerExpression.expression, '\\sqrt');
 					}
 				}
@@ -282,7 +283,7 @@ var parser = (function() {
 					'expressionString' : expressionString.substring(absClose + 7)
 				};
 				if (result.expression !== errorNode) {
-					result.expression = expr.createUnaryExpression(result.expression, '|');
+					result.expression = expression.createUnaryExpression(result.expression, '|');
 				}
 			} else {
 				var identifierValue = expressionString.match(/^\\[a-z]+/i)[0];
@@ -291,12 +292,12 @@ var parser = (function() {
 					return errorNode;
 				}
 				result.expression =
-					expr.createSimpleExpression('identifier', identifierValue);
+					expression.createSimpleExpression('identifier', identifierValue);
 				result.expressionString = expressionString.substring(identifierValue.length);
 			}
 		} else {
 			// Now, should be an identifier or number. Grab it and
-			// expr.create appropriate simple expression.
+			// expression.create appropriate simple expression.
 			var type = 'identifier';
 			var value = expressionString.charAt(0);
 
@@ -318,7 +319,7 @@ var parser = (function() {
 					return errorNode;
 				}
 			}
-			result.expression = expr.createSimpleExpression(type, value);
+			result.expression = expression.createSimpleExpression(type, value);
 		}
 		// If the T is followed by a starting char for another T, assume explicit multiplication.
 		if (result === null || result === errorNode || result.expression === errorNode) {
@@ -400,12 +401,12 @@ var parser = (function() {
 			var right = self.parseExpressionWrapper(equationString.substring(0, end));
 
 			if (equalityOperator.length === 1) {
-				return expr.createCompoundExpression(left, right, equalityOperator[0]);
+				return expression.createCompoundExpression(left, right, equalityOperator[0]);
 			}
 			var middle = right;
 			right = self.parseExpressionWrapper(
 				equationString.substring(end + equalityOperator[1].length));
-			return expr.createTernaryExpression(
+			return expression.createTernaryExpression(
 				left, middle, right, equalityOperator[0], equalityOperator[1]);
 		},
 		parseEquationOrExpression: function(equationString) {
