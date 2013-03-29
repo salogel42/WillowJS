@@ -88,6 +88,13 @@ var expressionUtils = (function() {
 			}
 			return self.makeAdditionCommutative(node);
 		},
+		makeIntoFractionNodeIfApplicable: function(node) {
+			if (!utils.isNumericFraction(node)) { return node; }
+			var frac = fractionUtils.simplifyFraction(
+					fractionUtils.createFractionValue(node.lhs.value, node.rhs.value));
+			if (frac === errorNode) { return errorNode; }
+			return expression.createSimpleExpression('number', frac);
+		},
 
 		// The following functions are currently not used.  They were designed to be used for the
 		// interactive, one-step-at-a-time solver, which is more useful for either kids who are

@@ -40,9 +40,11 @@ describe("WillowJS tests", function() {
 	// Helpers for the first few tests.
 	function testNodeWrapper(command, expressionStringArray, expectedResult) {
 		var parsedExpessions = processExpressions.parseExpressions(expressionStringArray);
-		expect(nodeWrapper.runCommand(command, parsedExpessions, false, false)).toBe(expectedResult);
+		expect(nodeWrapper.runCommand(command, parsedExpessions, false, false))
+			.toBe(expectedResult);
 	}
-	function testParseAndDisplay(eqString, resFull, resTerms, resNec, type, parseFunction, showDiv) {
+	function testParseAndDisplay(
+		eqString, resFull, resTerms, resNec, type, parseFunction, showDiv) {
 		if (typeof showDiv === 'undefined') { showDiv = divSign.never; }
 		if (typeof type === 'undefined') { type = outputType.text; }
 		if (typeof parseFunction === 'undefined') { parseFunction = parser.parseEquation; }
@@ -65,7 +67,8 @@ describe("WillowJS tests", function() {
 		var rhs = expression.createSimpleExpression('number', 5, 1);
 		var eq = expression.createCompoundExpression(lhs, rhs, '=', 1);
 
-		expect(display.displayExpression(eq, outputType.text, parenMode.necessary)).toBe('4+(1+x)3=5');
+		expect(display.displayExpression(eq, outputType.text, parenMode.necessary))
+			.toBe('4+(1+x)3=5');
 		expect(display.displayExpression(eq, outputType.mathml, parenMode.necessary)).toBe(
 			'<math xmlns="http://www.w3.org/1998/Math/MathML" id=node9><mrow id=node6>' +
 			'<mn id=node5>4</mn><mo class="op" id=node6>+</mo><mrow id=node4><mfenced id=node2>' +
@@ -108,7 +111,8 @@ describe("WillowJS tests", function() {
 		testParseAndDisplay('x=-2--6', 'x=(-2)-(-6)', 'x=-2-(-6)', 'x=-2-(-6)');
 		testParseAndDisplay('x=-2-(-6+3)', 'x=(-2)-((-6)+3)', 'x=-2-(-6+3)', 'x=-2-(-6+3)');
 		testParseAndDisplay('x=-2-(-6*3)', 'x=(-2)-((-6)*3)', 'x=-2-(-6)*3', 'x=-2-(-6)*3');
-		testParseAndDisplay('x=(-2)^2(-3)^2-(-6)^2(-2)^2', 'x=(((-2)^2)*((-3)^2))-(((-6)^2)*((-2)^2))',
+		testParseAndDisplay('x=(-2)^2(-3)^2-(-6)^2(-2)^2',
+			'x=(((-2)^2)*((-3)^2))-(((-6)^2)*((-2)^2))',
 			'x=(-2)^2*(-3)^2-(-6)^2*(-2)^2', 'x=(-2)^2*(-3)^2-(-6)^2*(-2)^2');
 	});
 	// test each error-producing line independently so we can be sure which error went with which
@@ -173,7 +177,8 @@ describe("WillowJS tests", function() {
 			expectedResult === null || evaluatedExpression === null) {
 			expect(evaluatedExpression).toBe(expectedResult);
 		} else {
-			expect(display.displayExpression(evaluatedExpression, outputType.text, mode)).toBe(expectedResult);
+			expect(display.displayExpression(evaluatedExpression, outputType.text, mode))
+				.toBe(expectedResult);
 		}
 	}
 	function indexToType(num) {
@@ -224,7 +229,8 @@ describe("WillowJS tests", function() {
 	function testCommuteRightSubExpression(eqString, expectedResult) {
 		var exp = parser.parseEquation(eqString);
 		expr.commute(exp.rhs);
-		expect(display.displayExpression(exp, outputType.text, parenMode.full)).toBe(expectedResult);
+		expect(display.displayExpression(exp, outputType.text, parenMode.full))
+			.toBe(expectedResult);
 	}
 	it("commute the terms on the left", function() {
 		testCommuteRightSubExpression('x=3+2', 'x=2+3');
@@ -239,7 +245,8 @@ describe("WillowJS tests", function() {
 		var exp = parser.parseEquation(eqString);
 		if (side === 'left') { expr.associate(exp.rhs.lhs); }
 		else { expr.associate(exp.rhs.rhs); }
-		expect(display.displayExpression(exp, outputType.text, parenMode.full)).toBe(expectedResult);
+		expect(display.displayExpression(exp, outputType.text, parenMode.full))
+			.toBe(expectedResult);
 	}
 	it("associate the terms on the right", function() {
 		testAssociateRightSubExpression('x=((3+2)+4)', 'x=3+(2+4)', 'left');
@@ -286,12 +293,14 @@ describe("WillowJS tests", function() {
 	function testDistributeRightSubExpression(eqString, expectedResult) {
 		var exp = parser.parseEquation(eqString);
 		expr.distributeRight(exp.rhs);
-		expect(display.displayExpression(exp, outputType.text, parenMode.full)).toBe(expectedResult);
+		expect(display.displayExpression(exp, outputType.text, parenMode.full))
+			.toBe(expectedResult);
 	}
 	function testDistributeLeftRightSubExpression(eqString, expectedResult) {
 		var exp = parser.parseEquation(eqString);
 		expr.distributeLeft(exp.rhs);
-		expect(display.displayExpression(exp, outputType.text, parenMode.full)).toBe(expectedResult);
+		expect(display.displayExpression(exp, outputType.text, parenMode.full))
+			.toBe(expectedResult);
 	}
 	it("distribute the right subexpression, distributing the rhs over the lhs", function() {
 		testDistributeRightSubExpression('x=(a+b)*c', 'x=(a*c)+(b*c)');
@@ -341,9 +350,11 @@ describe("WillowJS tests", function() {
 	it("factor common term from the right side of both expressions", function() {
 		var exp = parser.parseExpressionWrapper('\\frac{1}{y+y}c+\\frac{2}{y+y}c');
 		exp = expr.factorRight(exp);
-		expect(display.displayExpression(exp, outputType.text, parenMode.terms)).toBe('(1/(y+y)+2/(y+y))c');
+		expect(display.displayExpression(exp, outputType.text, parenMode.terms))
+			.toBe('(1/(y+y)+2/(y+y))c');
 		expr.factorRight(exp.lhs);
-		expect(display.displayExpression(exp, outputType.text, parenMode.terms)).toBe('((1+2)/(y+y))c');
+		expect(display.displayExpression(exp, outputType.text, parenMode.terms))
+			.toBe('((1+2)/(y+y))c');
 	});
 	function testEvaluateArithmeticExpression(exprressionString, expectedResult) {
 		var exp = parser.parseExpressionWrapper(exprressionString);
@@ -351,7 +362,8 @@ describe("WillowJS tests", function() {
 		exp = evaluate.evaluateArithmetic(exp, true);
 		if (exp === null) { expect(exp).toBe(expectedResult); }
 		else {
-			expect(display.displayExpression(exp, outputType.text, parenMode.necessary)).toBe(expectedResult);
+			expect(display.displayExpression(exp, outputType.text, parenMode.necessary))
+				.toBe(expectedResult);
 		}
 	}
 	it("evaluate fractions", function() {
@@ -652,11 +664,13 @@ describe("WillowJS tests", function() {
 	});
 	it("distributing sqrts", function() {
 		testNodeWrapper('simplify',['(1-\\sqrt{2})\\sqrt{3}'], '-\\sqrt{6}+\\sqrt{3}');
-		testNodeWrapper('simplify',['(1-2\\sqrt{2})2\\sqrt{2}'], '2\\sqrt{2}-8');
-		testNodeWrapper('eqBreakdownNoFullEq',['(x-3-2i)(x-3+2i)', '(x-3-2i)(x-(3-2i))'], equalityType.full);
+		testNodeWrapper('simplify',['(1-2\\sqrt{2})2\\sqrt{2}'], '2\\cdot\\sqrt{2}-8');
+		testNodeWrapper('eqBreakdownNoFullEq',['(x-3-2i)(x-3+2i)', '(x-3-2i)(x-(3-2i))'], 'full');
 	});
 	it("polydiv", function() {
-		testNodeWrapper('polydiv',['(x+2)(x+1)(x-3j)(x+3j)', 'x+2'], '(x+1)(x-3j)(x+3j)');
+		testNodeWrapper('polydiv', ['0', 'x+2'], '0');
+		testNodeWrapper('polydiv', ['(x+2)(x+1)(x-3j)(x+3j)', 'x+2'],
+			'\\left(-9\\right)j^2-9j^2x+x^3+x^2');
 	});
 	it("LaTex outputType", function() {
 		testParseAndDisplay('(x+1)(x+2)', '\\left(x+1\\right)\\cdot\\left(x+2\\right)',
@@ -716,5 +730,13 @@ describe("WillowJS tests", function() {
 		testPolyDiv(processExpressions.parseExpressions(
 			['b^5+3', 'b-1']), ['b^4+b^3+b^2+b+1+4/(b-1)']);
 		testPolyDiv(processExpressions.parseExpressions(['1/2x^4', '2x^2']), ['1/4x^2']);
+	});
+	it("sqrt and fractions on commuteCo", function() {
+		testEqualityBreakdown('\\sqrt{x}/2', '(1/2)\\sqrt{x}', equalityType.commuteCo);
+		testEqualityBreakdown('\\sqrt{3}/2', '(1/2)\\sqrt{3}', equalityType.commuteCo);
+		testEqualityBreakdown('\\sqrt{3/4}', '(1/2)\\sqrt{3}', equalityType.full);
+		testEqualityBreakdown('\\sqrt{3/4}', '\\sqrt{3}/2', equalityType.full);
+		testEqualityBreakdown('2\\sqrt{3/9}', '2\\sqrt{3}/3', equalityType.full);
+		testEqualityBreakdown('(2/3)\\sqrt{3}', '2\\sqrt{3}/3', equalityType.commuteCo);
 	});
 });

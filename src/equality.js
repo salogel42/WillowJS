@@ -103,6 +103,13 @@ var equality = (function() {
 	}
 
 	function normalizeTermSignMaybeCoefficient(node) {
+		var split = operator.pullOutRadical(node);
+		if (split !== null) {
+			if (split.rest !== null) {
+				split.rest = expr.makeIntoFractionNodeIfApplicable(split.rest);
+			}
+			node = operator.multiplyNodesMaybeNull(split.rest, split.radical, '*');
+		}
 		if (coefficient) { return normalizeTermCoefficient(node); }
 		return self.normalizeTermSign(node);
 	}
@@ -148,16 +155,15 @@ var equality = (function() {
 	}
 
 	function pullBottomNumberIntoFractionCoeffecient(node) {
-		if (node.type === 'compound' && node.op === '/') {
-			if (node.rhs.type === 'number' && node.lhs.type !== 'number') {
-				var split = self.splitCoefficientFromRest(node.lhs, true);
-				if (split !== null) {
-					var topCoefficient = (split.co === null) ? 1 : split.co.value;
-					node = expression.createSimpleExpression('number',
-						fractionUtils.createFractionValue(topCoefficient, node.rhs.value));
-					if (split.rest !== null) {
-						node = expression.createCompoundExpression(node, split.rest, '*');
-					}
+		if (node.type === 'compound' && node.op === '/' &&
+			node.rhs.type === 'number' && node.lhs.type !== 'number') {
+			var split = self.splitCoefficientFromRest(node.lhs, true);
+			if (split !== null) {
+				var topCoefficient = (split.co === null) ? 1 : split.co.value;
+				node = expression.createSimpleExpression('number',
+					fractionUtils.createFractionValue(topCoefficient, node.rhs.value));
+				if (split.rest !== null) {
+					node = expression.createCompoundExpression(node, split.rest, '*');
 				}
 			}
 		}
@@ -211,15 +217,6 @@ var equality = (function() {
 		additiveInverseOfNumber: function(node) {
 			if (node.type !== 'number') { return null; }
 			return operator['-'].unaryEvaluate(node);
-		},
-		convertFractionToCompoundExpression: function(node) {
-			if (fractionUtils.isNodeFraction(node)) {
-				return expression.createCompoundExpression(
-					expression.createSimpleExpression('number', node.value.top),
-					expression.createSimpleExpression('number', node.value.bottom),
-					'/');
-			}
-			return node;
 		},
 		normalizeTermSign: function(node) {
 			node = pullBottomNumberIntoFractionCoeffecient(node);
