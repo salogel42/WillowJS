@@ -1549,24 +1549,35 @@ var evaluate = (function() {
 		},
 		// The following functions destructively modify the expression tree.
 		doSyntheticDivision: function(dividend, divisor, remainder) {
-			return trySyntheticDivision(expression.createCompoundExpression(
+			var node = expression.createCompoundExpression(
+				dividend, divisor, '/');
+			var newNode = trySyntheticDivision(expression.createCompoundExpression(
 				dividend, divisor, '/'), remainder);
+			if (node.syntacticEquals(newNode)) {
+				// if it didn't work, just evaluate it like normal, but skip the synth step since
+				// we already tried it once.
+				return evaluate.evaluateRec(node, false);
+			}
+			return newNode;
+
 		},
-		evaluateRec: function(node) {
+		evaluateRec: function(node, doSynth) {
 			if (node === errorNode) { return errorNode; }
 			printDebug('init:', node, debug);
 			node = fullMultiply(node, true);
-			printDebug('mult1:',  node, debug);
+			printDebug('mult1:', node, debug);
 			node = sortTerms(node, true);
-			printDebug('sort1:',  node, debug);
+			printDebug('sort1:', node, debug);
 			node = simplifyNode(node);
-			printDebug('simp:',  node, debug);
+			printDebug('simp:', node, debug);
 			node = fullMultiply(node, false);
-			printDebug('mult2:',  node, debug);
+			printDebug('mult2:', node, debug);
 			node = sortTerms(node, false);
-			printDebug('sort2:',  node, debug);
-			node = trySyntheticDivision(node, false);
-			printDebug('synth:',  node, debug);
+			printDebug('sort2:', node, debug);
+			if (typeof doSynth === 'undefined' || doSynth === true) {
+				node = trySyntheticDivision(node, false);
+				printDebug('synth:', node, debug);
+			}
 			return node;
 		},
 		evaluateFull : function(node) {
