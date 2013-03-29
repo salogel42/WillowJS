@@ -363,7 +363,16 @@ var evaluate = (function() {
 		return node;
 	}
 
+	// Later in the list means it should be sorted earlier.  Callers of compareStrings (or
+	// comparison functions that use it) should fill this list before calling, then clear it
+	// afterward if they want non-alphabetic ordering for some or all identifiers.
+	var identifierPriority = [];
 	function compareStrings(a, b, mult) {
+		var priorityA = (a.type === 'identifier') ? identifierPriority.indexOf(a.value) : -1;
+		var priorityB = (b.type === 'identifier') ? identifierPriority.indexOf(b.value) : -1;
+		if (priorityA !== -1 || priorityB !== -1) {
+			return mult * (priorityB - priorityA);
+		}
 		return mult * ((a.value === b.value) ? 0 : ((a.value < b.value) ? -1 : 1));
 	}
 	function comparePairs(a, b, altA, altB, mult) {
@@ -1012,12 +1021,36 @@ var evaluate = (function() {
 			(includeRadical || !fractionUtils.isValueRadical(left.value))) ?
 			left : expression.createSimpleExpression('number', 1);
 	}
+
+	function compareDegree(a, b) {
+		var powerA = getPower(a);
+		var powerB = getPower(b);
+		return compareMultiplication(powerA, powerB);
+	}
+
 	function syntheticDivision(dividend, divisor, remainder) {
 		printDebug('dividend: ', dividend, debugSynth);
 		printDebug(' divisor: ', divisor, debugSynth);
 		var leadingTermBottom = leftMostTerm(divisor);
-		var leadingTermTop = leftMostTerm(dividend);
 		var termsBottom = getAllTermsAtLevelNoSort(leadingTermBottom, '*', false);
+
+		var identifiersInLeadingTermBottom = getAllTermsAtLevelNoSort(leadingTermBottom, '*', false);
+		identifierPriority = identifiersInLeadingTermBottom.sort(compareDegree).reverse()
+			.map(function(node) {
+				var base = getExponentiation(node).base;
+				if (base.type === 'identifier') { return base.value; }
+				return '';
+			});
+
+		var topTerms = getAllTermsAtLevelNoSort(
+			makeCommutativeIfNecessaryRec(dividend, dividend.op), '+', true);
+		topTerms.sort(compareAddition);
+		identifierPriority = [];
+
+		var leadingTermTop = topTerms[0];
+		var identifiersInLeadingTermTop = getAllIdentifiersInMulitplication(leadingTermTop)
+			.map(function(elem) { return elem.value; });
+
 		var termsTop = getAllTermsAtLevelNoSort(leadingTermTop, '*', false);
 		var dividedTerms = [];
 		while (termsBottom.length > 0) {
@@ -1126,7 +1159,8 @@ var evaluate = (function() {
 			topRight = multiplyNodesMaybeNull(bottomLeft, topRight, '*', false);
 			var top = evaluate.evaluateRec(
 				expression.createCompoundExpression(topLeft, topRight, node.op));
-			printDebug('top: ',  top, debugSynth);
+			printDebug('top: ', top, debugSynth);
+			printDebug('bottom: ', bottom, debugSynth);
 			return expression.createCompoundExpression(top, bottom, '/');
 		}
 	}

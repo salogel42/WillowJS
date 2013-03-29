@@ -668,7 +668,8 @@ describe("WillowJS tests", function() {
 		testNodeWrapper('eqBreakdownNoFullEq',['(x-3-2i)(x-3+2i)', '(x-3-2i)(x-(3-2i))'], 'full');
 	});
 	it("polydiv", function() {
-		testNodeWrapper('polydiv',['(x+2)(x+1)(x-3j)(x+3j)', 'x+2'], '(x+1)(x-3j)(x+3j)');
+		testNodeWrapper('polydiv', ['(x+2)(x+1)(x-3j)(x+3j)', 'x+2'],
+			'\\left(-9\\right)j^2-9j^2x+x^3+x^2');
 	});
 	it("LaTex outputType", function() {
 		testParseAndDisplay('(x+1)(x+2)', '\\left(x+1\\right)\\cdot\\left(x+2\\right)',
