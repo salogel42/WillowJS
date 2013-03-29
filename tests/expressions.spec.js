@@ -14,6 +14,7 @@ if (typeof module !== 'undefined' && typeof require !== 'undefined') {
 	var expr = require(path + '/expr.js').expr;
 	var processExpressions = require(path + '/processExpressions.js').processExpressions;
 	var nodeWrapper = require(path + '/nodeWrapper.js').nodeWrapper;
+	var expression = require(path + '/expression.js').expression;
 }
 
 describe("WillowJS tests", function() {
@@ -33,7 +34,7 @@ describe("WillowJS tests", function() {
 	});
 
 	afterEach(function() {
-	    expect(console.error.calls.length).toEqual(expectedErrors);
+		expect(console.error.calls.length).toEqual(expectedErrors);
 	});
 
 	// Helpers for the first few tests.
@@ -46,7 +47,7 @@ describe("WillowJS tests", function() {
 		if (typeof type === 'undefined') { type = outputType.text; }
 		if (typeof parseFunction === 'undefined') { parseFunction = parser.parseEquation; }
 		expect(display.displayExpression(parseFunction(eqString),
-			type, parenMode.full, showDiv)).toBe(resFull);;
+			type, parenMode.full, showDiv)).toBe(resFull);
 		expect(display.displayExpression(parseFunction(eqString),
 			type, parenMode.terms, showDiv)).toBe(resTerms);
 		expect(display.displayExpression(parseFunction(eqString),
@@ -54,18 +55,19 @@ describe("WillowJS tests", function() {
 	}
 
 	it("Manual construction and display test", function() {
-		var xExpr = expr.createSimpleExpression('identifier', 'x', 1);
-		xExpr = expr.createCompoundExpression(expr.createCompoundExpression(
-			expr.createSimpleExpression('number', 1, 1), xExpr, '+', 1),
-			expr.createSimpleExpression('number',3, 1),
+		var xExpr = expression.createSimpleExpression('identifier', 'x', 1);
+		xExpr = expression.createCompoundExpression(expression.createCompoundExpression(
+			expression.createSimpleExpression('number', 1, 1), xExpr, '+', 1),
+			expression.createSimpleExpression('number',3, 1),
 			'*');
-		var lhs = expr.createCompoundExpression(
-			expr.createSimpleExpression('number', 4, 1), xExpr, '+', 1);
-		var rhs = expr.createSimpleExpression('number', 5, 1);
-		var eq = expr.createCompoundExpression(lhs, rhs, '=', 1);
+		var lhs = expression.createCompoundExpression(
+			expression.createSimpleExpression('number', 4, 1), xExpr, '+', 1);
+		var rhs = expression.createSimpleExpression('number', 5, 1);
+		var eq = expression.createCompoundExpression(lhs, rhs, '=', 1);
 
 		expect(display.displayExpression(eq, outputType.text, parenMode.necessary)).toBe('4+(1+x)3=5');
-		expect(display.displayExpression(eq, outputType.mathml, parenMode.necessary)).toBe('<math xmlns="http://www.w3.org/1998/Math/MathML" id=nodemath`><mrow id=node6>' +
+		expect(display.displayExpression(eq, outputType.mathml, parenMode.necessary)).toBe(
+			'<math xmlns="http://www.w3.org/1998/Math/MathML" id=node9><mrow id=node6>' +
 			'<mn id=node5>4</mn><mo class="op" id=node6>+</mo><mrow id=node4><mfenced id=node2>' +
 			'<mrow><mn id=node1>1</mn><mo class="op" id=node2>+</mo><mi id=node0>x</mi></mrow>' +
 			'</mfenced><mn id=node3>3</mn></mrow></mrow><mo class="op" id=node8>=</mo>' +
@@ -221,7 +223,7 @@ describe("WillowJS tests", function() {
 	});
 	function testCommuteRightSubExpression(eqString, expectedResult) {
 		var exp = parser.parseEquation(eqString);
-		exp.rhs.commute();
+		expr.commute(exp.rhs);
 		expect(display.displayExpression(exp, outputType.text, parenMode.full)).toBe(expectedResult);
 	}
 	it("commute the terms on the left", function() {
@@ -235,8 +237,8 @@ describe("WillowJS tests", function() {
 	});
 	function testAssociateRightSubExpression(eqString, expectedResult, side) {
 		var exp = parser.parseEquation(eqString);
-		if (side === 'left') { exp.rhs.lhs.associate(); }
-		else { exp.rhs.rhs.associate(); }
+		if (side === 'left') { expr.associate(exp.rhs.lhs); }
+		else { expr.associate(exp.rhs.rhs); }
 		expect(display.displayExpression(exp, outputType.text, parenMode.full)).toBe(expectedResult);
 	}
 	it("associate the terms on the right", function() {
@@ -283,12 +285,12 @@ describe("WillowJS tests", function() {
 	});
 	function testDistributeRightSubExpression(eqString, expectedResult) {
 		var exp = parser.parseEquation(eqString);
-		exp.rhs.distributeRight();
+		expr.distributeRight(exp.rhs);
 		expect(display.displayExpression(exp, outputType.text, parenMode.full)).toBe(expectedResult);
 	}
 	function testDistributeLeftRightSubExpression(eqString, expectedResult) {
 		var exp = parser.parseEquation(eqString);
-		exp.rhs.distributeLeft();
+		expr.distributeLeft(exp.rhs);
 		expect(display.displayExpression(exp, outputType.text, parenMode.full)).toBe(expectedResult);
 	}
 	it("distribute the right subexpression, distributing the rhs over the lhs", function() {
@@ -309,7 +311,7 @@ describe("WillowJS tests", function() {
 		testEvaluate('y=(a-b)x', 'y=ax-bx');
 	}
 	function testPullIdentfierToLhs(exprString, expectedResult, identifierValue) {
-		var identifierNode = expr.createSimpleExpression('identifier', identifierValue);
+		var identifierNode = expression.createSimpleExpression('identifier', identifierValue);
 		var exp = parser.parseExpressionWrapper(exprString);
 		var result = null;
 		if (exp !== null) {
@@ -338,15 +340,15 @@ describe("WillowJS tests", function() {
 	});
 	it("factor common term from the right side of both expressions", function() {
 		var exp = parser.parseExpressionWrapper('\\frac{1}{y+y}c+\\frac{2}{y+y}c');
-		exp = exp.factorRight();
+		exp = expr.factorRight(exp);
 		expect(display.displayExpression(exp, outputType.text, parenMode.terms)).toBe('(1/(y+y)+2/(y+y))c');
-		exp.lhs.factorRight();
+		expr.factorRight(exp.lhs);
 		expect(display.displayExpression(exp, outputType.text, parenMode.terms)).toBe('((1+2)/(y+y))c');
 	});
 	function testEvaluateArithmeticExpression(exprressionString, expectedResult) {
 		var exp = parser.parseExpressionWrapper(exprressionString);
 		if (expectedResult === null || exp === null) { expect(exp).toBe(expectedResult); }
-		exp = exp.evaluateArithmetic(true);
+		exp = evaluate.evaluateArithmetic(exp, true);
 		if (exp === null) { expect(exp).toBe(expectedResult); }
 		else {
 			expect(display.displayExpression(exp, outputType.text, parenMode.necessary)).toBe(expectedResult);
@@ -520,7 +522,7 @@ describe("WillowJS tests", function() {
 		testEvaluate('2^{1/4}3^{1/4}', '\\sqrt[4]{6}');
 		testEvaluate('2^{1/2}3^{1/3}', '\\sqrt[6]{72}');
 		testEvaluate('(-3)^{1/2}', '\\sqrt{-3}');
-		testEvaluate('(\\sqrt{4-4*5*7}-2)/(2*7)', '1/7*\\sqrt{-34}-1/7')
+		testEvaluate('(\\sqrt{4-4*5*7}-2)/(2*7)', '1/7*\\sqrt{-34}-1/7');
 		testEqualityBreakdown('3i', '(-9)^{1/2}', equalityType.full);
 		testEqualityBreakdown('3i', '3(-1)^{1/2}', equalityType.full);
 		testEqualityBreakdown('3i', '3\\sqrt(-1)', equalityType.verbatim);
@@ -647,6 +649,14 @@ describe("WillowJS tests", function() {
 		testNodeWrapper('getIdentifiers', ['x^2/(2*x*y)'], 'x,x,y');
 		testNodeWrapper('getIdentifiers', ['\\sqrt{-x}'], 'x');
 		testNodeWrapper('getIdentifiers', ['\\pi*(x-1)3(xy)'], '\\pi,x,x,y');
+	});
+	it("distributing sqrts", function() {
+		testNodeWrapper('simplify',['(1-\\sqrt{2})\\sqrt{3}'], '-\\sqrt{6}+\\sqrt{3}');
+		testNodeWrapper('simplify',['(1-2\\sqrt{2})2\\sqrt{2}'], '2\\sqrt{2}-8');
+		testNodeWrapper('eqBreakdownNoFullEq',['(x-3-2i)(x-3+2i)', '(x-3-2i)(x-(3-2i))'], equalityType.full);
+	});
+	it("polydiv", function() {
+		testNodeWrapper('polydiv',['(x+2)(x+1)(x-3j)(x+3j)', 'x+2'], '(x+1)(x-3j)(x+3j)');
 	});
 	it("LaTex outputType", function() {
 		testParseAndDisplay('(x+1)(x+2)', '\\left(x+1\\right)\\cdot\\left(x+2\\right)',

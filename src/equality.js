@@ -1,13 +1,15 @@
 /*global require:true exports:true */
 
 if (typeof module !== 'undefined' && typeof require !== 'undefined') {
-	var getPrecedence = require('./expr.js').getPrecedence;
 	var utils = require('./utils.js');
 	var errorNode = utils.errorNode;
 	utils = utils.utils;
-	var operatorProperties = require('./expr.js').operatorProperties;
+	var operatorProperties = require('./operatorProperties.js').operatorProperties;
+	var getPrecedence = operatorProperties.getPrecedence;
+	var operator = require('./operator.js').operator;
 	var expr = require('./expr.js').expr;
 	var fractionUtils = require('./fractionUtils.js').fractionUtils;
+	var expression = require('./expression.js').expression;
 }
 
 var equality = (function() {
@@ -68,19 +70,19 @@ var equality = (function() {
 	function normalizeTermCoefficient(node) {
 		node = pullBottomNumberIntoFractionCoeffecient(node);
 		if (fractionUtils.isNegativeNumber(node)) {
-			return expr.createUnaryExpression(expr.createSimpleExpression('number',
+			return expression.createUnaryExpression(expression.createSimpleExpression('number',
 				fractionUtils.additiveInverseOfFraction(node.value)), '-');
 		}
 		if (node.type === 'unary') {
-			return expr.createUnaryExpression(normalizeTermCoefficient(node.child), node.op);
+			return expression.createUnaryExpression(normalizeTermCoefficient(node.child), node.op);
 		}
 		if (node.type === 'ternary') {
-			return expr.createTernaryExpression(normalizeTermCoefficient(node.left),
+			return expression.createTernaryExpression(normalizeTermCoefficient(node.left),
 				normalizeTermCoefficient(node.middle), normalizeTermCoefficient(node.right),
 				node.op1, node.op2);
 		}
 		if (node.type !== 'compound') { return node; }
-		var processedNode = expr.createCompoundExpression(normalizeTermCoefficient(node.lhs),
+		var processedNode = expression.createCompoundExpression(normalizeTermCoefficient(node.lhs),
 				normalizeTermCoefficient(node.rhs), node.op);
 		if (getPrecedence(node.op) !== 2) {
 			return processedNode;
@@ -95,7 +97,7 @@ var equality = (function() {
 				inverse = equality.additiveInverseOfNumber(left);
 			}
 			utils.setChild(inverse, left.parent, 'left');
-			return expr.createUnaryExpression(processedNode, '-');
+			return expression.createUnaryExpression(processedNode, '-');
 		}
 		return processedNode;
 	}
@@ -128,7 +130,7 @@ var equality = (function() {
 			if (processedOther.op !== processedNode.op) {
 				if (operatorProperties.getInverseInequality(processedNode.op) ===
 					processedOther.op) {
-					processedOther = expr.createCompoundExpression(processedOther.rhs,
+					processedOther = expression.createCompoundExpression(processedOther.rhs,
 						processedOther.lhs, processedNode.op);
 				} else { return false; }
 			}
@@ -151,10 +153,10 @@ var equality = (function() {
 				var split = self.splitCoefficientFromRest(node.lhs, true);
 				if (split !== null) {
 					var topCoefficient = (split.co === null) ? 1 : split.co.value;
-					node = expr.createSimpleExpression('number',
+					node = expression.createSimpleExpression('number',
 						fractionUtils.createFractionValue(topCoefficient, node.rhs.value));
 					if (split.rest !== null) {
-						node = expr.createCompoundExpression(node, split.rest, '*');
+						node = expression.createCompoundExpression(node, split.rest, '*');
 					}
 				}
 			}
@@ -194,7 +196,7 @@ var equality = (function() {
 				if (splitRight.rest !== null) {
 					if (splitLeft.rest === null) { result.rest = splitRight.rest; }
 					else {
-						result.rest = expr.createCompoundExpression(
+						result.rest = expression.createCompoundExpression(
 							splitLeft.rest, splitRight.rest);
 					}
 				}
@@ -208,13 +210,13 @@ var equality = (function() {
 		// "Public"
 		additiveInverseOfNumber: function(node) {
 			if (node.type !== 'number') { return null; }
-			return operatorProperties['-'].unaryEvaluate(node);
+			return operator['-'].unaryEvaluate(node);
 		},
 		convertFractionToCompoundExpression: function(node) {
 			if (fractionUtils.isNodeFraction(node)) {
-				return expr.createCompoundExpression(
-					expr.createSimpleExpression('number', node.value.top),
-					expr.createSimpleExpression('number', node.value.bottom),
+				return expression.createCompoundExpression(
+					expression.createSimpleExpression('number', node.value.top),
+					expression.createSimpleExpression('number', node.value.bottom),
 					'/');
 			}
 			return node;
@@ -224,17 +226,18 @@ var equality = (function() {
 			if (node.type === 'identifier') { return expr.copyNode(node); }
 			if (node.type === 'number') {
 				if (fractionUtils.isNegativeNumber(node)) {
-					return expr.createUnaryExpression(self.additiveInverseOfNumber(node), '-');
+					return expression.createUnaryExpression(
+						self.additiveInverseOfNumber(node), '-');
 				}
 				return expr.copyNode(node);
 			}
 			if (node.type === 'unary') {
 				var normalizedChild = self.normalizeTermSign(node.child);
 				if (utils.isUnaryNegative(normalizedChild)) { return normalizedChild.child; }
-				return expr.createUnaryExpression(normalizedChild, node.op);
+				return expression.createUnaryExpression(normalizedChild, node.op);
 			}
 			if (node.type === 'ternary') {
-				return expr.createTernaryExpression(self.normalizeTermSign(node.left),
+				return expression.createTernaryExpression(self.normalizeTermSign(node.left),
 					self.normalizeTermSign(node.middle), self.normalizeTermSign(node.right),
 					node.op1, node.op2);
 			}
@@ -242,20 +245,21 @@ var equality = (function() {
 				var normalizedLhs = self.normalizeTermSign(node.lhs);
 				var normalizedRhs = self.normalizeTermSign(node.rhs);
 				if (getPrecedence(node.op) !== 2) {
-					return expr.createCompoundExpression(normalizedLhs, normalizedRhs, node.op);
+					return expression.createCompoundExpression(
+						normalizedLhs, normalizedRhs, node.op);
 				}
 				if (utils.isUnaryNegative(normalizedLhs) && utils.isUnaryNegative(normalizedRhs)) {
-					return expr.createCompoundExpression(
+					return expression.createCompoundExpression(
 						normalizedLhs.child, normalizedRhs.child, node.op);
 				} else if (!utils.isUnaryNegative(normalizedLhs) &&
 					!utils.isUnaryNegative(normalizedRhs)) {
-					return expr.createCompoundExpression(
+					return expression.createCompoundExpression(
 						normalizedLhs, normalizedRhs, node.op);
 				}
 				if (utils.isUnaryNegative(normalizedLhs)) { normalizedLhs = normalizedLhs.child; }
 				if (utils.isUnaryNegative(normalizedRhs)) { normalizedRhs = normalizedRhs.child; }
-				return expr.createUnaryExpression(
-					expr.createCompoundExpression(normalizedLhs, normalizedRhs, node.op), '-');
+				return expression.createUnaryExpression(expression.createCompoundExpression(
+					normalizedLhs, normalizedRhs, node.op), '-');
 			}
 		},
 		equivalentModuloCommutativity: function(node, other, requireCoefficientPlacement) {
