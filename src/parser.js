@@ -162,8 +162,7 @@ var parser = (function() {
 
 	function makeFractionOrCompoundExp(top, bottom, op) {
 		if (op === '/' && top.type === 'number' && bottom.type === 'number' &&
-			!fractionUtils.isValueFraction(top.value) &&
-			!fractionUtils.isValueFraction(bottom.value)) {
+			fractionUtils.isInteger(top.value) && fractionUtils.isInteger(bottom.value)) {
 			if (bottom.value === 0) {
 				console.error('Divided by 0');
 				return errorNode;

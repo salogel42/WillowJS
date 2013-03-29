@@ -25,25 +25,6 @@ var operator = (function() {
 	function makeNumber(value) {
 		return expression.createSimpleExpression('number', value);
 	}
-	function multiplyNodesMaybeNull(nodeOne, nodeTwo) {
-		if (nodeTwo === null) { return nodeOne; }
-		if (nodeOne === null) { return nodeTwo; }
-		return expression.createCompoundExpression(nodeOne, nodeTwo, '*');
-	}
-	function pullOutRadical(node) {
-		if (node.type === 'number' && fractionUtils.isValueRadical(node.value)) {
-			return { radical : node, rest : null };
-		}
-		if (node.type === 'compound' && node.op === '*') {
-			var left = pullOutRadical(node.lhs);
-			var right = pullOutRadical(node.rhs);
-			return {
-				radical : multiplyNodesMaybeNull(left.radical, right.radical),
-				rest : multiplyNodesMaybeNull(left.rest, right.rest)
-			};
-		}
-		return { radical : null, rest : node };
-	}
 	function combineRadicals(node) {
 		if (node.type === 'compound' && node.op === '*') {
 			var left = combineRadicals(node.lhs);
@@ -151,11 +132,11 @@ var operator = (function() {
 		'*' : new Operator(
 			function(lhs, rhs) {
 				var node = expression.createCompoundExpression(lhs, rhs, '*');
-				node = pullOutRadical(node);
+				node = self.pullOutRadical(node);
 				if (node.radical !== null) {
 					var orig = node.radical;
 					var combined = combineRadicals(node.radical);
-					node = multiplyNodesMaybeNull(node.rest, combined);
+					node = self.multiplyNodesMaybeNull(node.rest, combined, '*');
 					if (orig.syntacticEquals(combined) || node.type !== 'compound') {
 						return node;
 					}
@@ -297,7 +278,7 @@ var operator = (function() {
 			if (!(node.type === 'compound' && node.op === '/')) {
 				return node;
 			}
-			var radicalOnBottom = pullOutRadical(node.rhs);
+			var radicalOnBottom = self.pullOutRadical(node.rhs);
 
 			if (radicalOnBottom.radical === null) {
 				return node;
@@ -329,6 +310,48 @@ var operator = (function() {
 			result = operator['*'].evaluateValues(result.rational, result.radical);
 			result.simplified = true;
 			return result;
+		},
+		invertNode: function(node) {
+			if (node.type === 'number') {
+				return expression.createSimpleExpression(
+					'number', fractionUtils.invertFraction(node.value));
+			}
+			if (node.type === 'compound' && node.op === '/') {
+				if (node.lhs.type === 'number' && node.lhs.value === 1) {
+					return node.rhs;
+				} else {
+					return expression.createCompoundExpression(node.rhs, node.lhs, '/');
+				}
+			} else {
+				return expression.createCompoundExpression(
+					expression.createSimpleExpression('number', 1), node, '/');
+			}
+		},
+		multiplyNodesMaybeNull: function(nodeOne, nodeTwo, op) {
+			if (nodeTwo === null) { return nodeOne; }
+			if (nodeOne === null) { return (op === '/') ? self.invertNode(nodeTwo): nodeTwo; }
+			return expression.createCompoundExpression(nodeOne, nodeTwo, op);
+		},
+		pullOutRadical: function(node) {
+			if (node.type === 'number' && fractionUtils.isValueRadical(node.value)) {
+				return { radical : node, rest : null };
+			}
+			if (node.type === 'number' && fractionUtils.isValueFraction(node.value) &&
+				fractionUtils.isValueRadical(node.value.top)) {
+				return {
+					radical : makeNumber(node.value.top),
+					rest : makeNumber(fractionUtils.createFractionValue(1, node.value.bottom))
+				};
+			}
+			if (node.type === 'compound' && getPrecedence(node.op) === 2) {
+				var left = self.pullOutRadical(node.lhs);
+				var right = self.pullOutRadical(node.rhs);
+				return {
+					radical : self.multiplyNodesMaybeNull(left.radical, right.radical, node.op),
+					rest : self.multiplyNodesMaybeNull(left.rest, right.rest, node.op)
+				};
+			}
+			return { radical : null, rest : node };
 		}
 	};
 	/**

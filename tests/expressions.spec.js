@@ -731,4 +731,12 @@ describe("WillowJS tests", function() {
 			['b^5+3', 'b-1']), ['b^4+b^3+b^2+b+1+4/(b-1)']);
 		testPolyDiv(processExpressions.parseExpressions(['1/2x^4', '2x^2']), ['1/4x^2']);
 	});
+	it("sqrt and fractions on commuteCo", function() {
+		testEqualityBreakdown('\\sqrt{x}/2', '(1/2)\\sqrt{x}', equalityType.commuteCo);
+		testEqualityBreakdown('\\sqrt{3}/2', '(1/2)\\sqrt{3}', equalityType.commuteCo);
+		testEqualityBreakdown('\\sqrt{3/4}', '(1/2)\\sqrt{3}', equalityType.full);
+		testEqualityBreakdown('\\sqrt{3/4}', '\\sqrt{3}/2', equalityType.full);
+		testEqualityBreakdown('2\\sqrt{3/9}', '2\\sqrt{3}/3', equalityType.full);
+		testEqualityBreakdown('(2/3)\\sqrt{3}', '2\\sqrt{3}/3', equalityType.commuteCo);
+	});
 });
