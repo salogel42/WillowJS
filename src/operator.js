@@ -5,22 +5,19 @@ if (typeof module !== 'undefined' && typeof require !== 'undefined') {
 	var errorNode = require('./utils.js').errorNode;
 	var fractionUtils = require('./fractionUtils').fractionUtils;
 	var expression = require('./expression.js').expression;
-	var operatorProperties = require('./operatorProperties.js').operatorProperties;
-	var getPrecedence = operatorProperties.getPrecedence;
+	var getPrecedence = require('./operatorProperties.js').operatorProperties.getPrecedence;
 }
 
 var operator = (function() {
 	/**
-	 * Object that stores all the relevant properties of an Operator.
+	 * Object that knows how to evaluate all the evaluable operators.
 	 * @constructor
-	 * @param properties     {OperatorProperties} The properties common to all operators.
 	 * @param evaluate       {Function}           Defines how to perform the operation given two
 	 *                                            Expression operands.
 	 * @param evaluateValues {Function}           Defines how to perform the operation given two
 	 *                                            numbers as operands.
 	 */
-	function Operator(properties, evaluate, evaluateValues) {
-		this.properties = properties;
+	function Operator(evaluate, evaluateValues) {
 		this.evaluate = evaluate;
 		this.evaluateValues = evaluateValues;
 	}
@@ -74,7 +71,7 @@ var operator = (function() {
 	 * @dict
 	 */
 	self = {
-		'^' : new Operator(operatorProperties['^'], function(lhs, rhs) {
+		'^' : new Operator(function(lhs, rhs) {
 					if (lhs.type !== 'number' || rhs.type !== 'number' ||
 						fractionUtils.isValueRadical(rhs.value)) {
 						return expression.createCompoundExpression(lhs, rhs, '^');
@@ -106,7 +103,7 @@ var operator = (function() {
 					}
 					return expression.createSimpleExpression('number', resultValue);
 				}),
-		'/' : new Operator(operatorProperties['/'], function(lhs, rhs) {
+		'/' : new Operator(function(lhs, rhs) {
 					if (!(lhs.numeric && rhs.numeric) &&
 						(!lhs.simplified || !rhs.simplified)) {
 						return expression.createCompoundExpression(lhs, rhs, '/');
@@ -147,7 +144,7 @@ var operator = (function() {
 					}
 					return expression.createSimpleExpression('number', resultValue);
 				}),
-		'*' : new Operator(operatorProperties['*'], function(lhs, rhs) {
+		'*' : new Operator(function(lhs, rhs) {
 					if (!lhs.numeric || !rhs.numeric) {
 						return expression.createCompoundExpression(lhs, rhs, '*');
 					}
@@ -209,7 +206,7 @@ var operator = (function() {
 					return expression.createSimpleExpression('number',
 						fractionUtils.multiplyFractions(lhsValue, rhsValue));
 				}),
-		'-' : new Operator(operatorProperties['-'], function(lhs, rhs) {
+		'-' : new Operator(function(lhs, rhs) {
 					if (lhs.type !== 'number' || rhs.type !== 'number' ||
 						(fractionUtils.isValueRadical(lhs.value) ||
 							fractionUtils.isValueRadical(rhs.value))) {
@@ -227,7 +224,7 @@ var operator = (function() {
 					}
 					return expression.createSimpleExpression('number', resultValue);
 				}),
-		'+' : new Operator(operatorProperties['+'], function(lhs, rhs) {
+		'+' : new Operator(function(lhs, rhs) {
 					if (lhs.type !== 'number' || rhs.type !== 'number') {
 						return expression.createCompoundExpression(lhs, rhs, '+');
 					} else if (fractionUtils.isValueRadical(lhs.value) ||
@@ -257,7 +254,7 @@ var operator = (function() {
 					}
 					return expression.createSimpleExpression('number', resultValue);
 				}),
-		'\\sqrt' : new Operator(operatorProperties['\\sqrt'], function(lhs, rhs) {
+		'\\sqrt' : new Operator(function(lhs, rhs) {
 					return operator['^'].evaluate(rhs,
 						operator['/'].evaluateValues(1, lhs.value));
 				}, function(lhsValue, rhsValue) {
@@ -265,7 +262,7 @@ var operator = (function() {
 					return operator['^'].evaluate(makeNumber(rhsValue),
 						operator['/'].evaluateValues(1, lhsValue));
 				}),
-		'|' : new Operator(operatorProperties['|']),
+		'|' : new Operator(),
 		rationalizeDenominator: function(node) {
 			if (node.type === 'number' && fractionUtils.isValueFraction(node.value) &&
 				fractionUtils.isValueRadical(node.value.bottom)) {

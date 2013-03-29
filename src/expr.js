@@ -60,8 +60,6 @@ var expressionUtils = (function() {
 			return self.copyNode(node);
 		},
 
-		// used several places
-
 		copyNode: function(node) {
 			if (utils.isSimpleExpression(node)) {
 				return expression.createSimpleExpression(node.type, node.value);
