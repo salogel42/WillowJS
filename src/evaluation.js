@@ -29,12 +29,14 @@ var equalityType = {
 
 var evaluate = (function() {
 	var debug = false;
+	var debugArith = false;
 	var debugMult = false;
 	var debugSolve = false;
 	var debugSort = false;
 	var debugSynth = false;
 	var debugGroup = false;
 	var debugSimp = false;
+	var debugCombine = false;
 	var debugCompare = false;
 	var debugCoeff = false;
 	var debugFullEq = false;
@@ -178,6 +180,8 @@ var evaluate = (function() {
 		return expression.createSimpleExpression('number', 1);
 	}
 	function combineGroupedIdentifiers(nodeOne, nodeTwo, op, identifierNode) {
+		printDebug('in combineGroupedIdentifiers, nodeOne: ', nodeOne, debugCombine);
+		printDebug('                              nodeTwo: ', nodeTwo, debugCombine);
 		if (nodeTwo === null) { return nodeOne; }
 		if (nodeOne === null) {
 			if (op !== '/') { return nodeTwo; }
@@ -292,6 +296,7 @@ var evaluate = (function() {
 		return multiplyNodesMaybeNull(identifierGroup, restOfExpression, '*', false);
 	}
 	function getCommonCoefficient(node) {
+		printDebug('in getCommonCoefficient: ', node, debugCoeff);
 		if (node.type === 'number') { return node; }
 		if (utils.isUnaryNegative(node)) {
 			return equality.additiveInverseOfNumber(getCommonCoefficient(node.child));
@@ -409,6 +414,10 @@ var evaluate = (function() {
 		}
 		if (a.type === 'identifier' && b.type === 'identifier') {
 			return compareStrings(a, b, mult);
+		}
+		if ((a.type === 'number' && b.type === 'identifier') ||
+			(b.type === 'number' && a.type === 'identifier')) {
+			return (a.type === 'number') ? -1 : 1;
 		}
 		if (utils.isUnaryNegative(a)) { return compareTerms(a.child, b, mult); }
 		if (utils.isUnaryNegative(b)) { return compareTerms(a, b.child, mult); }
@@ -1326,6 +1335,7 @@ var evaluate = (function() {
 	}
 
 	function arithmeticEvaluation(node, expand) {
+		printDebug('arithmeticEvaluation: ', node, debugArith);
 		if (node.simplified) { return node; }
 		var newNode = operator.rationalizeDenominator(node);
 		if (!node.syntacticEquals(newNode)) { return newNode; }

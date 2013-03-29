@@ -21,6 +21,7 @@ var operator = (function() {
 		this.evaluate = evaluate;
 		this.evaluateValues = evaluateValues;
 	}
+
 	function makeNumber(value) {
 		return expression.createSimpleExpression('number', value);
 	}
@@ -104,8 +105,7 @@ var operator = (function() {
 					return expression.createSimpleExpression('number', resultValue);
 				}),
 		'/' : new Operator(function(lhs, rhs) {
-					if (!(lhs.numeric && rhs.numeric) &&
-						(!lhs.simplified || !rhs.simplified)) {
+					if (!(lhs.numeric && rhs.numeric) && (!lhs.simplified || !rhs.simplified)) {
 						return expression.createCompoundExpression(lhs, rhs, '/');
 					}
 					if (lhs.type !== 'number' || rhs.type !== 'number') {
@@ -145,6 +145,18 @@ var operator = (function() {
 					return expression.createSimpleExpression('number', resultValue);
 				}),
 		'*' : new Operator(function(lhs, rhs) {
+					var node = expression.createCompoundExpression(lhs, rhs, '*');
+					node = pullOutRadical(node);
+					if (node.radical !== null) {
+						var orig = node.radical;
+						var combined = combineRadicals(node.radical);
+						node = multiplyNodesMaybeNull(node.rest, combined);
+						if (orig.syntacticEquals(combined) || node.type !== 'compound') {
+							return node;
+						}
+						lhs = node.lhs;
+						rhs = node.rhs;
+					}
 					if (!lhs.numeric || !rhs.numeric) {
 						return expression.createCompoundExpression(lhs, rhs, '*');
 					}
