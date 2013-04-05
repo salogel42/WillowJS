@@ -48,11 +48,23 @@ var operator = (function() {
 		}
 		return node;
 	}
+	function noopEvaluation(op) {
+		return function(lhs, rhs) {
+			return expression.createCompoundExpression(lhs, rhs, op);
+		}
+	}
+	function noopEvaluationValues(op) {
+		return function(lhsValue, rhsValue) {
+			return expression.createCompoundExpression(
+				makeNumber(lhsValue), makeNumber(rhsValue), op);
+		}
+	}
 	/**
 	 * Define all of the operators with all their individual properties.
 	 * @dict
 	 */
 	self = {
+		'\\pm' : new Operator(noopEvaluation('\\pm'), noopEvaluationValues('\\pm')),
 		'^' : new Operator(
 			function(lhs, rhs) {
 				if (lhs.type !== 'number' || rhs.type !== 'number' ||
@@ -377,6 +389,10 @@ var operator = (function() {
 
 	self['|'].unaryEvaluate = function(child) {
 		return makeNumber(fractionUtils.abs(child.value));
+	};
+
+	self['\\pm'].unaryEvaluate = function(child) {
+		return expression.createUnaryExpression(child, '\\pm');
 	};
 	
 	return self;

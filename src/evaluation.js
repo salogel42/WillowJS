@@ -408,7 +408,7 @@ var evaluate = (function() {
 			return (a.op === '|') ? -1 : 1;
 		}
 		if (a.type === 'unary') { return -1; }
-		if (a.type === 'unary') { return 1; }
+		if (b.type === 'unary') { return 1; }
 		if (a.type === 'compound' && b.type === 'compound') {
 			if (getPrecedence(a.op) !== 2 && getPrecedence(b.op) !== 2) {
 				if (a.op === '^' && b.op === '^') {
@@ -503,6 +503,7 @@ var evaluate = (function() {
 	}
 
 	function getAllTermsAtLevelSorted(node, op, associateRight) {
+		printDebug('getAllTermsAtLevelSorted:', node, debugSort);
 		if (utils.isSimpleExpression(node)) { return [node]; }
 		if (utils.isUnaryNegative(node)) {
 			if (getPrecedence(op) !== 2) {
@@ -513,7 +514,21 @@ var evaluate = (function() {
 					[expression.createSimpleExpression('number', -1)]);
 			}
 		}
-		if (node.type === 'unary' || node.op !== op) { return [sortTerms(node, associateRight)]; }
+		if (node.type === 'unary') {
+			var sorted = sortTerms(node.child, associateRight);
+			if (node.op === '|') {
+				// If the leading term is negative (or has a negative coefficient), invert the whole
+				// term inside the absolute value by making it unary negative and multiplying it out.
+				// This allows for seeing |a-b| and |b-a| as the same thing.
+				// Only need to do this once, so check that associateRight is true before checking.
+				if (associateRight &&
+					fractionUtils.isNodeNegative(leftMostTermInMult(leftMostTerm(sorted)))) {
+					sorted = fullMultiply(expression.createUnaryExpression(sorted, '-'), true);
+				}
+			}
+			return [expression.createUnaryExpression(sorted, node.op)];
+		}
+		if (node.op !== op) { return [sortTerms(node, associateRight)]; }
 		return getAllTermsAtLevelSorted(node.lhs, op, associateRight).concat(
 			getAllTermsAtLevelSorted(node.rhs, op, associateRight));
 	}
@@ -523,20 +538,9 @@ var evaluate = (function() {
 	 * Should only be called with minus always converted to + -, but not / to * 1/.
 	 */
 	function sortTerms(node, associateRight) {
+		printDebug('sorting:', node, debugSort);
 		if (node === errorNode || utils.isSimpleExpression(node)) {
 			return node;
-		}
-		if (node.type === 'unary' && node.op === '|') {
-			var sorted = sortTerms(node.child, associateRight);
-			// If the leading term is negative (or has a negative coefficient), invert the whole
-			// term inside the absolute value by making it unary negative and multiplying it out.
-			// This allows for seeing |a-b| and |b-a| as the same thing.
-			// Only need to do this once, so check that associateRight is true before checking.
-			if (associateRight &&
-				fractionUtils.isNodeNegative(leftMostTermInMult(leftMostTerm(sorted)))) {
-				sorted = fullMultiply(expression.createUnaryExpression(sorted, '-'), true);
-			}
-			return expression.createUnaryExpression(sorted, '|');
 		}
 		if (node.type === 'ternary') {
 			return expression.createTernaryExpression(sortTerms(node.left, associateRight),
@@ -580,8 +584,9 @@ var evaluate = (function() {
 					terms[j] = equality.normalizeTermSign(terms[j]);
 				}
 				terms[j] = convertFractionalExponentToSqrt(terms[j]);
-				if (node.op === '+' && utils.isUnaryNegative(terms[j])) {
-					result = expression.createCompoundExpression(result, terms[j].child, '-');
+				if (node.op === '+' && utils.isUnaryPlusMinusOrNegative(terms[j])) {
+					result = expression.createCompoundExpression(
+						result, terms[j].child, terms[j].op);
 				} else if (node.op === '+' && terms[j].type === 'number' &&
 					fractionUtils.isNegative(terms[j].value)) {
 					result = expression.createCompoundExpression(
@@ -590,12 +595,12 @@ var evaluate = (function() {
 					result = expression.createUnaryExpression(result, '-');
 				} else if (node.op === '*' && utils.isNegativeOne(result)) {
 					result = expression.createUnaryExpression(terms[j], '-');
-				} else if (node.op === '*' && utils.isUnaryNegative(result)) {
-					result = expression.createUnaryExpression(
-						expression.createCompoundExpression(result.child, terms[j], node.op), '-');
-				} else if (node.op === '*' && utils.isUnaryNegative(terms[j])) {
-					result = expression.createUnaryExpression(
-						expression.createCompoundExpression(result, terms[j].child, node.op), '-');
+				} else if (node.op === '*' && utils.isUnaryPlusMinusOrNegative(result)) {
+					result = expression.createUnaryExpression(expression.createCompoundExpression(
+						result.child, terms[j], node.op), result.op);
+				} else if (node.op === '*' && utils.isUnaryPlusMinusOrNegative(terms[j])) {
+					result = expression.createUnaryExpression(expression.createCompoundExpression(
+						result, terms[j].child, node.op), terms[j].op);
 				} else if (node.op === '*' && result.type === 'compound' && result.op === '/') {
 					return expression.createCompoundExpression(arithmeticEvaluation(
 						expression.createCompoundExpression(result.lhs, terms[j], '*')),

@@ -72,10 +72,10 @@ var expressionUtils = (function() {
 				self.copyNode(node.lhs), self.copyNode(node.rhs), node.op);
 		},
 		makeAdditionCommutative: function(node) {
-			if (node !== null && node.type === 'compound' && node.op === '-') {
+			if (node !== null && node.type === 'compound' && (node.op === '-' || node.op === '\\pm')) {
 				// Take a T-T expression and turn it into a T + (-T)
 				return expression.createCompoundExpression(self.copyNode(node.lhs),
-					expression.createUnaryExpression(self.copyNode(node.rhs), '-'), '+');
+					expression.createUnaryExpression(self.copyNode(node.rhs), node.op), '+');
 			}
 			return node;
 		},

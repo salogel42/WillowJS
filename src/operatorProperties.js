@@ -32,6 +32,7 @@ var operatorProperties = (function() {
 		'*' : new OperatorProperties(2, true, true, 1),
 		'-' : new OperatorProperties(1, false, false, 0),
 		'+' : new OperatorProperties(1, true, true, 0),
+		'\\pm' : new OperatorProperties(1, false, false, 0),
 		'\\sqrt' : new OperatorProperties(-1, false, false),
 		'|' : new OperatorProperties(-1, false, false),
 		'=' : new OperatorProperties(0, true, false),
