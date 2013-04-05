@@ -739,4 +739,13 @@ describe("WillowJS tests", function() {
 		testEqualityBreakdown('2\\sqrt{3/9}', '2\\sqrt{3}/3', equalityType.full);
 		testEqualityBreakdown('(2/3)\\sqrt{3}', '2\\sqrt{3}/3', equalityType.commuteCo);
 	});
+	it("plus/minus", function() {
+		testParseAndDisplay('1\\pm3', '1\\pm3', '1\\pm3', '1\\pm3',
+			outputType.latex, parser.parseEquationOrExpression);
+		testEqualityBreakdown('a\\pm1', 'a\\pm1', equalityType.verbatim);
+		testEvaluate('a\\pm1', null);
+		testEvaluate('2\\pm1+4', '\\pm1+6', parenMode.necessary);
+		testEvaluate('a\\pm1+3+4', 'a\\pm1+7', parenMode.necessary);
+		testEvaluate('3\\pm a+5', '\\pm a+8', parenMode.necessary);
+	});
 });

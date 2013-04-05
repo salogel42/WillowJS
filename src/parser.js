@@ -34,7 +34,8 @@ var parser = (function() {
 	 * Regular expression for detecting valid operators in this grammar.
 	 * @type {RegExp}
 	 */
-	var OPERATOR = new RegExp(/\+|\-|\*|\/|\^/);
+	var OPERATOR = new RegExp(/^(\+|\-|\*|\/|\^|\\pm)/);
+	var LATEX_COMMAND = new RegExp(/^\\[a-zA-Z]*/);
 	var EQUALITY_OPERATOR = new RegExp(/<=|=|>=|!=|<|>/g);
 
 	/**
@@ -207,15 +208,17 @@ var parser = (function() {
 			'expressionString' : expressionString
 		};
 		var closingLocation = -1;
-		// First check the sign
-		if (expressionString.charAt(0) === '-') {
+		// First check for unary operator
+		var op = getNextOp(expressionString);
+		if (op !== null) {
+			expressionString = expressionString.substring(op.length);
 			// unary - has same precedence as * and / since it is the same as -1*
-			var precedence = (/\d/.test(expressionString.charAt(1))) ? 2 : 1;
-			var exp = parseExpression(expressionString.substring(1), precedence);
+			var precedence = (/\d/.test(expressionString.charAt(0))) ? 2 : 1;
+			var exp = parseExpression(expressionString, precedence);
 			if (exp.expression === errorNode) { return errorNode; }
 			result.expressionString = exp.expressionString;
-			result.expression = expression.createUnaryExpression(exp.expression, '-');
-			if (exp.expression.type === 'number') {
+			result.expression = expression.createUnaryExpression(exp.expression, op);
+			if (op === '-' && exp.expression.type === 'number') {
 				if (!fractionUtils.isNegative(exp.expression.value) &&
 					(typeof exp.expression.value === 'number')) {
 					result.expression = expression.createSimpleExpression(
@@ -326,14 +329,17 @@ var parser = (function() {
 		}
 		if (result.expression === errorNode) { return errorNode; }
 		result.expressionString = result.expressionString.replace(STARTING_SPACE,'');
-		if (IMPLICIT.test(result.expressionString.charAt(0))) {
+		if (IMPLICIT.test(result.expressionString) && !OPERATOR.test(result.expressionString)) {
 			result.expressionString = '*' + result.expressionString;
 		}
 		return result;
 	}
-	function getNextOp(exp) {
-		if (exp && exp !== errorNode && exp.expressionString && exp.expressionString.length !== 0) {
-			return exp.expressionString.charAt(0);
+	function getNextOp(expressionString) {
+		if (expressionString.length !== 0) {
+			var op = expressionString.charAt(0);
+			var match = expressionString.match(LATEX_COMMAND);
+			if (match !== null) { op = match[0]; }
+			if (OPERATOR.test(op)) { return op; }
 		}
 		return null;
 	}
@@ -343,9 +349,10 @@ var parser = (function() {
 		var exp = parseSubExpression(expressionString);
 
 		var op;
-		while ((op = getNextOp(exp)) !== null && OPERATOR.test(op) && getPrecedence(op) > prec) {
+		while (exp && exp !== errorNode &&
+			(op = getNextOp(exp.expressionString)) !== null && getPrecedence(op) > prec) {
 			// Now that we have the first expression, and know there are more, get the next one.
-			var rhs = parseExpression(exp.expressionString.substring(1), getPrecedence(op));
+			var rhs = parseExpression(exp.expressionString.substring(op.length), getPrecedence(op));
 			if (rhs === errorNode) { return errorNode; }
 			// Since it was a valid expression, fold it in to a compound expression with all the
 			// ones we have found so far at this level.

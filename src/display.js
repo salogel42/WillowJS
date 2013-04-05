@@ -56,7 +56,7 @@ var display = (function() {
 		else { childOp = child.op; }
 		if (getPrecedence(parent.op) === 0) { return false; }
 		if (mode === parenMode.full) { return true; }
-		if (utils.isUnaryNegative(parent)) { return getPrecedence(child.op) < 2; }
+		if (utils.isUnaryPlusMinusOrNegative(parent)) { return getPrecedence(child.op) < 2; }
 		var side = utils.getSide(child);
 		// if it's a negative to a power, put parens around it
 		if (childOp === '-'  && parent.op === '^' && side === 'left') { return true; }
@@ -98,6 +98,7 @@ var display = (function() {
 		if (op === '<=') { op = (output === outputType.mathml) ? '&#x2264;' : '\\le'; }
 		if (op === '>=') { op = (output === outputType.mathml) ? '&#x2265;' : '\\ge'; }
 		if (op === '!=') { op = (output === outputType.mathml) ? '&#x2260;' : '\\ne'; }
+		if (op === '\\pm') { op = (output === outputType.mathml) ? '&#x00B1;' : '\\pm'; }
 		if (output === outputType.latex) { return op; }
 		return '<mo class="op" id=node' + id + '>' + op + '</mo>';
 	}
@@ -273,6 +274,10 @@ var display = (function() {
 					result = '<mfenced open=\'|\' close=\'|\' id=node' + node.id + '><mrow>' +
 						result + '</mrow></mfenced>';
 			}
+		} else if (node.type === 'unary') {
+			result = displayNode(node.child);
+			op = addSpaceAfterTeXCommandIfNecessary(op, result);
+			result = op + result;
 		} else if (node.type === 'ternary') {
 			var left = displayNode(node.left);
 			var middle = displayNode(node.middle);

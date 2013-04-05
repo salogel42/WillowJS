@@ -20,8 +20,14 @@ var utils = (function() {
 			if (op === '\\div') { return '/'; }
 			return op;
 		},
+		isUnaryPlusMinusOrNegative: function(node) {
+			return node.type === 'unary' && (node.op === '\\pm' || node.op === '-');
+		},
 		isUnaryNegative: function(node) {
 			return node.type === 'unary' && node.op === '-';
+		},
+		isUnaryPlusMinus: function(node) {
+			return node.type === 'unary' && node.op === '\\pm';
 		},
 		isAbsValue: function(node) {
 			return node.type === 'unary' && node.op === '|';
