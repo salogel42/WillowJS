@@ -212,6 +212,7 @@ describe("WillowJS tests", function() {
 		testEvaluate('x=3*2^2', 'x=12');
 		testEvaluate('5/4*4', '5');
 		testEvaluate('x=-5/3*6', 'x=-10');
+		testEvaluate('2(x-3)/2 + 3', 'x');
 	});
 	function testEvaluateLeftSubExpression(eqString, expectedResult) {
 		var exp = parser.parseEquation(eqString);

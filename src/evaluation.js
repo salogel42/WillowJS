@@ -300,7 +300,7 @@ var evaluate = (function() {
 		return null;
 	}
 
-	function groupRepeats(node) {
+	function groupRepeats(node, multiplyDivision) {
 		// If we could not factor anything out, we have our final answer (at
 		// least until node becomes part of a larger expression), so pretty it
 		// up by combining identifiers in multiplied terms.
@@ -315,8 +315,10 @@ var evaluate = (function() {
 				if (gcd !== 1) {
 					gcd = operator.invertNode(expression.createSimpleExpression('number', gcd));
 					node = expression.createCompoundExpression(
-						fullMultiply(expression.createCompoundExpression(gcd, node.lhs, '*')),
-						fullMultiply(expression.createCompoundExpression(gcd, node.rhs, '*')),
+						fullMultiply(expression.createCompoundExpression(gcd, node.lhs, '*'),
+							multiplyDivision),
+						fullMultiply(expression.createCompoundExpression(gcd, node.rhs, '*'),
+							multiplyDivision),
 						node.op);
 				}
 			}
@@ -722,6 +724,10 @@ var evaluate = (function() {
 
 	function combineWithCoefficients(node, op) {
 		printDebug('combining ', node, debugCoeff);
+		if (node.type === 'compound' && op === '/' && node.rhs.type === 'number') {
+			return combineWithCoefficients(expression.createCompoundExpression(
+				operator.invertNode(node.rhs), node.lhs, '*'), '*');
+		}
 		if (node.type === 'compound' && getPrecedence(op) === 2 &&
 			!utils.isOneOverSomething(node)) {
 			var lhsSplit = equality.splitCoefficientFromRest(node.lhs);
@@ -766,10 +772,10 @@ var evaluate = (function() {
 				node = combineWithCoefficients(node, node.op);
 				printDebug('combineWithCoefficients: ', node, debugMult);
 			}
-			if (node.op === '/') { return groupRepeats(node); }
+			if (node.op === '/') { return groupRepeats(node, multiplyDivision); }
 			if (node.op === '\\sqrt') {
 				return fullMultiply(expression.createCompoundExpression(
-					node.rhs, operator.invertNode(node.lhs), '^'));
+					node.rhs, operator.invertNode(node.lhs), '^'), multiplyDivision);
 			}
 			//*
 			if (multiplyDivision && node.op === '^' && node.rhs.type === 'compound') {
@@ -817,8 +823,11 @@ var evaluate = (function() {
 			// Allows for x^(-2)-x^(-2) evaluating to 0
 			if (node.op === '^') {
 				if (fractionUtils.isNodeNegative(node.rhs)) {
-					return operator.invertNode(fullMultiply(expression.createCompoundExpression(node.lhs,
-						fullMultiply(expression.createUnaryExpression(node.rhs, '-')), '^')));
+					return operator.invertNode(fullMultiply(
+						expression.createCompoundExpression(node.lhs,
+							fullMultiply(expression.createUnaryExpression(node.rhs, '-'),
+								multiplyDivision), '^'),
+						multiplyDivision));
 				}
 			}
 			if (node.op === '*') {
@@ -834,7 +843,7 @@ var evaluate = (function() {
 								expression.createSimpleExpression('number', node.rhs.value.bottom),
 								'*'),
 							multiplyDivision),
-							'/'));
+							'/'), multiplyDivision);
 					}
 					if (node.rhs.type === 'compound' && node.rhs.op === '/' &&
 						fractionUtils.isNodeFraction(node.lhs)) {
@@ -847,7 +856,7 @@ var evaluate = (function() {
 								expression.createSimpleExpression('number', node.lhs.value.bottom),
 								'*'),
 							multiplyDivision),
-							'/'));
+							'/'), multiplyDivision);
 					}
 					/*
 					if (fractionUtils.isNodeFraction(node.lhs)) {
@@ -893,7 +902,7 @@ var evaluate = (function() {
 						node.rhs.op), multiplyDivision);
 				}
 			}
-			node = groupRepeats(node);
+			node = groupRepeats(node, multiplyDivision);
 		}
 		if (node.type === 'unary') {
 			var childNode = fullMultiply(node.child, multiplyDivision);
@@ -901,13 +910,15 @@ var evaluate = (function() {
 			if (node.op === '\\sqrt') {
 				var power = expression.createSimpleExpression('number',
 					fractionUtils.createFractionValue(1, 2));
-				return fullMultiply(expression.createCompoundExpression(childNode, power, '^'));
+				return fullMultiply(
+					expression.createCompoundExpression(childNode, power, '^'), multiplyDivision);
 			}
 			node = expression.createUnaryExpression(childNode, node.op);
 			if (node.op !== '-') { return node;}
 			var arith = self.evaluateArithmetic(node, multiplyDivision);
 			return (arith !== null) ? fullMultiply(arith, multiplyDivision) : node;
 		}
+		printDebug('returning: ', node, debugMult);
 		return node;
 	}
 
