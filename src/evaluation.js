@@ -380,21 +380,18 @@ var evaluate = (function() {
 		}
 		if (a.type === 'compound' && a.op === '/') { return (containsDivTerm(b, a.rhs)) ? 0 : -1; }
 		if (b.type === 'compound' && b.op === '/') { return (containsDivTerm(a, b.rhs)) ? 0 : 1; }
+		// We want to treat number node radicals the same way as non-number radicals, so convert
+		// them before doing any comparison.
+		if (a.type === 'number' && fractionUtils.isValueRadical(a.value)) {
+			a = convertRadicalNumberNodeToSqrt(a);
+		}
+		if (b.type === 'number' && fractionUtils.isValueRadical(b.value)) {
+			b = convertRadicalNumberNodeToSqrt(b);
+		}
 		if (a.type === 'number' && b.type === 'number') {
-			if (fractionUtils.isValueRadical(a.value) && fractionUtils.isValueRadical(b.value)) {
-				if (fractionUtils.compareFractions(a.value, b.value, true)) { return 0; }
-				var diff = compareNumbers(a.value.radicand, b.value.radicand);
-				return (diff === 0) ? compareNumbers(a.value.power, b.value.power) : diff;
-			}
-			if (fractionUtils.isValueRadical(a.value)) { return 1; }
-			if (fractionUtils.isValueRadical(b.value)) { return -1; }
 			return compareNumbers(a.value, b.value);
 		}
-		// If one of them is a straight up number (int or frac), it's smaller than whatever the
-		// other thing thing is (probably compound or identifier).  However, we want to treat
-		// radicals essentially like variables at this point, so don't dismiss them, keep checking.
-		if (a.type === 'number' && !fractionUtils.isValueRadical(a.value) ||
-			b.type === 'number' && !fractionUtils.isValueRadical(b.value)) {
+		if (a.type === 'number' || b.type === 'number') {
 			return (a.type === 'number') ? -1 : 1;
 		}
 		if (a.type === 'identifier' && b.type === 'identifier') {
@@ -1256,6 +1253,15 @@ var evaluate = (function() {
 						node.rhs.lhs, '^')),
 					'\\sqrt');
 			}
+		}
+		return node;
+	}
+	function convertRadicalNumberNodeToSqrt(node) {
+		if (node.type === 'number' && fractionUtils.isValueRadical(node.value)) {
+			node = expression.createCompoundExpression(
+				expression.createSimpleExpression('number', node.value.power),
+				expression.createSimpleExpression('number', node.value.radicand),
+				'\\sqrt');
 		}
 		return node;
 	}
