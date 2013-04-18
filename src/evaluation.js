@@ -40,6 +40,7 @@ var evaluate = (function() {
 	var debugCompare = false;
 	var debugCoeff = false;
 	var debugFullEq = false;
+	var debugCommonDiv = false;
 
 	function printDebug(preMessage, node, debugType) {
 		if (debugType) {
@@ -609,7 +610,8 @@ var evaluate = (function() {
 					result.rhs, '/');
 				} else if (node.op === '/' && result.type === 'compound' && result.op === '/') {
 					result = expression.createCompoundExpression(result.lhs,
-						sortTerms(expression.createCompoundExpression(result.rhs, terms[j], '*')),
+						evaluate.evaluateRec(
+							expression.createCompoundExpression(result.rhs, terms[j], '*')),
 						'/');
 				} else if (node.op === '/' && terms[j].type === 'compound' &&
 					terms[j].op === '/') {
@@ -1105,6 +1107,7 @@ var evaluate = (function() {
 		return (node.type === 'compound' && node.op === '/' && node.rhs.type !== 'number');
 	}
 	function pullAllTermsOverCommonDivisor(node) {
+		printDebug('in commonDivisor: ', node, debugCommonDiv);
 		if (node.type === 'unary') {
 			var gathered = pullAllTermsOverCommonDivisor(node.child);
 			if (isFractionRhsNotNumber(gathered)) {
@@ -1117,6 +1120,8 @@ var evaluate = (function() {
 		}
 		var gatheredLhs = pullAllTermsOverCommonDivisor(node.lhs);
 		var gatheredRhs = pullAllTermsOverCommonDivisor(node.rhs);
+		printDebug('gatheredLhs: ', gatheredLhs, debugCommonDiv);
+		printDebug('gatheredRhs: ', gatheredRhs, debugCommonDiv);
 		if (!isFractionRhsNotNumber(gatheredLhs) && !isFractionRhsNotNumber(gatheredRhs)) {
 			return node;
 		}
@@ -1134,13 +1139,17 @@ var evaluate = (function() {
 		}
 		if (getPrecedence(node.op) === 2) {
 			if (node.op === '/') {
+				printDebug('in commonDivisor, divided! ', node, debugCommonDiv);
+
 				var temp = topRight;
 				topRight = bottomRight;
 				bottomRight = temp;
 			}
-			return expression.createCompoundExpression(
+			result = expression.createCompoundExpression(
 				multiplyNodesAndEvaluate(topLeft, topRight, '*'),
 				multiplyNodesAndEvaluate(bottomLeft, bottomRight, '*'), '/');
+			printDebug('result: ', result, debugCommonDiv);
+			return result;
 		}
 		if (getPrecedence(node.op) === 1) {
 			var bottom = multiplyNodesAndEvaluate(bottomLeft, bottomRight, '*');
@@ -1150,8 +1159,12 @@ var evaluate = (function() {
 				expression.createCompoundExpression(topLeft, topRight, node.op));
 			printDebug('top: ', top, debugSynth);
 			printDebug('bottom: ', bottom, debugSynth);
-			return expression.createCompoundExpression(top, bottom, '/');
+			result = expression.createCompoundExpression(top, bottom, '/');
+			printDebug('result: ', result, debugCommonDiv);
+			return result;
 		}
+		printDebug('returning node: ', node, debugCommonDiv);
+		return node;
 	}
 
 	function hasNonMultiplication(node) {
@@ -1562,6 +1575,7 @@ var evaluate = (function() {
 			printDebug('mult2:', node, debug);
 			node = sortTerms(node, false);
 			printDebug('sort2:', node, debug);
+			node = pullAllTermsOverCommonDivisor(node);
 			if (typeof doSynth === 'undefined' || doSynth === true) {
 				node = trySyntheticDivision(node, false);
 				printDebug('synth:', node, debug);

@@ -479,7 +479,7 @@ describe("WillowJS tests", function() {
 		testEvaluate('y=x^{yz+2x^2-y^3x}-2x+3+3x+e+x+4+1','y=((e+x^((2x^2-xy^3)+yz))+2x)+8');
 		testEvaluate('z=4/(x2+2y)', 'z=2/(x+y)');
 		testEvaluate('a((2/3)a+1)', '2/3a^2+a');
-		testEvaluate('1/2 (a^2)/b(2/1)+2', '2+a^2/b');
+		testEvaluate('1/2 (a^2)/b(2/1)+2', '(a^2+2b)/b');
 		testEvaluate('(a^2 +2ab+b^2)/((a+b)(a+b))', '1');
 		testEvaluate('(-1*-4-2x)/(2*-1)', 'x-2');
 	});
@@ -502,7 +502,7 @@ describe("WillowJS tests", function() {
 		testEqualityBreakdown('z/z^2', '1/z', equalityType.full);
 		testEqualityBreakdown('1/a', 'a^(-1)', equalityType.full);
 		testEqualityBreakdown('(12-a)/(x)', '(12-a)/(x)+x', equalityType.none);
-		testEqualityBreakdown('(12-a+x^2)/(x)', '(12-a)/(x)+x', equalityType.fullEq);
+		testEqualityBreakdown('(12-a+x^2)/(x)', '(12-a)/(x)+x', equalityType.full);
 	});
 	it("check equivalence of exponents written in different ways", function() {
 		testEvaluate('z=\\left(x\\cdot 2\\right)^{2+z}x', 'z=(4*2^z)x^(z+3)');
@@ -667,6 +667,7 @@ describe("WillowJS tests", function() {
 		testNodeWrapper('simplify',['(1-\\sqrt{2})\\sqrt{3}'], '-\\sqrt{6}+\\sqrt{3}');
 		testNodeWrapper('simplify',['(1-2\\sqrt{2})2\\sqrt{2}'], '2\\cdot\\sqrt{2}-8');
 		testNodeWrapper('eqBreakdownNoFullEq',['(x-3-2i)(x-3+2i)', '(x-3-2i)(x-(3-2i))'], 'full');
+		testNodeWrapper('eqBreakdownNoFullEq',['(x-i)(x+i)', 'x^2+1'], 'full');
 	});
 	it("polydiv", function() {
 		testNodeWrapper('polydiv', ['0', 'x+2'], '0');
@@ -749,4 +750,8 @@ describe("WillowJS tests", function() {
 		testEvaluate('a\\pm1+3+4', 'a\\pm1+7', parenMode.necessary);
 		testEvaluate('3\\pm a+5', '\\pm a+8', parenMode.necessary);
 	});
+	it("common denominator", function() {
+		testNodeWrapper('eqBreakdownNoFullEq',['1/x+3/x^2', '(3+x)/x^2'], 'full');
+
+	})
 });
