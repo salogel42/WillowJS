@@ -78,6 +78,10 @@ var parser = (function() {
 	 * Regular expressions for determining if a string starts with a LaTeX open paren/close paren.
 	 * @type {RegExp}
 	 */
+	var LEFT = new RegExp(/^\\left/);
+	var PAREN_OPEN = new RegExp(/^\(/);
+	var ABS_OPEN = new RegExp(/^\|/);
+
 	var LEFT_PAREN = new RegExp(/^\\left\(/);
 	var RIGHT_PAREN = new RegExp(/^\\right\)/);
 
@@ -109,6 +113,13 @@ var parser = (function() {
 			default: return ')';
 		}
 	}
+	function getLeftAndRightRegexes(open) {
+		if (ABS_OPEN.test(open)) {
+			return { left : LEFT_ABS, right : RIGHT_ABS };
+		} else if (PAREN_OPEN.test(open)) {
+			return { left : LEFT_PAREN, right : RIGHT_PAREN };
+		}
+	}
 
 	function findClosingBrace(expressionString, open) {
 		var close = getMatchingGroupingSymbol(open);
@@ -123,41 +134,17 @@ var parser = (function() {
 		return -1;
 	}
 
-	function findMatchingLaTeXAbs(expressionString) {
+	function findMatchingLaTeXParen(expressionString, open) {
+		var regexes = getLeftAndRightRegexes(expressionString);
 		var parity = 1;
-		for (var i = 0; i < expressionString.length - 3; i++) {
+		for (var i = 1; i < expressionString.length; i++) {
 			var expI = expressionString.substring(i);
-			if (RIGHT_ABS.test(expI)) { parity--; }
-			if (LEFT_ABS.test(expI)) { parity++; }
+			if (regexes.right.test(expI)) { parity--; }
+			if (regexes.left.test(expI)) { parity++; }
 			if (parity === 0) { return i; }
 			if (parity < 0) { break; }
 		}
 		console.error('Mismatched absolute value!');
-		return -1;
-	}
-
-	function findMatchingLaTeXParen(expressionString) {
-		var parity = 1;
-		for (var i = 0; i < expressionString.length - 3; i++) {
-			var expI = expressionString.substring(i);
-			if (RIGHT_PAREN.test(expI)) { parity--; }
-			if (LEFT_PAREN.test(expI)) { parity++; }
-			if (parity === 0) { return i; }
-			if (parity < 0) { break; }
-		}
-		console.error('Mismatched parentheses!');
-		return -1;
-	}
-
-	function findMatchingParen(expressionString) {
-		var parity = 0;
-		for (var i = 0; i < expressionString.length; i++) {
-			if (expressionString.charAt(i) === '(') { parity++; }
-			if (expressionString.charAt(i) === ')') { parity--; }
-			if (parity === 0) { return i; }
-			if (parity < 0) { break; }
-		}
-		console.error('Mismatched parentheses!');
 		return -1;
 	}
 
@@ -173,13 +160,16 @@ var parser = (function() {
 		}
 		return expression.createCompoundExpression(top, bottom, op);
 	}
-	function getSubExpressionAtSubstring(expressionString, endLocation) {
+
+	function getSubExpressionAtSubstring(expressionString, endLocation, start, end) {
+		if (typeof start === 'undefined') { start = 1; }
+		if (typeof end === 'undefined') { end = 1; }
 		if (endLocation === -1) { return null; }
-		var parse = parseExpression(expressionString.substring(1, endLocation), 0);
+		var parse = parseExpression(expressionString.substring(start, endLocation), 0);
 		if (parse === errorNode || parse.expression === errorNode) { return errorNode; }
 		return {
 			'expression' : parse.expression,
-			'expressionString' : expressionString.substring(endLocation + 1)
+			'expressionString' : expressionString.substring(endLocation + end)
 		};
 	}
 
@@ -232,11 +222,17 @@ var parser = (function() {
 			closingLocation = findClosingBrace(expressionString, expressionString.charAt(0));
 			result = getSubExpressionAtSubstring(expressionString, closingLocation);
 		} else if (expressionString.charAt(0) === '\\') { // it is probably LaTeX
-			if (INFINITY.test(expressionString)) {
-				result.expressionString = expressionString.substring(6);
+			var latex = expressionString.match(/^\\[a-z]+/i);
+			if (latex === null || (latex = latex[0]).length === 0) {
+				console.error('Invalid syntax at: ' + expressionString);
+				return errorNode;
+			}
+			expressionString = expressionString.substring(latex.length);
+
+			if (INFINITY.test(latex)) {
+				result.expressionString = expressionString;
 				result.expression = expression.createSimpleExpression('identifier', '\\infty');
-			} else if (SQUARE_ROOT.test(expressionString)) {
-				expressionString = expressionString.substring(5);
+			} else if (SQUARE_ROOT.test(latex)) {
 				var open = expressionString.charAt(0);
 				var innerExpression = getExpressionWithinBrace(expressionString, open);
 				if (open === '[') {
@@ -259,8 +255,7 @@ var parser = (function() {
 					}
 				}
 				result.expressionString = innerExpression.expressionString;
-			} else if (FRACTION.test(expressionString)) {
-				expressionString = expressionString.substring(5);
+			} else if (FRACTION.test(latex)) {
 				var topExpression = getExpressionWithinBrace(expressionString, '{');
 				var bottomExpression = getExpressionWithinBrace(
 					topExpression.expressionString, '{');
@@ -268,34 +263,18 @@ var parser = (function() {
 					bottomExpression.expression, '/');
 				if (result.expression === errorNode) { return errorNode; }
 				result.expressionString = bottomExpression.expressionString;
-			} else if (LEFT_PAREN.test(expressionString)) {
-				expressionString = expressionString.substring(6);
+			} else if (PAREN_OPEN.test(expressionString)) {
 				var close = findMatchingLaTeXParen(expressionString);
-				result = {
-					'expression' : parseExpression(
-						expressionString.substring(0, close), 0).expression,
-					'expressionString' : expressionString.substring(close + 7)
-				};
-			} else if (LEFT_ABS.test(expressionString)) {
-				expressionString = expressionString.substring(6);
-				var absClose = findMatchingLaTeXAbs(expressionString);
-				result = {
-					'expression' : parseExpression(
-						expressionString.substring(0, absClose), 0).expression,
-					'expressionString' : expressionString.substring(absClose + 7)
-				};
+				result = getSubExpressionAtSubstring(expressionString, close, 1, 7);
+			} else if (ABS_OPEN.test(expressionString)) {
+				var close = findMatchingLaTeXParen(expressionString);
+				result = getSubExpressionAtSubstring(expressionString, close, 1, 7);
 				if (result.expression !== errorNode) {
 					result.expression = expression.createUnaryExpression(result.expression, '|');
 				}
 			} else {
-				var identifierValue = expressionString.match(/^\\[a-z]+/i)[0];
-				if (identifierValue.length === 0) {
-					console.error('Unknown function starting at: ' + expressionString);
-					return errorNode;
-				}
-				result.expression =
-					expression.createSimpleExpression('identifier', identifierValue);
-				result.expressionString = expressionString.substring(identifierValue.length);
+				result.expression = expression.createSimpleExpression('identifier', latex);
+				result.expressionString = expressionString;
 			}
 		} else {
 			// Now, should be an identifier or number. Grab it and
