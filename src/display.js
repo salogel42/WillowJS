@@ -214,6 +214,15 @@ var display = (function() {
 		}
 		return command;
 	}
+	function wrapInParens(exp, node) {
+		if (output === outputType.mathml) {
+			return '<mfenced id=node' + node.id + '><mrow>' + exp + '</mrow></mfenced>';
+		} else if (output === outputType.latex) {
+			return '\\left(' + exp + '\\right)';
+		} else {
+			return '(' + exp + ')';
+		}
+	}
 	function displayNode(node) {
 		if (node.type === 'identifier') { return addNodeMathML(node.value, node.id, true); }
 		var result = '';
@@ -258,10 +267,17 @@ var display = (function() {
 				}
 			} else if (node.op === '/') {
 				result = addFractionMathML(lhsString, rhsString, node.id, false);
+			} else if (node.op === '\\log') {
+				var base = '';
+				if (lhsString === 'e') { op = '\\ln';}
+				else if (node.lhs.type === 'number' && node.lhs.value !== 10) {
+					base = '_' + lhsString;
+				}
+				result = op + base + wrapInParens(rhsString, node);
 			}
-		}
-		else if (utils.isUnaryNegative(node)) { result = op + displayNode(node.child); }
-		else if (utils.isAbsValue(node)) {
+		} else if (utils.isUnaryNegative(node)) {
+			result = op + displayNode(node.child);
+		} else if (utils.isAbsValue(node)) {
 			result = displayNode(node.child);
 			switch (output) {
 				case outputType.text:
@@ -294,12 +310,7 @@ var display = (function() {
 		}
 		if (node.parent !== null) {
 			if (addParens(node.parent, node)) {
-				if (output === outputType.mathml) {
-					result = '<mfenced id=node' + node.id + '><mrow>' + result +
-						'</mrow></mfenced>';
-				} else if (output === outputType.latex) {
-					result = '\\left(' + result + '\\right)';
-				} else { result = '(' + result + ')'; }
+				result = wrapInParens(result, node);
 			} else if (output === outputType.mathml && node.type !== 'number' &&
 				(showDivSign !== divSign.never || node.op !== '/') && node.op !== '^') {
 				result = '<mrow id=node' + node.id + '>' + result + '</mrow>';
