@@ -105,12 +105,17 @@ var parser = (function() {
 	var LATEX_GREATER_OR_EQUAL = new RegExp(/\\ge/g);
 	var LATEX_NOT_EQUAL = new RegExp(/\\ne/g);
 
+	var LOG = new RegExp(/\\log/);
+	var LN = new RegExp(/\\ln/);
+
+	var DEFAULT_LOG_BASE = 10;
+
 	function getMatchingGroupingSymbol(open) {
 		switch (open) {
 			case '{': return '}';
 			case '[': return ']';
 			case '(': return ')';
-			default: return ')';
+			default: return '';
 		}
 	}
 	function getLeftAndRightRegexes(open) {
@@ -263,13 +268,32 @@ var parser = (function() {
 					bottomExpression.expression, '/');
 				if (result.expression === errorNode) { return errorNode; }
 				result.expressionString = bottomExpression.expressionString;
-			} else if (PAREN_OPEN.test(expressionString)) {
+			} else if (LOG.test(latex) || LN.test(latex)) {
+				var base = expression.createSimpleExpression('number', DEFAULT_LOG_BASE);
+				var currentOp = '\\log';
+				if (LN.test(latex)) { base = expression.createSimpleExpression('identifier', 'e'); }
+				expressionString = expressionString.replace(STARTING_SPACE, '');
+				if (expressionString.charAt(0) === '_') {
+					if (expressionString.charAt(1) === '{') {
+						parsedBase = getExpressionWithinBrace(expressionString, '{');
+						expressionString = parsedBase.expressionString;
+					} else {
+						parsedBase = parseSubExpression(expressionString.substring(1, 2));
+						expressionString = expressionString.substring(2);
+					}
+					base = parsedBase.expression;
+				}
+				var logerand = parseExpression(expressionString,
+					operatorProperties[currentOp].precedence);
+				result.expression = expression.createCompoundExpression(base,
+					logerand.expression, currentOp);
+				if (result.expression === errorNode) { return errorNode; }
+				result.expressionString = logerand.expressionString;
+			} else if (PAREN_OPEN.test(expressionString) || ABS_OPEN.test(expressionString)) {
+				var abs = ABS_OPEN.test(expressionString);
 				var close = findMatchingLaTeXParen(expressionString);
-				result = getSubExpressionAtSubstring(expressionString, close, 1, 7);
-			} else if (ABS_OPEN.test(expressionString)) {
-				var close = findMatchingLaTeXParen(expressionString);
-				result = getSubExpressionAtSubstring(expressionString, close, 1, 7);
-				if (result.expression !== errorNode) {
+				result = getSubExpressionAtSubstring(expressionString, close, 1, '\\right)'.length);
+				if (abs && result.expression !== errorNode) {
 					result.expression = expression.createUnaryExpression(result.expression, '|');
 				}
 			} else {
@@ -352,7 +376,7 @@ var parser = (function() {
 			expressionString = expressionString.replace(LATEX_DIV,'/');
 			// TODO(sdspikes) : disallow equals/inequality here?
 		//			if (/(=|<|>|)/.)
-			var exp = parseExpression(expressionString, 0, 1);
+			var exp = parseExpression(expressionString, 0);
 			if (exp === errorNode) { return errorNode; }
 			if (exp.expressionString !== '') {
 				console.error('Expression contained extra characters: ' + exp.expressionString);
