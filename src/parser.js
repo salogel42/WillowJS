@@ -274,12 +274,13 @@ var parser = (function() {
 				if (LN.test(latex)) { base = expression.createSimpleExpression('identifier', 'e'); }
 				expressionString = expressionString.replace(STARTING_SPACE, '');
 				if (expressionString.charAt(0) === '_') {
-					if (expressionString.charAt(1) === '{') {
+					expressionString = 	expressionString.substring(1);
+					if (expressionString.charAt(0) === '{') {
 						parsedBase = getExpressionWithinBrace(expressionString, '{');
 						expressionString = parsedBase.expressionString;
 					} else {
-						parsedBase = parseSubExpression(expressionString.substring(1, 2));
-						expressionString = expressionString.substring(2);
+						parsedBase = parseSubExpression(expressionString.substring(0, 1));
+						expressionString = expressionString.substring(1);
 					}
 					base = parsedBase.expression;
 				}

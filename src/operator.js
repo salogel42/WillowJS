@@ -279,7 +279,7 @@ var operator = (function() {
 					operator['/'].evaluateValues(1, lhsValue));
 			}
 		),
-		'\\log' : new Operator(noopEvaluation, noopEvaluationValues),
+		'\\log' : new Operator(noopEvaluation('\\log'), noopEvaluationValues('\\log')),
 		'|' : new Operator(),
 		rationalizeDenominator: function(node) {
 			if (node.type === 'number' && fractionUtils.isValueFraction(node.value) &&

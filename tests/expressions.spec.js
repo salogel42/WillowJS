@@ -752,6 +752,12 @@ describe("WillowJS tests", function() {
 	});
 	it("common denominator", function() {
 		testNodeWrapper('eqBreakdownNoFullEq',['1/x+3/x^2', '(3+x)/x^2'], 'full');
-
+	})
+	it("logs", function() {
+		testNodeWrapper('parse',['\\log(2)', '\\log_4(2)', '\\log_e(5)', '\\ln(8)'],
+			'\\log\\left(2\\right),\\log_4\\left(2\\right),\\ln\\left(5\\right),\\ln\\left(8\\right)');
+		testNodeWrapper('simplify',['\\log(2)', '\\log_4(2)', '\\log_e(5)', '\\ln(8)'],
+			'\\log\\left(2\\right),\\log_4\\left(2\\right),\\ln\\left(5\\right),\\ln\\left(8\\right)');
+		testNodeWrapper('commuteCo',['7+\\log(2)', '\\log_{10}(2)+7'], true);
 	})
 });
