@@ -114,42 +114,41 @@ var equality = (function() {
 		return self.normalizeTermSign(node);
 	}
 
-	function equivalentModuloCommutativityHelper(processedNode, processedOther) {
-		if (processedOther === errorNode || processedNode === errorNode) { return false; }
-		if (processedOther.syntacticEquals(processedNode)) { return true; }
-		if (processedOther.type === processedNode.type) {
-			if (utils.isSimpleExpression(processedOther)) {
-				return fractionUtils.compareFractions(
-					processedOther.value, processedNode.value, true);
-			} else if (processedOther.type === 'unary') {
-				return processedOther.op === processedNode.op &&
-					equivalentModuloCommutativityHelper(processedOther.child, processedNode.child);
-			} else if (processedNode.type === 'ternary') {
-				return equivalentModuloCommutativityHelper(
-						processedNode.left, processedOther.left) &&
-					equivalentModuloCommutativityHelper(
-						processedNode.middle, processedOther.middle) &&
-					equivalentModuloCommutativityHelper(
-						processedNode.right, processedOther.right);
+	function equivalentModuloCommutativityHelper(node, other) {
+		if (other === errorNode || node === errorNode) { return false; }
+		if (other.syntacticEquals(node)) { return true; }
+		if (other.type === node.type) {
+			if (utils.isSimpleExpression(other)) {
+				return fractionUtils.compareFractions(other.value, node.value, true);
+			} else if (other.type === 'unary') {
+				return other.op === node.op &&
+					equivalentModuloCommutativityHelper(other.child, node.child);
+			} else if (node.type === 'ternary') {
+				var leftCompare = other.left;
+				var rightCompare = other.right;
+				if (operatorProperties.getInverseInequality(node.op1) === other.op1 &&
+					operatorProperties.getInverseInequality(node.op2) === other.op2) {
+					leftCompare = other.right;
+					rightCompare = other.left;
+				} else if (other.op1 !== node.op1 || other.op2 !== node.op2) { return false; }
+				return equivalentModuloCommutativityHelper(node.left, leftCompare) &&
+					equivalentModuloCommutativityHelper(node.middle, other.middle) &&
+					equivalentModuloCommutativityHelper(node.right, rightCompare);
 			}
-			processedOther = expr.makeCommutativeIfNecessary(processedOther);
-			processedNode = expr.makeCommutativeIfNecessary(processedNode);
-			if (processedOther.op !== processedNode.op) {
-				if (operatorProperties.getInverseInequality(processedNode.op) ===
-					processedOther.op) {
-					processedOther = expression.createCompoundExpression(processedOther.rhs,
-						processedOther.lhs, processedNode.op);
+			other = expr.makeCommutativeIfNecessary(other);
+			node = expr.makeCommutativeIfNecessary(node);
+			if (other.op !== node.op) {
+				if (operatorProperties.getInverseInequality(node.op) === other.op) {
+					other = expression.createCompoundExpression(other.rhs, other.lhs, node.op);
 				} else { return false; }
 			}
-			if (!operatorProperties[processedOther.op].commutative) {
-				return equivalentModuloCommutativityHelper(
-						processedNode.lhs, processedOther.lhs) &&
-					equivalentModuloCommutativityHelper(
-						processedNode.rhs, processedOther.rhs);
+			if (!operatorProperties[other.op].commutative) {
+				return equivalentModuloCommutativityHelper(node.lhs, other.lhs) &&
+					equivalentModuloCommutativityHelper(node.rhs, other.rhs);
 			}
-			var otherTerms = getAllTermsAtLevel(processedOther, processedOther.op);
-			var nodeTerms = getAllTermsAtLevel(processedNode, processedNode.op);
-			return allTermsMatch(otherTerms, nodeTerms, processedNode.op);
+			var otherTerms = getAllTermsAtLevel(other, other.op);
+			var nodeTerms = getAllTermsAtLevel(node, node.op);
+			return allTermsMatch(otherTerms, nodeTerms, node.op);
 		}
 		return false;
 	}
