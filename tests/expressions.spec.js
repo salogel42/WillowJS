@@ -763,4 +763,11 @@ describe("WillowJS tests", function() {
 			'\\log\\left(2\\right),\\log_4\\left(2\\right),\\ln\\left(5\\right),\\ln\\left(8\\right)');
 		testNodeWrapper('commuteCo',['7+\\log(2)', '\\log_{10}(2)+7'], true);
 	})
+	it("something over exponential", function() {
+		testNodeWrapper('parse',['\\log(2)', '\\log_4(2)', '\\log_e(5)', '\\ln(8)'],
+			'\\log\\left(2\\right),\\log_4\\left(2\\right),\\ln\\left(5\\right),\\ln\\left(8\\right)');
+		testNodeWrapper('simplify',['\\log(2)', '\\log_4(2)', '\\log_e(5)', '\\ln(8)'],
+			'\\log\\left(2\\right),\\log_4\\left(2\\right),\\ln\\left(5\\right),\\ln\\left(8\\right)');
+		testNodeWrapper('commuteCo',['7+\\log(2)', '\\log_{10}(2)+7'], true);
+	})
 });
