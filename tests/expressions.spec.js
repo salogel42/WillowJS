@@ -620,6 +620,9 @@ describe("WillowJS tests", function() {
 		// Note: no error/sanity checking
 		testEvaluate('2+3<x-5 <5', '5<x-5<5');
 		testEqualityBreakdown('-2x+17-1<x-1<2x+7', '-2x+4*3+5<x<2x+4+4', equalityType.fullEq);
+		testEqualityBreakdown('-1<x<7', '7>x>-1', equalityType.commuteCo);
+		testEqualityBreakdown('-1<x<-5/3', '-5/3>x>-1', equalityType.commuteCo);
+		testEqualityBreakdown('-1<x<-5/3', '-1>x>-5/3', equalityType.none);
 	});
 	it("solving for a variable", function() {
 		testSolveForVariable('-x=4', 'x', ['x=-4']);
