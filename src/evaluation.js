@@ -602,7 +602,7 @@ var evaluate = (function() {
 					result = expression.createUnaryExpression(expression.createCompoundExpression(
 						result, terms[j].child, node.op), terms[j].op);
 				} else if (node.op === '*' && result.type === 'compound' && result.op === '/') {
-					return expression.createCompoundExpression(arithmeticEvaluation(
+					result = expression.createCompoundExpression(arithmeticEvaluation(
 						expression.createCompoundExpression(result.lhs, terms[j], '*')),
 					result.rhs, '/');
 				} else if (node.op === '/' && result.type === 'compound' && result.op === '/') {

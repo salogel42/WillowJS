@@ -763,4 +763,7 @@ describe("WillowJS tests", function() {
 			'\\log\\left(2\\right),\\log_4\\left(2\\right),\\ln\\left(5\\right),\\ln\\left(8\\right)');
 		testNodeWrapper('commuteCo',['7+\\log(2)', '\\log_{10}(2)+7'], true);
 	})
+	it("something over exponential", function() {
+		testNodeWrapper('simplify',['10/2^n', 'a/2^n', 'x/(3*a)'], '\\frac{10}{2^n},\\frac{a}{2^n},\\frac{x}{3a}');
+	})
 });
