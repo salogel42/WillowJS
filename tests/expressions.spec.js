@@ -755,15 +755,18 @@ describe("WillowJS tests", function() {
 	});
 	it("common denominator", function() {
 		testNodeWrapper('eqBreakdownNoFullEq',['1/x+3/x^2', '(3+x)/x^2'], 'full');
-	})
+	});
 	it("logs", function() {
 		testNodeWrapper('parse',['\\log(2)', '\\log_4(2)', '\\log_e(5)', '\\ln(8)'],
 			'\\log\\left(2\\right),\\log_4\\left(2\\right),\\ln\\left(5\\right),\\ln\\left(8\\right)');
 		testNodeWrapper('simplify',['\\log(2)', '\\log_4(2)', '\\log_e(5)', '\\ln(8)'],
 			'\\log\\left(2\\right),\\log_4\\left(2\\right),\\ln\\left(5\\right),\\ln\\left(8\\right)');
 		testNodeWrapper('commuteCo',['7+\\log(2)', '\\log_{10}(2)+7'], true);
-	})
+		testNodeWrapper('simplify',['\\log(2)n', '\\log_4 2^n', '\\log_e 5n + 2', '\\ln 8v^2-2'],
+			'\\log\\left(2n\\right),\\log_4\\left(2^n\\right),\\ln\\left(5n\\right)+2,\\ln\\left(8v^2\\right)-2');
+	});
 	it("something over exponential", function() {
-		testNodeWrapper('simplify',['10/2^n', 'a/2^n', 'x/(3*a)'], '\\frac{10}{2^n},\\frac{a}{2^n},\\frac{x}{3a}');
-	})
+		testNodeWrapper('simplify',['10/2^n', 'a/2^n', 'x/(3*a)'],
+			'\\frac{10}{2^n},\\frac{a}{2^n},\\frac{x}{3a}');
+	});
 });

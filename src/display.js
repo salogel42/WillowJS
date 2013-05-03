@@ -273,7 +273,8 @@ var display = (function() {
 				else if (node.lhs.type === 'number' && node.lhs.value !== 10) {
 					base = '_' + lhsString;
 				}
-				result = op + base + wrapInParens(rhsString, node);
+				if (!addParens(node, node.rhs)) { rhsString = wrapInParens(rhsString, node); }
+				result = op + base + rhsString;
 			}
 		} else if (utils.isUnaryNegative(node)) {
 			result = op + displayNode(node.child);
