@@ -44,7 +44,8 @@ var display = (function() {
 	function addParens(parent, child) {
 		if (parent === null || child === null) { return false; }
 		if (child.type === 'unary' && child.op === '|') { return false; }
-		if ((child.type === 'unary' || child.type === 'compound') && child.op === '\\sqrt') {
+		if (((child.type === 'unary' || child.type === 'compound') && child.op === '\\sqrt') ||
+			child.op === '\\log') {
 			return false;
 		}
 		if (parent.op === '/' && showDivSign === divSign.never && output !== outputType.text) {

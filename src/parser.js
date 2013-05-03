@@ -284,7 +284,8 @@ var parser = (function() {
 					}
 					base = parsedBase.expression;
 				}
-				var logerand = parseExpression(expressionString, 1);
+				var logerand = parseExpression(expressionString,
+					operatorProperties[currentOp].precedence);
 				result.expression = expression.createCompoundExpression(base,
 					logerand.expression, currentOp);
 				if (result.expression === errorNode) { return errorNode; }

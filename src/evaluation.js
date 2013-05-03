@@ -220,7 +220,9 @@ var evaluate = (function() {
 			return expression.createCompoundExpression(node.child,
 				expression.createSimpleExpression('number', -1), '*');
 		}
-		if (node.type !== 'compound' || getPrecedence(node.op) < 2) { return node; }
+		if (node.type !== 'compound' || getPrecedence(node.op) < 2 || node.op === '\\log') {
+			return node;
+		}
 		if (node.op === '^' && !identifierNode.syntacticEquals(node.lhs)) {
 			var newBase = groupRepeatedIdentifierOnLhs(
 				expr.makeCommutativeIfNecessary(node.lhs), identifierNode);
@@ -1380,6 +1382,7 @@ var evaluate = (function() {
 		printDebug('arithmeticEvaluation: ', node, debugArith);
 		if (node.simplified) { return node; }
 		var newNode = operator.rationalizeDenominator(node);
+		printDebug('newNode: ', node, debugArith);
 		if (!node.syntacticEquals(newNode)) { return newNode; }
 		if (node.type === 'number' && fractionUtils.isValueFraction(node.value)) {
 			newNode = expression.createSimpleExpression('number',
@@ -1414,6 +1417,7 @@ var evaluate = (function() {
 		node.rhs = expr.makeIntoFractionNodeIfApplicable(node.rhs);
 		if (node.lhs === errorNode || node.rhs === errorNode) { return errorNode; }
 		newNode = expression.createCompoundExpression(node.lhs, node.rhs, node.op);
+		printDebug('newNode2: ', node, debugArith);
 		if (node.lhs.numeric && node.rhs.numeric) {
 			if ((node.lhs.type !== 'number' && node.rhs.type !== 'number') &&
 				(!node.lhs.simplified || !node.rhs.simplified)) { return newNode; }
