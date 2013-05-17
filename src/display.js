@@ -44,7 +44,8 @@ var display = (function() {
 	function addParens(parent, child) {
 		if (parent === null || child === null) { return false; }
 		if (child.type === 'unary' && child.op === '|') { return false; }
-		if ((child.type === 'unary' || child.type === 'compound') && child.op === '\\sqrt') {
+		if (((child.type === 'unary' || child.type === 'compound') && child.op === '\\sqrt') ||
+			child.op === '\\log') {
 			return false;
 		}
 		if (parent.op === '/' && showDivSign === divSign.never && output !== outputType.text) {
@@ -273,7 +274,8 @@ var display = (function() {
 				else if (node.lhs.type === 'number' && node.lhs.value !== 10) {
 					base = '_' + lhsString;
 				}
-				result = op + base + wrapInParens(rhsString, node);
+				if (!addParens(node, node.rhs)) { rhsString = wrapInParens(rhsString, node); }
+				result = op + base + rhsString;
 			}
 		} else if (utils.isUnaryNegative(node)) {
 			result = op + displayNode(node.child);
