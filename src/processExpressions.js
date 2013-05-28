@@ -8,18 +8,18 @@ if (typeof module !== 'undefined' && typeof require !== 'undefined') {
 }
 
 var processExpressions = (function() {
-	function buildArray(parsedExpessions, callback) {
+	function buildArray(parsedExpressions, callback) {
 		var arr = [];
-		for(var i = 0; i < parsedExpessions.length; i++) {
-			arr.push(callback(parsedExpessions[i]));
+		for(var i = 0; i < parsedExpressions.length; i++) {
+			arr.push(callback(parsedExpressions[i]));
 		}
 		return arr;
 	}
 
-	function buildArrayPairs(parsedExpessions, callback) {
+	function buildArrayPairs(parsedExpressions, callback) {
 		var arr = [];
-		for(var i = 0; i < parsedExpessions.length - 1; i += 2) {
-			arr.push(callback(parsedExpessions[i], parsedExpessions[i + 1]));
+		for(var i = 0; i < parsedExpressions.length - 1; i += 2) {
+			arr.push(callback(parsedExpressions[i], parsedExpressions[i + 1]));
 		}
 		return arr;
 	}
@@ -28,41 +28,41 @@ var processExpressions = (function() {
 		parseExpressions: function(expressions) {
 			return buildArray(expressions, parser.parseEquationOrExpression);
 		},
-		checkVerbatimEquality: function(parsedExpessions) {
-			for (var i = 0; i < parsedExpessions.length - 1; i++) {
-				if (parsedExpessions[i] === errorNode) { return false; }
-				if (!parsedExpessions[i].syntacticEquals(parsedExpessions[i + 1])) {
+		checkVerbatimEquality: function(parsedExpressions) {
+			for (var i = 0; i < parsedExpressions.length - 1; i++) {
+				if (parsedExpressions[i] === errorNode) { return false; }
+				if (!parsedExpressions[i].syntacticEquals(parsedExpressions[i + 1])) {
 					return false;
 				}
 			}
-			return parsedExpessions.length > 1;
+			return parsedExpressions.length > 1;
 		},
-		checkCommuteEquality: function(parsedExpessions) {
-			for (var i = 0; i < parsedExpessions.length - 1; i++) {
+		checkCommuteEquality: function(parsedExpressions) {
+			for (var i = 0; i < parsedExpressions.length - 1; i++) {
 				if (!equality.equivalentModuloCommutativity(
-					parsedExpessions[i], parsedExpessions[i + 1], false)) {
+					parsedExpressions[i], parsedExpressions[i + 1], false)) {
 					return false;
 				}
 			}
-			return parsedExpessions.length > 1;
+			return parsedExpressions.length > 1;
 		},
-		checkCommuteEqualityCoefficient: function(parsedExpessions) {
-			for (var i = 0; i < parsedExpessions.length - 1; i++) {
+		checkCommuteEqualityCoefficient: function(parsedExpressions) {
+			for (var i = 0; i < parsedExpressions.length - 1; i++) {
 				if (!equality.equivalentModuloCommutativity(
-					parsedExpessions[i], parsedExpessions[i + 1], true)) {
+					parsedExpressions[i], parsedExpressions[i + 1], true)) {
 					return false;
 				}
 			}
-			return parsedExpessions.length > 1;
+			return parsedExpressions.length > 1;
 		},
-		checkFullEquality: function(parsedExpessions) {
+		checkFullEquality: function(parsedExpressions) {
 			var simplifiedExpressions = [];
-			for(var i = 0; i < parsedExpessions.length; i++) {
-				var evaluated = evaluate.evaluateRec(parsedExpessions[i]);
+			for(var i = 0; i < parsedExpressions.length; i++) {
+				var evaluated = evaluate.evaluateRec(parsedExpressions[i]);
 				simplifiedExpressions.push( (evaluated === null) ?
-					parsedExpessions[i] : evaluated);
+					parsedExpressions[i] : evaluated);
 			}
-			for (var j = 0; j < parsedExpessions.length - 1; j++) {
+			for (var j = 0; j < parsedExpressions.length - 1; j++) {
 				if (!equality.equivalentModuloCommutativity(
 					simplifiedExpressions[j], simplifiedExpressions[j + 1])) {
 					return false;
@@ -70,45 +70,45 @@ var processExpressions = (function() {
 			}
 			return simplifiedExpressions.length > 1;
 		},
-		checkFullEqualityEquationOrInequality: function(parsedExpessions) {
-			for (var j = 0; j < parsedExpessions.length - 1; j++) {
+		checkFullEqualityEquationOrInequality: function(parsedExpressions) {
+			for (var j = 0; j < parsedExpressions.length - 1; j++) {
 				if (!evaluate.equivalentEquationOrInequality(
-					parsedExpessions[j], parsedExpessions[j + 1])) {
+					parsedExpressions[j], parsedExpressions[j + 1])) {
 					return false;
 				}
 			}
-			return parsedExpessions.length > 1;
+			return parsedExpressions.length > 1;
 		},
-		simplifyExpressions: function(parsedExpessions) {
-			return buildArray(parsedExpessions, evaluate.evaluateRec);
+		simplifyExpressions: function(parsedExpressions) {
+			return buildArray(parsedExpressions, evaluate.evaluateRec);
 		},
-		simplifyExpressionsNumeric: function(parsedExpessions) {
-			return buildArray(parsedExpessions, expr.computeWithApproxNumericValue);
+		simplifyExpressionsNumeric: function(parsedExpressions) {
+			return buildArray(parsedExpressions, expr.computeWithApproxNumericValue);
 		},
-		dividePolynomials: function(parsedExpessions, remainders) {
+		dividePolynomials: function(parsedExpressions, remainders) {
 			var simplifiedExpressions = [];
-			for(var i = 0; i < parsedExpessions.length - 1; i += 2) {
-				var dividend = evaluate.evaluateRec(parsedExpessions[i]);
-				var divisor = evaluate.evaluateRec(parsedExpessions[i + 1]);
+			for(var i = 0; i < parsedExpressions.length - 1; i += 2) {
+				var dividend = evaluate.evaluateRec(parsedExpressions[i]);
+				var divisor = evaluate.evaluateRec(parsedExpressions[i + 1]);
 				simplifiedExpressions.push(evaluate.doSyntheticDivision(dividend, divisor, remainders));
 			}
 			return simplifiedExpressions;
 		},
-		strictestEquality: function(parsedExpessions, fullEq) {
-			return buildArrayPairs(parsedExpessions, function(node, other) {
+		strictestEquality: function(parsedExpressions, fullEq) {
+			return buildArrayPairs(parsedExpressions, function(node, other) {
 				return evaluate.strictestEqualityType(node, other, fullEq);
 			});
 		},
-		solve: function(parsedExpessions) {
+		solve: function(parsedExpressions) {
 			var solved = [];
-			for(var i = 0; i < parsedExpessions.length - 1; i += 2) {
+			for(var i = 0; i < parsedExpressions.length - 1; i += 2) {
 				solved = solved.concat(
-					evaluate.solveForIdentifier(parsedExpessions[i], parsedExpessions[i + 1]));
+					evaluate.solveForIdentifier(parsedExpressions[i], parsedExpressions[i + 1]));
 			}
 			return solved;
 		},
-		compare: function(parsedExpessions) {
-			return buildArrayPairs(parsedExpessions, expr.compareNodesNumerically);
+		compare: function(parsedExpressions) {
+			return buildArrayPairs(parsedExpressions, expr.compareNodesNumerically);
 		}
 	};
 	return self;
