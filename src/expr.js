@@ -10,7 +10,7 @@ if (typeof module !== 'undefined' && typeof require !== 'undefined') {
 	var operator = require('./operator.js').operator;
 }
 
-var expressionUtils = (function() {
+var expr = (function() {
 
 	var self = {
 		/**
@@ -236,5 +236,5 @@ var expressionUtils = (function() {
 }());
 
 if (typeof exports !== 'undefined') {
-	exports.expr = expressionUtils;
+	exports.expr = expr;
 }

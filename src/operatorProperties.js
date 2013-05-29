@@ -81,4 +81,6 @@ var operatorProperties = (function() {
 
 if (typeof exports !== 'undefined') {
 	exports.operatorProperties = operatorProperties;
+} else {
+	window.getPrecedence = operatorProperties.getPrecedence;
 }
