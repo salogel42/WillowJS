@@ -33,7 +33,7 @@ var operator = (function() {
 				right.type === 'number' && fractionUtils.isValueRadical(right.value)) {
 				var newValue = fractionUtils.combineRadicals(left.value, right.value);
 				if (newValue !== errorNode) {
-					newNode = self.simplifyRadicalIntoNode(newValue);
+					newNode = simplifyRadicalIntoNodePrivate(newValue);
 					// if we have \sqrt{-a}*\sqrt{-b} where a,b\in\N, that's equivalent to
 					// \sqrt{a}i\sqrt{b}i, or \sqrt{ab}i^2, or -\sqrt{ab}.  We skip those steps and
 					// go straight from \sqrt{-a}\sqrt{-b} to -\sqrt{ab}.
@@ -59,6 +59,62 @@ var operator = (function() {
 				makeNumber(lhsValue), makeNumber(rhsValue), op);
 		}
 	}
+	function multiplyNodesMaybeNullPrivate(nodeOne, nodeTwo, op) {
+		if (nodeTwo === null) { return nodeOne; }
+		if (nodeOne === null) { return (op === '/') ? invertNodePrivate(nodeTwo): nodeTwo; }
+		return expression.createCompoundExpression(nodeOne, nodeTwo, op);
+	}
+	function pullOutRadicalPrivate(node) {
+		if (node.type === 'number' && fractionUtils.isValueRadical(node.value)) {
+			return { radical : node, rest : null };
+		}
+		if (node.type === 'number' && fractionUtils.isValueFraction(node.value) &&
+			fractionUtils.isValueRadical(node.value.top)) {
+			return {
+				radical : makeNumber(node.value.top),
+				rest : makeNumber(fractionUtils.createFractionValue(1, node.value.bottom))
+			};
+		}
+		if (node.type === 'compound' && getPrecedence(node.op) === 2) {
+			var left = pullOutRadicalPrivate(node.lhs);
+			var right = pullOutRadicalPrivate(node.rhs);
+			return {
+				radical : multiplyNodesMaybeNullPrivate(left.radical, right.radical, node.op),
+				rest : multiplyNodesMaybeNullPrivate(left.rest, right.rest, node.op)
+			};
+		}
+		return { radical : null, rest : node };
+	}
+	function simplifyRadicalIntoNodePrivate(value) {
+		if (fractionUtils.isValueFraction(value.radicand)) {
+			return operator['/'].evaluate(
+				simplifyRadicalIntoNodePrivate(
+					fractionUtils.createRadicalValue(value.radicand.top, value.power)),
+				simplifyRadicalIntoNodePrivate(
+					fractionUtils.createRadicalValue(value.radicand.bottom, value.power)));
+		}
+		var result = fractionUtils.simplifyRadical(value);
+		if (!fractionUtils.isValueMixed(result)) { return makeNumber(result); }
+		result = operator['*'].evaluateValues(result.rational, result.radical);
+		result.simplified = true;
+		return result;
+	}
+	function invertNodePrivate(node) {
+		if (node.type === 'number') {
+			return expression.createSimpleExpression(
+				'number', fractionUtils.invertFraction(node.value));
+		}
+		if (node.type === 'compound' && node.op === '/') {
+			if (node.lhs.type === 'number' && node.lhs.value === 1) {
+				return node.rhs;
+			} else {
+				return expression.createCompoundExpression(node.rhs, node.lhs, '/');
+			}
+		} else {
+			return expression.createCompoundExpression(
+				expression.createSimpleExpression('number', 1), node, '/');
+		}
+	}
 	/**
 	 * Define all of the operators with all their individual properties.
 	 * @dict
@@ -75,7 +131,7 @@ var operator = (function() {
 				return operator['^'].evaluateValues(lhs.value, rhs.value);
 			}, function(lhsValue, rhsValue) {
 				if (fractionUtils.isValueFraction(rhsValue)) {
-					var result = self.simplifyRadicalIntoNode(fractionUtils.createRadicalValue(
+					var result = simplifyRadicalIntoNodePrivate(fractionUtils.createRadicalValue(
 						lhsValue, rhsValue, false));
 					return result;
 				}
@@ -87,7 +143,7 @@ var operator = (function() {
 						operator['^'].evaluateValues(
 							lhsValue.bottom, rhsValue));
 				} else if (fractionUtils.isValueRadical(lhsValue)) {
-					return self.simplifyRadicalIntoNode(fractionUtils.createRadicalValue(
+					return simplifyRadicalIntoNodePrivate(fractionUtils.createRadicalValue(
 						lhsValue.radicand, operator['*'].evaluateValues(
 							lhsValue.power, rhsValue).value, false));
 				} else if (fractionUtils.isNegative(rhsValue)) {
@@ -144,11 +200,11 @@ var operator = (function() {
 		'*' : new Operator(
 			function(lhs, rhs) {
 				var node = expression.createCompoundExpression(lhs, rhs, '*');
-				node = self.pullOutRadical(node);
+				node = pullOutRadicalPrivate(node);
 				if (node.radical !== null) {
 					var orig = node.radical;
 					var combined = combineRadicals(node.radical);
-					node = self.multiplyNodesMaybeNull(node.rest, combined, '*');
+					node = multiplyNodesMaybeNullPrivate(node.rest, combined, '*');
 					if (orig.syntacticEquals(combined) || node.type !== 'compound') {
 						return node;
 					}
@@ -201,12 +257,12 @@ var operator = (function() {
 				var resultValue = null;
 				if (fractionUtils.isValueRadical(lhsValue) && !lhsValue.simplified) {
 					return operator['*'].evaluate(
-						self.simplifyRadicalIntoNode(lhsValue),
+						simplifyRadicalIntoNodePrivate(lhsValue),
 						makeNumber(rhsValue));
 				}
 				if (fractionUtils.isValueRadical(rhsValue) && !rhsValue.simplified) {
 					return operator['*'].evaluate(makeNumber(lhsValue),
-						self.simplifyRadicalIntoNode(rhsValue));
+						simplifyRadicalIntoNodePrivate(rhsValue));
 				}
 				if (fractionUtils.isValueRadical(lhsValue) ||
 					fractionUtils.isValueRadical(rhsValue)) {
@@ -281,6 +337,7 @@ var operator = (function() {
 		),
 		'\\log' : new Operator(noopEvaluation('\\log'), noopEvaluationValues('\\log')),
 		'|' : new Operator(),
+		pullOutRadical: pullOutRadicalPrivate,
 		rationalizeDenominator: function(node) {
 			if (node.type === 'number' && fractionUtils.isValueFraction(node.value) &&
 				fractionUtils.isValueRadical(node.value.bottom)) {
@@ -291,7 +348,7 @@ var operator = (function() {
 			if (!(node.type === 'compound' && node.op === '/')) {
 				return node;
 			}
-			var radicalOnBottom = self.pullOutRadical(node.rhs);
+			var radicalOnBottom = pullOutRadicalPrivate(node.rhs);
 
 			if (radicalOnBottom.radical === null) {
 				return node;
@@ -310,62 +367,9 @@ var operator = (function() {
 				operator['*'].evaluate(node.lhs, rationalizingTerm),
 				bottom);
 		},
-		simplifyRadicalIntoNode: function(value) {
-			if (fractionUtils.isValueFraction(value.radicand)) {
-				return operator['/'].evaluate(
-					self.simplifyRadicalIntoNode(
-						fractionUtils.createRadicalValue(value.radicand.top, value.power)),
-					self.simplifyRadicalIntoNode(
-						fractionUtils.createRadicalValue(value.radicand.bottom, value.power)));
-			}
-			var result = fractionUtils.simplifyRadical(value);
-			if (!fractionUtils.isValueMixed(result)) { return makeNumber(result); }
-			result = operator['*'].evaluateValues(result.rational, result.radical);
-			result.simplified = true;
-			return result;
-		},
-		invertNode: function(node) {
-			if (node.type === 'number') {
-				return expression.createSimpleExpression(
-					'number', fractionUtils.invertFraction(node.value));
-			}
-			if (node.type === 'compound' && node.op === '/') {
-				if (node.lhs.type === 'number' && node.lhs.value === 1) {
-					return node.rhs;
-				} else {
-					return expression.createCompoundExpression(node.rhs, node.lhs, '/');
-				}
-			} else {
-				return expression.createCompoundExpression(
-					expression.createSimpleExpression('number', 1), node, '/');
-			}
-		},
-		multiplyNodesMaybeNull: function(nodeOne, nodeTwo, op) {
-			if (nodeTwo === null) { return nodeOne; }
-			if (nodeOne === null) { return (op === '/') ? self.invertNode(nodeTwo): nodeTwo; }
-			return expression.createCompoundExpression(nodeOne, nodeTwo, op);
-		},
-		pullOutRadical: function(node) {
-			if (node.type === 'number' && fractionUtils.isValueRadical(node.value)) {
-				return { radical : node, rest : null };
-			}
-			if (node.type === 'number' && fractionUtils.isValueFraction(node.value) &&
-				fractionUtils.isValueRadical(node.value.top)) {
-				return {
-					radical : makeNumber(node.value.top),
-					rest : makeNumber(fractionUtils.createFractionValue(1, node.value.bottom))
-				};
-			}
-			if (node.type === 'compound' && getPrecedence(node.op) === 2) {
-				var left = self.pullOutRadical(node.lhs);
-				var right = self.pullOutRadical(node.rhs);
-				return {
-					radical : self.multiplyNodesMaybeNull(left.radical, right.radical, node.op),
-					rest : self.multiplyNodesMaybeNull(left.rest, right.rest, node.op)
-				};
-			}
-			return { radical : null, rest : node };
-		}
+		simplifyRadicalIntoNode: simplifyRadicalIntoNodePrivate,
+		invertNode: invertNodePrivate,
+		multiplyNodesMaybeNull: multiplyNodesMaybeNullPrivate
 	};
 	/**
 	 * Add a unaryEvaluate function to '-' and '\\sqrt' (I don't do it in the constructor

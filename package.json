@@ -1,12 +1,13 @@
 {
   "name": "willowjs",
   "version": "0.1.0",
-  "devDependencies": {
+  "dependencies": {
     "grunt": "~0.4.0",
     "grunt-contrib-jshint": "~0.1.1",
     "grunt-contrib-nodeunit": "~0.1.2",
     "grunt-contrib-uglify": "~0.1.2",
-    "jasmine-node" : "*",
-    "underscore": "x"
+    "jasmine-node": "*",
+    "underscore": "x",
+    "karma": "0.8.x"
   }
 }
