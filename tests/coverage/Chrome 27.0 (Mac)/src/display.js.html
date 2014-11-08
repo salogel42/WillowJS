@@ -1,0 +1,1404 @@
+<!doctype html>
+<html>
+<head>
+    <title>Code coverage report for src/display.js</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta http-equiv="content-language" content="en-gb">
+    
+        <link rel='stylesheet' href='../prettify.css'>
+    
+    <style type='text/css'>
+        body, html {
+            margin:0; padding: 0;
+        }
+        body {
+            font-family: "Helvetic Neue", Helvetica,Arial;
+            font-size: 10pt;
+        }
+        div.header, div.footer {
+            background: #eee;
+            padding: 1em;
+        }
+        div.header {
+            z-index: 100;
+            position: fixed;
+            top: 0;
+            border-bottom: 1px solid #666;
+            width: 100%;
+        }
+        div.footer {
+            border-top: 1px solid #666;
+        }
+        div.body {
+            margin-top: 10em;
+        }
+        div.meta {
+            font-size: 90%;
+            text-align: center;
+        }
+        h1, h2, h3 {
+            font-weight: normal;
+        }
+        h1 {
+            font-size: 12pt;
+        }
+        h2 {
+            font-size: 10pt;
+        }
+        pre {
+            font-family: consolas, menlo, monaco, monospace;
+            margin: 0;
+            padding: 0;
+            line-height: 14px;
+            font-size: 14px;
+        }
+
+        div.path { font-size: 110%; }
+        div.path a:link, div.path a:visited { color: #000; }
+        table.coverage { border-collapse: collapse; margin:0; padding: 0 }
+
+        table.coverage td {
+            margin: 0;
+            padding: 0;
+            color: #111;
+            vertical-align: top;
+        }
+        table.coverage td.line-count {
+            width: 50px;
+            text-align: right;
+            padding-right: 5px;
+        }
+        table.coverage td.line-coverage {
+            color: #777 !important;
+            text-align: right;
+            border-left: 1px solid #666;
+            border-right: 1px solid #666;
+        }
+
+        table.coverage td.text {
+        }
+
+        table.coverage td span.cline-any {
+            display: inline-block;
+            padding: 0 5px;
+            width: 40px;
+        }
+        table.coverage td span.cline-neutral {
+            background: #eee;
+        }
+        table.coverage td span.cline-yes {
+            background: #b5d592;
+            color: #999;
+        }
+        table.coverage td span.cline-no {
+            background: #fc8c84;
+        }
+
+        .cstat-yes { color: #111; }
+        .cstat-no { background: #fc8c84; color: #111; }
+        .fstat-no { background: #ffc520; color: #111 !important; }
+        .cbranch-no { background:  yellow !important; color: #111; }
+        .missing-if-branch {
+            display: inline-block;
+            margin-right: 10px;
+            position: relative;
+            padding: 0 4px;
+            background: black;
+            color: yellow;
+            xtext-decoration: line-through;
+        }
+        .missing-if-branch .typ {
+            color: inherit !important;
+        }
+
+        .entity, .metric { font-weight: bold; }
+        .metric { display: inline-block; border: 1px solid #333; padding: 0.3em; background: white; }
+        .metric small { font-size: 80%; font-weight: normal; color: #666; }
+
+        div.coverage-summary table { border-collapse: collapse; margin: 3em; font-size: 110%; }
+        div.coverage-summary td, div.coverage-summary table  th { margin: 0; padding: 0.25em 1em; border-top: 1px solid #666; border-bottom: 1px solid #666; }
+        div.coverage-summary th { text-align: left; border: 1px solid #666; background: #eee; font-weight: normal; }
+        div.coverage-summary th.file { border-right: none !important; }
+        div.coverage-summary th.pic { border-left: none !important; text-align: right; }
+        div.coverage-summary th.pct { border-right: none !important; }
+        div.coverage-summary th.abs { border-left: none !important; text-align: right; }
+        div.coverage-summary td.pct { text-align: right; border-left: 1px solid #666; }
+        div.coverage-summary td.abs { text-align: right; font-size: 90%; color: #444; border-right: 1px solid #666; }
+        div.coverage-summary td.file { text-align: right; border-left: 1px solid #666; white-space: nowrap;  }
+        div.coverage-summary td.pic { min-width: 120px !important;  }
+        div.coverage-summary a:link { text-decoration: none; color: #000; }
+        div.coverage-summary a:visited { text-decoration: none; color: #333; }
+        div.coverage-summary a:hover { text-decoration: underline; }
+        div.coverage-summary tfoot td { border-top: 1px solid #666; }
+
+        div.coverage-summary .yui3-datatable-sort-indicator, div.coverage-summary .dummy-sort-indicator {
+            height: 10px;
+            width: 7px;
+            display: inline-block;
+            margin-left: 0.5em;
+        }
+        div.coverage-summary .yui3-datatable-sort-indicator {
+            background: url("http://yui.yahooapis.com/3.6.0/build/datatable-sort/assets/skins/sam/sort-arrow-sprite.png") no-repeat scroll 0 0 transparent;
+        }
+        div.coverage-summary .yui3-datatable-sorted .yui3-datatable-sort-indicator {
+            background-position: 0 -20px;
+        }
+        div.coverage-summary .yui3-datatable-sorted-desc .yui3-datatable-sort-indicator {
+            background-position: 0 -10px;
+        }
+
+        .high { background: #b5d592 !important; }
+        .medium { background: #ffe87c !important; }
+        .low { background: #fc8c84 !important; }
+
+        span.cover-fill, span.cover-empty {
+            display:inline-block;
+            border:1px solid #444;
+            background: white;
+            height: 12px;
+        }
+        span.cover-fill {
+            background: #ccc;
+            border-right: 1px solid #444;
+        }
+        span.cover-empty {
+            background: white;
+            border-left: none;
+        }
+        span.cover-full {
+            border-right: none !important;
+        }
+        pre.prettyprint {
+            border: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        .com { color: #999 !important; }
+    </style>
+</head>
+<body>
+<div class='header high'>
+    <h1>Code coverage report for <span class='entity'>src/display.js</span></h1>
+    <h2>
+        
+        Statements: <span class='metric'>86.97% <small>(227 / 261)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+        
+        Branches: <span class='metric'>84.98% <small>(266 / 313)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+        
+        Functions: <span class='metric'>100% <small>(17 / 17)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+        
+        Lines: <span class='metric'>90.67% <small>(204 / 225)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+    </h2>
+    <div class="path"><a href="../index.html">All files</a> &#187; <a href="index.html">src/</a> &#187; display.js</div>
+</div>
+<div class='body'>
+<pre><table class="coverage">
+<tr><td class="line-count">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368</td><td class="line-coverage"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1726</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">75</span>
+<span class="cline-any cline-yes">75</span>
+<span class="cline-any cline-yes">40</span>
+<span class="cline-any cline-yes">30</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1799</span>
+<span class="cline-any cline-yes">1799</span>
+<span class="cline-any cline-yes">1798</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1790</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1783</span>
+<span class="cline-any cline-yes">1783</span>
+<span class="cline-any cline-yes">1702</span>
+<span class="cline-any cline-yes">933</span>
+<span class="cline-any cline-yes">1014</span>
+<span class="cline-any cline-yes">790</span>
+<span class="cline-any cline-yes">651</span>
+<span class="cline-any cline-yes">638</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">638</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">630</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">630</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">45</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">585</span>
+<span class="cline-any cline-yes">585</span>
+<span class="cline-any cline-yes">585</span>
+<span class="cline-any cline-yes">307</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">278</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1501</span>
+<span class="cline-any cline-yes">1496</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1715</span>
+<span class="cline-any cline-yes">148</span>
+<span class="cline-any cline-yes">148</span>
+<span class="cline-any cline-yes">148</span>
+<span class="cline-any cline-yes">148</span>
+<span class="cline-any cline-yes">148</span>
+<span class="cline-any cline-yes">148</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">94</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">94</span>
+<span class="cline-any cline-yes">85</span>
+<span class="cline-any cline-yes">85</span>
+<span class="cline-any cline-yes">85</span>
+<span class="cline-any cline-yes">9</span>
+<span class="cline-any cline-yes">9</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">129</span>
+<span class="cline-any cline-yes">129</span>
+<span class="cline-any cline-yes">100</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">98</span>
+<span class="cline-any cline-yes">67</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">66</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">31</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">172</span>
+<span class="cline-any cline-yes">108</span>
+<span class="cline-any cline-yes">108</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">62</span>
+<span class="cline-any cline-yes">28</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">34</span>
+<span class="cline-any cline-yes">34</span>
+<span class="cline-any cline-yes">33</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">177</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">175</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">175</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">111</span>
+<span class="cline-any cline-yes">64</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">64</span>
+<span class="cline-any cline-yes">64</span>
+<span class="cline-any cline-yes">64</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">64</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">863</span>
+<span class="cline-any cline-yes">863</span>
+<span class="cline-any cline-yes">33</span>
+<span class="cline-any cline-yes">33</span>
+<span class="cline-any cline-yes">33</span>
+<span class="cline-any cline-yes">33</span>
+<span class="cline-any cline-yes">830</span>
+<span class="cline-any cline-yes">24</span>
+<span class="cline-any cline-yes">24</span>
+<span class="cline-any cline-yes">24</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">806</span>
+<span class="cline-any cline-yes">863</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">2104</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2104</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">291</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">290</span>
+<span class="cline-any cline-yes">25</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">265</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">2551</span>
+<span class="cline-any cline-yes">1856</span>
+<span class="cline-any cline-yes">1856</span>
+<span class="cline-any cline-yes">749</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1856</span>
+<span class="cline-any cline-yes">1856</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1707</span>
+<span class="cline-any cline-yes">1707</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1856</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1855</span>
+<span class="cline-any cline-yes">1043</span>
+<span class="cline-any cline-yes">1043</span>
+<span class="cline-any cline-yes">1043</span>
+<span class="cline-any cline-yes">1043</span>
+<span class="cline-any cline-yes">1043</span>
+<span class="cline-any cline-yes">1043</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1031</span>
+<span class="cline-any cline-yes">61</span>
+<span class="cline-any cline-yes">970</span>
+<span class="cline-any cline-yes">13</span>
+<span class="cline-any cline-yes">13</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">13</span>
+<span class="cline-any cline-yes">13</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">812</span>
+<span class="cline-any cline-yes">56</span>
+<span class="cline-any cline-yes">756</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">755</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">753</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1856</span>
+<span class="cline-any cline-yes">1474</span>
+<span class="cline-any cline-yes">278</span>
+<span class="cline-any cline-yes">1196</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1856</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">392</span>
+<span class="cline-any cline-yes">392</span>
+<span class="cline-any cline-yes">392</span>
+<span class="cline-any cline-yes">392</span>
+<span class="cline-any cline-yes">392</span>
+<span class="cline-any cline-yes">392</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">392</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*global require:true exports:true */
+/*global expr:true */
+&nbsp;
+<span class="missing-if-branch" title="if path not taken"" >I</span>if (typeof module !== 'undefined' &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >typeof require !== 'undefined')</span> {
+<span class="cstat-no" title="statement not covered" >	var fractionUtils = require('./fractionUtils.js').fractionUtils;</span>
+<span class="cstat-no" title="statement not covered" >	var utils = require('./utils.js').utils;</span>
+<span class="cstat-no" title="statement not covered" >	var getPrecedence = require('./operatorProperties.js').operatorProperties.getPrecedence;</span>
+<span class="cstat-no" title="statement not covered" >	var errorNode = require('./utils.js').errorNode;</span>
+<span class="cstat-no" title="statement not covered" >	var expression = require('./expression.js').expression;</span>
+}
+&nbsp;
+var parenMode = {
+	'full' : 0,
+	'terms' : 1,
+	'necessary' : 2
+};
+&nbsp;
+var outputType = {
+	'text' : 0,
+	'mathml' : 1,
+	'latex' : 2
+};
+&nbsp;
+var divSign = {
+	'never' : 0,
+	'notNumeric' : 1,
+	'always' : 2
+};
+&nbsp;
+var display = (function() {
+	var mode = parenMode.terms;
+	var output = outputType.mathml;
+	var showDivSign = divSign.never;
+	function isComplexExpression(node) {
+		return (node.type === 'unary' || node.type === 'compound');
+	}
+	function leftInParenTerm(node) {
+		var side = utils.getSide(node);
+		if (node.parent === null || node.parent.op === '=') { return true; }
+		if (addParens(node.parent, node)) { return true; }
+		if (side !== 'left') { return false; }
+		return leftInParenTerm(node.parent);
+	}
+	function addParens(parent, child) {
+		<span class="missing-if-branch" title="if path not taken"" >I</span>if (parent === null || child === null) { <span class="cstat-no" title="statement not covered" >return false; </span>}
+		if (child.type === 'unary' &amp;&amp; child.op === '|') { return false; }
+		if (((child.type === 'unary' || child.type === 'compound') &amp;&amp; child.op === '\\sqrt') ||
+			child.op === '\\log') {
+			return false;
+		}
+		if (parent.op === '/' &amp;&amp; showDivSign === divSign.never &amp;&amp; output !== outputType.text) {
+			return false;
+		}
+		var childOp = '';
+		if (fractionUtils.isNegativeNumber(child)) { childOp = '-'; }
+		else if (!isComplexExpression(child)) { return false; }
+		else { childOp = child.op; }
+		if (getPrecedence(parent.op) === 0) { return false; }
+		if (mode === parenMode.full) { return true; }
+		if (utils.isUnaryPlusMinusOrNegative(parent)) { return getPrecedence(child.op) &lt; 2; }
+		var side = utils.getSide(child);
+		// if it's a negative to a power, put parens around it
+		if (childOp === '-'  &amp;&amp; parent.op === '^' &amp;&amp; side === 'left') { return true; }
+		// if we're in an exponent and not straight text output, no parens, we'll display the
+		// superscript however necessary separately later
+		<span class="missing-if-branch" title="if path not taken"" >I</span>if (parent.op === '^' &amp;&amp; side === 'right' &amp;&amp; output !== outputType.text) { <span class="cstat-no" title="statement not covered" >return false; </span>}
+		// TODO(sdspikes) : reason through this again and see if it actually makes sense.
+		if ((child.type === 'unary' || child.type === 'number') &amp;&amp; childOp === '-' &amp;&amp;
+			(child.type === 'unary' &amp;&amp; addParens(child, child.child) ||
+				(side === 'left' &amp;&amp; leftInParenTerm(parent)))) {
+			return false;
+		}
+		var parentOpPrecedence = getPrecedence(parent.op);
+		var childOpPrecedence = getPrecedence(childOp);
+		if (mode === parenMode.necessary) {
+			return parentOpPrecedence &gt; childOpPrecedence ||
+				(parentOpPrecedence === childOpPrecedence &amp;&amp; side === 'right' &amp;&amp;
+				(parent.op === '-' || parent.op === '^' ||
+					(parent.op === '/' &amp;&amp;
+						(showDivSign !== divSign.never || output === outputType.text))));
+		}
+		return !(((parent.op === '/' || childOp === '/') &amp;&amp; showDivSign === divSign.never) &amp;&amp;
+			output !== outputType.text) &amp;&amp;
+			(parentOpPrecedence &gt; childOpPrecedence || parentOpPrecedence === childOpPrecedence);
+	}
+	function addNodeMathML(contents, id, identifier) {
+		if (output !== outputType.mathml) {
+			return contents;
+		}
+		if (identifier) {
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (contents === '\\infty') { <span class="cstat-no" title="statement not covered" >contents = '&amp;#x221E;'; </span>}
+			return '&lt;mi id=node' + id + '&gt;' + contents + '&lt;/mi&gt;';
+		}
+		return '&lt;mn id=node' + id + '&gt;' + contents + '&lt;/mn&gt;';
+	}
+	function addOpMathML(op, id) {
+		if (output === outputType.text || op === '') { return op; }
+		if (op === '*') { op = (output === outputType.mathml) ? <span class="branch-0 cbranch-no" title="branch not covered" >'&amp;#8729;' </span>: '\\cdot'; }
+		if (op === '&lt;=') { op = (output === outputType.mathml) ? <span class="branch-0 cbranch-no" title="branch not covered" >'&amp;#x2264;' </span>: '\\le'; }
+		<span class="missing-if-branch" title="if path not taken"" >I</span>if (op === '&gt;=') { <span class="cstat-no" title="statement not covered" >op = (output === outputType.mathml) ? '&amp;#x2265;' : '\\ge'; </span>}
+		<span class="missing-if-branch" title="if path not taken"" >I</span>if (op === '!=') { <span class="cstat-no" title="statement not covered" >op = (output === outputType.mathml) ? '&amp;#x2260;' : '\\ne'; </span>}
+		if (op === '\\pm') { op = (output === outputType.mathml) ? <span class="branch-0 cbranch-no" title="branch not covered" >'&amp;#x00B1;' </span>: '\\pm'; }
+		if (output === outputType.latex) { return op; }
+		return '&lt;mo class="op" id=node' + id + '&gt;' + op + '&lt;/mo&gt;';
+	}
+	function addFractionMathML(top, bottom, id, isNumeric) {
+		var shouldShow = (showDivSign === divSign.always ||
+				(showDivSign === divSign.notNumeric &amp;&amp; !isNumeric));
+		if (output === outputType.text) {
+			var op = '/';
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (shouldShow) { <span class="cstat-no" title="statement not covered" >op = '÷'; </span>}
+			return top + op + bottom;
+		} else <span class="missing-if-branch" title="else path not taken"" >E</span>if (output === outputType.latex) {
+			return shouldShow ? (top + '\\div' + bottom) : ('\\frac{' + top + '}{' + bottom + '}');
+		}
+<span class="cstat-no" title="statement not covered" >		if (shouldShow) {</span>
+<span class="cstat-no" title="statement not covered" >			return top + addOpMathML('&amp;#xF7;', id) + bottom;</span>
+		}
+<span class="cstat-no" title="statement not covered" >		return '&lt;mfrac id=node' + id + '&gt;&lt;mrow&gt;' + top + '&lt;/mrow&gt;&lt;mrow&gt;' + bottom +</span>
+			'&lt;/mrow&gt;&lt;/mfrac&gt;';
+	}
+	function addRadicalMathML(radicand, root, id) {
+		var result = '';
+		if (root === 2) { root = ''; }
+		<span class="missing-if-branch" title="if path not taken"" >I</span>if (output === outputType.mathml) {
+<span class="cstat-no" title="statement not covered" >			result = '&lt;mroot&gt;' + radicand + root + '&lt;/mroot&gt;';</span>
+		} else {
+			result = '\\sqrt';
+			if (root !== '') { result += '[' + root + ']'; }
+			result += '{' + radicand + '}';
+		}
+		return result;
+	}
+	function numberOnSide(node, side) {
+		<span class="missing-if-branch" title="if path not taken"" >I</span>if (node === null) { <span class="cstat-no" title="statement not covered" >return false; </span>}
+		if (node.type === 'number') { return true; }
+		if (node.type === 'unary') {
+			return (node.op === '-') ? numberOnSide(node.child, side) : <span class="branch-1 cbranch-no" title="branch not covered" >false;</span>
+		}
+		if (node.type === 'compound') {
+			if (node.op === '^' &amp;&amp; side === 'right' &amp;&amp; output !== outputType.text) {
+				return false;
+			}
+			return (side === 'left') ? numberOnSide(node.lhs, side) : numberOnSide(node.rhs, side);
+		}
+		return false;
+	}
+	function rhsUnderDiv(node) {
+		if (node.type !== 'compound') { return false; }
+		<span class="missing-if-branch" title="if path not taken"" >I</span>if (node.op === '/') { <span class="cstat-no" title="statement not covered" >return true; </span>}
+		return rhsUnderDiv(node.rhs);
+	}
+	function hasParens(node, side) {
+		if (node.parent === null || node.type === 'number' || node.type === 'identifier') {
+			return false;
+		}
+		<span class="missing-if-branch" title="if path not taken"" >I</span>if (node === null) { <span class="cstat-no" title="statement not covered" >return false; </span>}
+		if (addParens(node.parent, node)) { return true; }
+		return (side === 'left') ? hasParens(node.lhs, side) : hasParens(node.rhs, side);
+	}
+	function shouldAddTimesOperator(node) {
+		if (output !== outputType.text &amp;&amp; node.type === 'compound' &amp;&amp;
+			((node.lhs.type === 'compound' &amp;&amp; node.lhs.op === '^') ||
+			(node.rhs.type === 'compound' &amp;&amp; node.rhs.op === '^' &amp;&amp; node.lhs.type !== 'number'))) {
+			return false;
+		}
+		if (output !== outputType.text &amp;&amp; node.type === 'compound' &amp;&amp;
+			isComplexExpression(node.lhs) &amp;&amp; isComplexExpression(node.rhs)) {
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (node.lhs.type === 'compound' &amp;&amp; node.lhs.op === '^') { <span class="cstat-no" title="statement not covered" >return false; </span>}
+		}
+		if ((utils.isSimpleExpression(node.lhs) &amp;&amp; utils.isSimpleExpression(node.rhs)) ||
+			(node.type === 'compound' &amp;&amp; (addParens(node, node.lhs) ||
+			addParens(node, node.rhs)))) {
+			return false;
+		} else <span class="missing-if-branch" title="if path not taken"" >I</span>if (fractionUtils.isNegativeNumber(node.rhs) || (node.rhs.type === 'unary' &amp;&amp;
+<span class="branch-2 cbranch-no" title="branch not covered" >			node.rhs.op === '-' </span>&amp;&amp; <span class="branch-3 cbranch-no" title="branch not covered" >node.rhs.child.type === 'number')</span>) {
+<span class="cstat-no" title="statement not covered" >			return true;</span>
+		}
+		<span class="missing-if-branch" title="else path not taken"" >E</span>if (showDivSign === divSign.never) {
+			var underDiv = rhsUnderDiv(node);
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (underDiv) { <span class="cstat-no" title="statement not covered" >return output === outputType.text; </span>}
+		}
+		return ((node.lhs.type === 'compound' &amp;&amp; numberOnSide(node.lhs, 'right') &amp;&amp;
+			!hasParens(node.lhs, 'right')) ||
+			((node.rhs.type === 'compound' &amp;&amp; numberOnSide(node.rhs, 'left') &amp;&amp;
+				!hasParens(node.rhs, 'left'))));
+	}
+	function displayNumberValue(value, id) {
+		var result = '';
+		if (fractionUtils.isValueFraction(value)) {
+			var top = displayNumberValue(value.top, id);
+			var bottom = displayNumberValue(value.bottom, id);
+			var isNumeric = (typeof value.top === 'number') || <span class="branch-1 cbranch-no" title="branch not covered" >(typeof value.bottom === 'number');</span>
+			result = addFractionMathML(top, bottom, id, isNumeric);
+		} else if (fractionUtils.isValueRadical(value)) {
+			var radicand = displayNumberValue(value.radicand, id);
+			var root = displayNumberValue(fractionUtils.invertFraction(value.power), id);
+			result = addRadicalMathML(radicand, root, id);
+		}
+		else { result = addNodeMathML(value, id, false); }
+		return result;
+	}
+	/**
+	 * If we're displaying the output in LaTeX and we have a LaTeX symbol, and the thing
+	 * that follows it starts with a letter, we need to add a space so that we don't output
+	 * y&lt;=x as y\lex, but rather y\le x, so that it's parsed properly by MathQuill.  We don't just
+	 * add spaces after every LaTeX operator because it's not necessary in cases like x\le2
+	 * @param {String} command   The string that may contain a command at the end.
+	 * @param {String} following The string representation of the term following the operation.
+	 */
+	function addSpaceAfterTeXCommandIfNecessary(command, following) {
+		if (output !== outputType.mathml &amp;&amp;
+			/\\[a-zA-Z]+$/.test(command) &amp;&amp; /^[a-zA-Z]/.test(following)) {
+			command += ' ';
+		}
+		return command;
+	}
+	function wrapInParens(exp, node) {
+		if (output === outputType.mathml) {
+			return '&lt;mfenced id=node' + node.id + '&gt;&lt;mrow&gt;' + exp + '&lt;/mrow&gt;&lt;/mfenced&gt;';
+		} else if (output === outputType.latex) {
+			return '\\left(' + exp + '\\right)';
+		} else {
+			return '(' + exp + ')';
+		}
+	}
+	function displayNode(node) {
+		if (node.type === 'identifier') { return addNodeMathML(node.value, node.id, true); }
+		var result = '';
+		if (node.type === 'number') {
+			result = displayNumberValue(node.value, node.id);
+		}
+		var op = '';
+		if (mode === parenMode.full || node.op !== '*' ||
+			(node.type === 'compound' &amp;&amp; node.op === '*' &amp;&amp;
+				((node.lhs === null || node.rhs === null) ||
+					((node.lhs.type === 'number' &amp;&amp; node.rhs.type === 'number') ||
+				shouldAddTimesOperator(node))))) {
+			op = node.op;
+			op = addOpMathML(op, node.id);
+		}
+		if (node.op === '\\sqrt') {
+			var root = node.lhs;
+			var radicand = node.rhs;
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (node.type === 'unary') {
+<span class="cstat-no" title="statement not covered" >				root = null;</span>
+<span class="cstat-no" title="statement not covered" >				radicand = node.child;</span>
+			}
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (radicand.type === 'number' &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >radicand.value === -1)</span> {
+<span class="cstat-no" title="statement not covered" >				result = addNodeMathML('i', node.id, true);</span>
+			} else {
+				root = (root === null) ? <span class="branch-0 cbranch-no" title="branch not covered" >'' </span>: displayNode(root);
+				radicand = displayNode(radicand);
+				result = addRadicalMathML(radicand, root, node.id);
+			}
+		} else if (node.type === 'compound') {
+			var lhsString = (node.lhs === null) ? <span class="branch-0 cbranch-no" title="branch not covered" >'' </span>: displayNode(node.lhs);
+			var rhsString = (node.rhs === null) ? <span class="branch-0 cbranch-no" title="branch not covered" >'' </span>: displayNode(node.rhs);
+			op = addSpaceAfterTeXCommandIfNecessary(op, rhsString);
+			lhsString = addSpaceAfterTeXCommandIfNecessary(lhsString, op + rhsString);
+			result = lhsString + op + rhsString;
+			if (node.op === '^' &amp;&amp; mode !== parenMode.full &amp;&amp; output !== outputType.text) {
+				<span class="missing-if-branch" title="if path not taken"" >I</span>if (output === outputType.mathml) {
+<span class="cstat-no" title="statement not covered" >					result = '&lt;msup id=node' + node.id + '&gt;' + lhsString + rhsString + '&lt;/msup&gt;';</span>
+				} else <span class="missing-if-branch" title="else path not taken"" >E</span>if (output === outputType.latex) {
+					<span class="missing-if-branch" title="if path not taken"" >I</span>if (rhsString.length &gt; 1) { <span class="cstat-no" title="statement not covered" >rhsString = '{' + rhsString + '}'; </span>}
+					result = lhsString + '^' + rhsString;
+				}
+			} else if (node.op === '/') {
+				result = addFractionMathML(lhsString, rhsString, node.id, false);
+			} else if (node.op === '\\log') {
+				var base = '';
+				if (lhsString === 'e') { op = '\\ln';}
+				else if (node.lhs.type === 'number' &amp;&amp; node.lhs.value !== 10) {
+					base = '_' + lhsString;
+				}
+				<span class="missing-if-branch" title="else path not taken"" >E</span>if (!addParens(node, node.rhs)) { rhsString = wrapInParens(rhsString, node); }
+				result = op + base + rhsString;
+			}
+		} else if (utils.isUnaryNegative(node)) {
+			result = op + displayNode(node.child);
+		} else if (utils.isAbsValue(node)) {
+			result = displayNode(node.child);
+			switch (output) {
+				case outputType.text:
+					result = '|' + result + '|';
+					break;
+				case outputType.latex:
+<span class="cstat-no" title="statement not covered" ><span class="branch-1 cbranch-no" title="branch not covered" >					result = '\\left|' + result + '\\right|';</span></span>
+<span class="cstat-no" title="statement not covered" >					break;</span>
+				case outputType.mathml:
+<span class="cstat-no" title="statement not covered" ><span class="branch-2 cbranch-no" title="branch not covered" >					result = '&lt;mfenced open=\'|\' close=\'|\' id=node' + node.id + '&gt;&lt;mrow&gt;' +</span></span>
+						result + '&lt;/mrow&gt;&lt;/mfenced&gt;';
+			}
+		} else if (node.type === 'unary') {
+			result = displayNode(node.child);
+			op = addSpaceAfterTeXCommandIfNecessary(op, result);
+			result = op + result;
+		} else if (node.type === 'ternary') {
+			var left = displayNode(node.left);
+			var middle = displayNode(node.middle);
+			var right = displayNode(node.right);
+			var op1 = addSpaceAfterTeXCommandIfNecessary(addOpMathML(node.op1, node.id), middle);
+			var op2 = addSpaceAfterTeXCommandIfNecessary(addOpMathML(node.op2, node.id), right);
+			// Probably not necessary since the operators will not likely be hidden for ternary,
+			// so there will not likely be an alpha char after left or middle, but putting these
+			// here just in case.
+			left = addSpaceAfterTeXCommandIfNecessary(left, op1 + middle);
+			middle = addSpaceAfterTeXCommandIfNecessary(middle, op2 + right);
+&nbsp;
+			result = left + op1 + middle + op2 + right;
+		}
+		if (node.parent !== null) {
+			if (addParens(node.parent, node)) {
+				result = wrapInParens(result, node);
+			} else if (output === outputType.mathml &amp;&amp; node.type !== 'number' &amp;&amp;
+				(showDivSign !== divSign.never || node.op !== '/') &amp;&amp; node.op !== '^') {
+				result = '&lt;mrow id=node' + node.id + '&gt;' + result + '&lt;/mrow&gt;';
+			}
+		}
+		return result;
+	}
+&nbsp;
+	var self = {
+		/**
+		 * Takes an expression and returns a string in whatever form specified by the options.
+		 * @param  {Expression} exp           The expression to stringify.
+		 * @param  {outputType} desiredOutput Output options:
+		 *                                    text
+		 *                                    latex (default)
+		 *                                    mathml
+		 * @param  {parenMode}  desiredMode   Mode options:
+		 *                                    full
+		 *                                    terms
+		 *                                    necessary (default)
+		 * @param  {divSign}    divAsFraction Div options:
+		 *                                    never (default)
+		 *                                    notNumeric
+		 *                                    always
+		 * @return {String}                   The string representation of the expression.
+		 */
+		displayExpression: function(exp, desiredOutput, desiredMode, divAsFraction) {
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (exp === null || exp === errorNode) { <span class="cstat-no" title="statement not covered" >return ''; </span>}
+			showDivSign = (typeof divAsFraction !== 'undefined') ? divAsFraction : divSign.never;
+			mode = (typeof desiredMode !== 'undefined') ? desiredMode : <span class="branch-1 cbranch-no" title="branch not covered" >parenMode.necessary;</span>
+			output = (typeof desiredOutput !== 'undefined') ? desiredOutput : <span class="branch-1 cbranch-no" title="branch not covered" >outputType.latex;</span>
+			var result = displayNode(exp);
+			if (output === outputType.mathml) {
+				var id = 'math`';
+				<span class="missing-if-branch" title="else path not taken"" >E</span>if (typeof expression !== 'undefined' &amp;&amp;
+					typeof expression.nextId !== 'undefined') {
+					id = expression.nextId++;
+				}
+				result = '&lt;math xmlns="http://www.w3.org/1998/Math/MathML" id=node' + id + '&gt;' +
+					result + '&lt;/math&gt;';
+			}
+			return '' + result;
+		}
+	};
+	return self;
+}());
+&nbsp;
+<span class="missing-if-branch" title="if path not taken"" >I</span>if (typeof exports !== 'undefined') {
+<span class="cstat-no" title="statement not covered" >	exports.display = display;</span>
+<span class="cstat-no" title="statement not covered" >	exports.parenMode = parenMode;</span>
+<span class="cstat-no" title="statement not covered" >	exports.outputType = outputType;</span>
+<span class="cstat-no" title="statement not covered" >	exports.divSign = divSign;</span>
+}</pre></td></tr>
+</table></pre>
+
+</div>
+<div class='footer'>
+    <div class='meta'>Generated by <a href='http://istanbul-js.org' target='_blank'>istanbul</a> at Wed May 29 2013 13:40:53 GMT-0700 (PDT)</div>
+</div>
+</body>
+
+<script src="../prettify.js"></script>
+
+<script src="http://yui.yahooapis.com/3.6.0/build/yui/yui-min.js"></script>
+<script>
+
+    YUI().use('datatable', function (Y) {
+
+        var formatters = {
+          pct: function (o) {
+              o.className += o.record.get('classes')[o.column.key];
+              try {
+                  return o.value.toFixed(2) + '%';
+              } catch (ex) { return o.value + '%'; }
+          },
+          html: function (o) {
+              o.className += o.record.get('classes')[o.column.key];
+              return o.record.get(o.column.key + '_html');
+          }
+        },
+          defaultFormatter = function (o) {
+              o.className += o.record.get('classes')[o.column.key];
+              return o.value;
+          };
+
+        function getColumns(theadNode) {
+            var colNodes = theadNode.all('tr th'),
+                cols = [],
+                col;
+            colNodes.each(function (colNode) {
+                col = {
+                    key: colNode.getAttribute('data-col'),
+                    label: colNode.get('innerHTML') || ' ',
+                    sortable: !colNode.getAttribute('data-nosort'),
+                    className: colNode.getAttribute('class'),
+                    type: colNode.getAttribute('data-type'),
+                    allowHTML: colNode.getAttribute('data-html') === 'true' || colNode.getAttribute('data-fmt') === 'html'
+                };
+                col.formatter = formatters[colNode.getAttribute('data-fmt')] || defaultFormatter;
+                cols.push(col);
+            });
+            return cols;
+        }
+
+        function getRowData(trNode, cols) {
+            var tdNodes = trNode.all('td'),
+                    i,
+                    row = { classes: {} },
+                    node,
+                    name;
+            for (i = 0; i < cols.length; i += 1) {
+                name = cols[i].key;
+                node = tdNodes.item(i);
+                row[name] = node.getAttribute('data-value') || node.get('innerHTML');
+                row[name + '_html'] = node.get('innerHTML');
+                row.classes[name] = node.getAttribute('class');
+                //Y.log('Name: ' + name + '; Value: ' + row[name]);
+                if (cols[i].type === 'number') { row[name] = row[name] * 1; }
+            }
+            //Y.log(row);
+            return row;
+        }
+
+        function getData(tbodyNode, cols) {
+            var data = [];
+            tbodyNode.all('tr').each(function (trNode) {
+                data.push(getRowData(trNode, cols));
+            });
+            return data;
+        }
+
+        function replaceTable(node) {
+            if (!node) { return; }
+            var cols = getColumns(node.one('thead')),
+                data = getData(node.one('tbody'), cols),
+                table,
+                parent = node.get('parentNode');
+
+            table = new Y.DataTable({
+                columns: cols,
+                data: data,
+                sortBy: 'file'
+            });
+            parent.set('innerHTML', '');
+            table.render(parent);
+        }
+
+        Y.on('domready', function () {
+            replaceTable(Y.one('div.coverage-summary table'));
+            if (typeof prettyPrint === 'function') {
+                prettyPrint();
+            }
+        });
+    });
+</script>
+</html>

@@ -1,0 +1,1524 @@
+<!doctype html>
+<html>
+<head>
+    <title>Code coverage report for src/operator.js</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta http-equiv="content-language" content="en-gb">
+    
+        <link rel='stylesheet' href='../prettify.css'>
+    
+    <style type='text/css'>
+        body, html {
+            margin:0; padding: 0;
+        }
+        body {
+            font-family: "Helvetic Neue", Helvetica,Arial;
+            font-size: 10pt;
+        }
+        div.header, div.footer {
+            background: #eee;
+            padding: 1em;
+        }
+        div.header {
+            z-index: 100;
+            position: fixed;
+            top: 0;
+            border-bottom: 1px solid #666;
+            width: 100%;
+        }
+        div.footer {
+            border-top: 1px solid #666;
+        }
+        div.body {
+            margin-top: 10em;
+        }
+        div.meta {
+            font-size: 90%;
+            text-align: center;
+        }
+        h1, h2, h3 {
+            font-weight: normal;
+        }
+        h1 {
+            font-size: 12pt;
+        }
+        h2 {
+            font-size: 10pt;
+        }
+        pre {
+            font-family: consolas, menlo, monaco, monospace;
+            margin: 0;
+            padding: 0;
+            line-height: 14px;
+            font-size: 14px;
+        }
+
+        div.path { font-size: 110%; }
+        div.path a:link, div.path a:visited { color: #000; }
+        table.coverage { border-collapse: collapse; margin:0; padding: 0 }
+
+        table.coverage td {
+            margin: 0;
+            padding: 0;
+            color: #111;
+            vertical-align: top;
+        }
+        table.coverage td.line-count {
+            width: 50px;
+            text-align: right;
+            padding-right: 5px;
+        }
+        table.coverage td.line-coverage {
+            color: #777 !important;
+            text-align: right;
+            border-left: 1px solid #666;
+            border-right: 1px solid #666;
+        }
+
+        table.coverage td.text {
+        }
+
+        table.coverage td span.cline-any {
+            display: inline-block;
+            padding: 0 5px;
+            width: 40px;
+        }
+        table.coverage td span.cline-neutral {
+            background: #eee;
+        }
+        table.coverage td span.cline-yes {
+            background: #b5d592;
+            color: #999;
+        }
+        table.coverage td span.cline-no {
+            background: #fc8c84;
+        }
+
+        .cstat-yes { color: #111; }
+        .cstat-no { background: #fc8c84; color: #111; }
+        .fstat-no { background: #ffc520; color: #111 !important; }
+        .cbranch-no { background:  yellow !important; color: #111; }
+        .missing-if-branch {
+            display: inline-block;
+            margin-right: 10px;
+            position: relative;
+            padding: 0 4px;
+            background: black;
+            color: yellow;
+            xtext-decoration: line-through;
+        }
+        .missing-if-branch .typ {
+            color: inherit !important;
+        }
+
+        .entity, .metric { font-weight: bold; }
+        .metric { display: inline-block; border: 1px solid #333; padding: 0.3em; background: white; }
+        .metric small { font-size: 80%; font-weight: normal; color: #666; }
+
+        div.coverage-summary table { border-collapse: collapse; margin: 3em; font-size: 110%; }
+        div.coverage-summary td, div.coverage-summary table  th { margin: 0; padding: 0.25em 1em; border-top: 1px solid #666; border-bottom: 1px solid #666; }
+        div.coverage-summary th { text-align: left; border: 1px solid #666; background: #eee; font-weight: normal; }
+        div.coverage-summary th.file { border-right: none !important; }
+        div.coverage-summary th.pic { border-left: none !important; text-align: right; }
+        div.coverage-summary th.pct { border-right: none !important; }
+        div.coverage-summary th.abs { border-left: none !important; text-align: right; }
+        div.coverage-summary td.pct { text-align: right; border-left: 1px solid #666; }
+        div.coverage-summary td.abs { text-align: right; font-size: 90%; color: #444; border-right: 1px solid #666; }
+        div.coverage-summary td.file { text-align: right; border-left: 1px solid #666; white-space: nowrap;  }
+        div.coverage-summary td.pic { min-width: 120px !important;  }
+        div.coverage-summary a:link { text-decoration: none; color: #000; }
+        div.coverage-summary a:visited { text-decoration: none; color: #333; }
+        div.coverage-summary a:hover { text-decoration: underline; }
+        div.coverage-summary tfoot td { border-top: 1px solid #666; }
+
+        div.coverage-summary .yui3-datatable-sort-indicator, div.coverage-summary .dummy-sort-indicator {
+            height: 10px;
+            width: 7px;
+            display: inline-block;
+            margin-left: 0.5em;
+        }
+        div.coverage-summary .yui3-datatable-sort-indicator {
+            background: url("http://yui.yahooapis.com/3.6.0/build/datatable-sort/assets/skins/sam/sort-arrow-sprite.png") no-repeat scroll 0 0 transparent;
+        }
+        div.coverage-summary .yui3-datatable-sorted .yui3-datatable-sort-indicator {
+            background-position: 0 -20px;
+        }
+        div.coverage-summary .yui3-datatable-sorted-desc .yui3-datatable-sort-indicator {
+            background-position: 0 -10px;
+        }
+
+        .high { background: #b5d592 !important; }
+        .medium { background: #ffe87c !important; }
+        .low { background: #fc8c84 !important; }
+
+        span.cover-fill, span.cover-empty {
+            display:inline-block;
+            border:1px solid #444;
+            background: white;
+            height: 12px;
+        }
+        span.cover-fill {
+            background: #ccc;
+            border-right: 1px solid #444;
+        }
+        span.cover-empty {
+            background: white;
+            border-left: none;
+        }
+        span.cover-full {
+            border-right: none !important;
+        }
+        pre.prettyprint {
+            border: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        .com { color: #999 !important; }
+    </style>
+</head>
+<body>
+<div class='header high'>
+    <h1>Code coverage report for <span class='entity'>src/operator.js</span></h1>
+    <h2>
+        
+        Statements: <span class='metric'>83.59% <small>(163 / 195)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+        
+        Branches: <span class='metric'>79.35% <small>(146 / 184)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+        
+        Functions: <span class='metric'>90% <small>(27 / 30)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+        
+        Lines: <span class='metric'>83.68% <small>(159 / 190)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+    </h2>
+    <div class="path"><a href="../index.html">All files</a> &#187; <a href="index.html">src/</a> &#187; operator.js</div>
+</div>
+<div class='body'>
+<pre><table class="coverage">
+<tr><td class="line-count">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408</td><td class="line-coverage"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">9</span>
+<span class="cline-any cline-yes">9</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">279</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">433</span>
+<span class="cline-any cline-yes">15</span>
+<span class="cline-any cline-yes">15</span>
+<span class="cline-any cline-yes">15</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">418</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">297420</span>
+<span class="cline-any cline-yes">83557</span>
+<span class="cline-any cline-yes">66992</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">257561</span>
+<span class="cline-any cline-yes">787</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">256774</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">256773</span>
+<span class="cline-any cline-yes">44673</span>
+<span class="cline-any cline-yes">44673</span>
+<span class="cline-any cline-yes">44673</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">212100</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">264</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">260</span>
+<span class="cline-any cline-yes">260</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">146</span>
+<span class="cline-any cline-yes">28</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">118</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">111</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">44</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">44</span>
+<span class="cline-any cline-yes">36</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">38</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">22</span>
+<span class="cline-any cline-yes">22</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">21</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">113</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">113</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">101</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">104</span>
+<span class="cline-any cline-yes">104</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">104</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">100</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">99</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">98</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">98</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11788</span>
+<span class="cline-any cline-yes">11788</span>
+<span class="cline-any cline-yes">11788</span>
+<span class="cline-any cline-yes">395</span>
+<span class="cline-any cline-yes">395</span>
+<span class="cline-any cline-yes">395</span>
+<span class="cline-any cline-yes">395</span>
+<span class="cline-any cline-yes">390</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11398</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11398</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11398</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11398</span>
+<span class="cline-any cline-yes">11</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11387</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11417</span>
+<span class="cline-any cline-yes">11417</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11417</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11417</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11409</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1597</span>
+<span class="cline-any cline-yes">1597</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1578</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">19</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1578</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1052</span>
+<span class="cline-any cline-yes">93</span>
+<span class="cline-any cline-yes">959</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">948</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">967</span>
+<span class="cline-any cline-yes">967</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">937</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">30</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">30</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">30</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">967</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">294056</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">294056</span>
+<span class="cline-any cline-yes">293427</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">629</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">629</span>
+<span class="cline-any cline-yes">628</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">10657</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">19</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*global require:true exports:true */
+&nbsp;
+<span class="missing-if-branch" title="if path not taken"" >I</span>if (typeof module !== 'undefined' &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >typeof require !== 'undefined')</span> {
+<span class="cstat-no" title="statement not covered" >	var utils = require('./utils.js').utils;</span>
+<span class="cstat-no" title="statement not covered" >	var errorNode = require('./utils.js').errorNode;</span>
+<span class="cstat-no" title="statement not covered" >	var fractionUtils = require('./fractionUtils').fractionUtils;</span>
+<span class="cstat-no" title="statement not covered" >	var expression = require('./expression.js').expression;</span>
+<span class="cstat-no" title="statement not covered" >	var getPrecedence = require('./operatorProperties.js').operatorProperties.getPrecedence;</span>
+}
+&nbsp;
+var operator = (function() {
+	/**
+	 * Object that knows how to evaluate all the evaluable operators.
+	 * @constructor
+	 * @param evaluate       {Function} Defines how to perform the operation given two Expression
+	 *                                  operands.
+	 * @param evaluateValues {Function} Defines how to perform the operation given two numbers as
+	 *                                  operands.
+	 */
+	function Operator(evaluate, evaluateValues) {
+		this.evaluate = evaluate;
+		this.evaluateValues = evaluateValues;
+	}
+&nbsp;
+	function makeNumber(value) {
+		return expression.createSimpleExpression('number', value);
+	}
+	function combineRadicals(node) {
+		if (node.type === 'compound' &amp;&amp; node.op === '*') {
+			var left = combineRadicals(node.lhs);
+			var right = combineRadicals(node.rhs);
+			if (left.type === 'number' &amp;&amp; fractionUtils.isValueRadical(left.value) &amp;&amp;
+				right.type === 'number' &amp;&amp; fractionUtils.isValueRadical(right.value)) {
+				var newValue = fractionUtils.combineRadicals(left.value, right.value);
+				<span class="missing-if-branch" title="else path not taken"" >E</span>if (newValue !== errorNode) {
+					newNode = simplifyRadicalIntoNodePrivate(newValue);
+					// if we have \sqrt{-a}*\sqrt{-b} where a,b\in\N, that's equivalent to
+					// \sqrt{a}i\sqrt{b}i, or \sqrt{ab}i^2, or -\sqrt{ab}.  We skip those steps and
+					// go straight from \sqrt{-a}\sqrt{-b} to -\sqrt{ab}.
+					if (fractionUtils.computeApproxNumericValue(left.value.radicand) &lt; 0 &amp;&amp;
+						fractionUtils.computeApproxNumericValue(right.value.radicand) &lt; 0) {
+						newNode = operator['-'].unaryEvaluate(newNode);
+					}
+					return newNode;
+				}
+			}
+			return expression.createCompoundExpression(left, right, '*');
+		}
+		return node;
+	}
+	function noopEvaluation(op) {
+		return function(lhs, rhs) {
+			return expression.createCompoundExpression(lhs, rhs, op);
+		}
+	}
+	function noopEvaluationValues(op) {
+		return <span class="fstat-no" title="function not covered" >function(lhsValue, rhsValue) {</span>
+<span class="cstat-no" title="statement not covered" >			return expression.createCompoundExpression(</span>
+				makeNumber(lhsValue), makeNumber(rhsValue), op);
+		}
+	}
+	function multiplyNodesMaybeNullPrivate(nodeOne, nodeTwo, op) {
+		if (nodeTwo === null) { return nodeOne; }
+		if (nodeOne === null) { return (op === '/') ? invertNodePrivate(nodeTwo): nodeTwo; }
+		return expression.createCompoundExpression(nodeOne, nodeTwo, op);
+	}
+	function pullOutRadicalPrivate(node) {
+		if (node.type === 'number' &amp;&amp; fractionUtils.isValueRadical(node.value)) {
+			return { radical : node, rest : null };
+		}
+		if (node.type === 'number' &amp;&amp; fractionUtils.isValueFraction(node.value) &amp;&amp;
+			fractionUtils.isValueRadical(node.value.top)) {
+			return {
+				radical : makeNumber(node.value.top),
+				rest : makeNumber(fractionUtils.createFractionValue(1, node.value.bottom))
+			};
+		}
+		if (node.type === 'compound' &amp;&amp; getPrecedence(node.op) === 2) {
+			var left = pullOutRadicalPrivate(node.lhs);
+			var right = pullOutRadicalPrivate(node.rhs);
+			return {
+				radical : multiplyNodesMaybeNullPrivate(left.radical, right.radical, node.op),
+				rest : multiplyNodesMaybeNullPrivate(left.rest, right.rest, node.op)
+			};
+		}
+		return { radical : null, rest : node };
+	}
+	function simplifyRadicalIntoNodePrivate(value) {
+		if (fractionUtils.isValueFraction(value.radicand)) {
+			return operator['/'].evaluate(
+				simplifyRadicalIntoNodePrivate(
+					fractionUtils.createRadicalValue(value.radicand.top, value.power)),
+				simplifyRadicalIntoNodePrivate(
+					fractionUtils.createRadicalValue(value.radicand.bottom, value.power)));
+		}
+		var result = fractionUtils.simplifyRadical(value);
+		if (!fractionUtils.isValueMixed(result)) { return makeNumber(result); }
+		result = operator['*'].evaluateValues(result.rational, result.radical);
+		result.simplified = true;
+		return result;
+	}
+	function invertNodePrivate(node) {
+		if (node.type === 'number') {
+			return expression.createSimpleExpression(
+				'number', fractionUtils.invertFraction(node.value));
+		}
+		if (node.type === 'compound' &amp;&amp; node.op === '/') {
+			<span class="missing-if-branch" title="else path not taken"" >E</span>if (node.lhs.type === 'number' &amp;&amp; node.lhs.value === 1) {
+				return node.rhs;
+			} else {
+<span class="cstat-no" title="statement not covered" >				return expression.createCompoundExpression(node.rhs, node.lhs, '/');</span>
+			}
+		} else {
+			return expression.createCompoundExpression(
+				expression.createSimpleExpression('number', 1), node, '/');
+		}
+	}
+	/**
+	 * Define all of the operators with all their individual properties.
+	 * @dict
+	 */
+	self = {
+		'\\pm' : new Operator(noopEvaluation('\\pm'), noopEvaluationValues('\\pm')),
+		'^' : new Operator(
+			function(lhs, rhs) {
+				<span class="missing-if-branch" title="if path not taken"" >I</span>if (lhs.type !== 'number' || rhs.type !== 'number' ||
+					fractionUtils.isValueRadical(rhs.value)) {
+<span class="cstat-no" title="statement not covered" >					return expression.createCompoundExpression(lhs, rhs, '^');</span>
+				}
+				if (lhs.value === 1) { return lhs; }
+				return operator['^'].evaluateValues(lhs.value, rhs.value);
+			}, function(lhsValue, rhsValue) {
+				if (fractionUtils.isValueFraction(rhsValue)) {
+					var result = simplifyRadicalIntoNodePrivate(fractionUtils.createRadicalValue(
+						lhsValue, rhsValue, false));
+					return result;
+				}
+				var resultValue = 1;
+				if (fractionUtils.isValueFraction(lhsValue)) {
+					return operator['/'].evaluate(
+						operator['^'].evaluateValues(
+							lhsValue.top, rhsValue),
+						operator['^'].evaluateValues(
+							lhsValue.bottom, rhsValue));
+				} else if (fractionUtils.isValueRadical(lhsValue)) {
+					return simplifyRadicalIntoNodePrivate(fractionUtils.createRadicalValue(
+						lhsValue.radicand, operator['*'].evaluateValues(
+							lhsValue.power, rhsValue).value, false));
+				} else if (fractionUtils.isNegative(rhsValue)) {
+					resultValue = fractionUtils.createFractionValue(
+						1, Math.pow(lhsValue, -1*rhsValue));
+				} else {
+					resultValue = Math.pow(lhsValue, rhsValue);
+				}
+				return expression.createSimpleExpression('number', resultValue);
+			}
+		),
+		'/' : new Operator(
+			function(lhs, rhs) {
+				<span class="missing-if-branch" title="if path not taken"" >I</span>if (!(lhs.numeric &amp;&amp; rhs.numeric) &amp;&amp; (<span class="branch-1 cbranch-no" title="branch not covered" >!lhs.simplified </span>|| <span class="branch-2 cbranch-no" title="branch not covered" >!rhs.simplified)</span>) {
+<span class="cstat-no" title="statement not covered" >					return expression.createCompoundExpression(lhs, rhs, '/');</span>
+				}
+				if (lhs.type !== 'number' || rhs.type !== 'number') {
+					var result = expression.createCompoundExpression(lhs, rhs, '/');
+					result.simplified = true;
+					return result;
+				}
+				return operator['/'].evaluateValues(lhs.value, rhs.value);
+			}, function(lhsValue, rhsValue) {
+				var resultValue = null;
+				<span class="missing-if-branch" title="if path not taken"" >I</span>if (fractionUtils.isValueRadical(rhsValue)) {
+<span class="cstat-no" title="statement not covered" >					return operator['*'].evaluate(</span>
+						expression.createSimpleExpression('number', lhsValue),
+						self.rationalizeDenominator(expression.createSimpleExpression('number',
+							fractionUtils.invertFraction(rhsValue))));
+				}
+				if (fractionUtils.isValueRadical(lhsValue)) {
+					var result = expression.createCompoundExpression(
+						expression.createSimpleExpression('number', lhsValue),
+						expression.createSimpleExpression('number', rhsValue),
+						'/');
+					result.simplified = true;
+					return result;
+				}
+				if (fractionUtils.isValueFraction(rhsValue)) {
+					return operator['*'].evaluateValues(
+						lhsValue, fractionUtils.invertFraction(rhsValue));
+				} else if (fractionUtils.isValueFraction(lhsValue)) {
+					return operator['/'].evaluate(
+						makeNumber(lhsValue.top),
+						operator['*'].evaluateValues(
+							lhsValue.bottom, rhsValue));
+				} else {
+					resultValue = fractionUtils.simplifyFraction(
+						fractionUtils.createFractionValue(lhsValue, rhsValue));
+				}
+				return expression.createSimpleExpression('number', resultValue);
+			}
+		),
+		'*' : new Operator(
+			function(lhs, rhs) {
+				var node = expression.createCompoundExpression(lhs, rhs, '*');
+				node = pullOutRadicalPrivate(node);
+				if (node.radical !== null) {
+					var orig = node.radical;
+					var combined = combineRadicals(node.radical);
+					node = multiplyNodesMaybeNullPrivate(node.rest, combined, '*');
+					if (orig.syntacticEquals(combined) || node.type !== 'compound') {
+						return node;
+					}
+					lhs = node.lhs;
+					rhs = node.rhs;
+				}
+				<span class="missing-if-branch" title="if path not taken"" >I</span>if (!lhs.numeric || !rhs.numeric) {
+<span class="cstat-no" title="statement not covered" >					return expression.createCompoundExpression(lhs, rhs, '*');</span>
+				}
+				if (lhs.type === 'compound') {
+					<span class="missing-if-branch" title="if path not taken"" >I</span>if (getPrecedence(lhs.op) === 2) {
+						// (2/x)*3 = (2*3)/x
+<span class="cstat-no" title="statement not covered" >						if (lhs.lhs.type === 'number' &amp;&amp;</span>
+							!fractionUtils.isValueRadical(lhs.lhs.value)) {
+<span class="cstat-no" title="statement not covered" >							return operator[lhs.op].evaluate(</span>
+								operator['*'].evaluate(lhs.lhs, rhs),
+								lhs.rhs);
+						}
+						// (x/2)*3 = x*(3/2)
+<span class="cstat-no" title="statement not covered" >						if (lhs.rhs.type === 'number' &amp;&amp;</span>
+							!fractionUtils.isValueRadical(lhs.rhs.value)) {
+<span class="cstat-no" title="statement not covered" >							return operator['*'].evaluate(lhs.lhs,</span>
+								operator[lhs.op].evaluate(rhs, lhs.rhs));
+						}
+					}
+				}
+				if (rhs.type === 'compound') {
+					<span class="missing-if-branch" title="if path not taken"" >I</span>if (getPrecedence(rhs.op) === 2) {
+						// 2*(3/x) = (2*3)/x
+<span class="cstat-no" title="statement not covered" >						if (rhs.lhs.type === 'number' &amp;&amp;</span>
+							!fractionUtils.isValueRadical(rhs.lhs.value)) {
+<span class="cstat-no" title="statement not covered" >							return operator[rhs.op].evaluate(</span>
+								operator['*'].evaluate(lhs, rhs.lhs),
+								rhs.rhs);
+						}
+						// 2*(x/3) = (2/3)*x
+<span class="cstat-no" title="statement not covered" >						if (rhs.rhs.type === 'number' &amp;&amp;</span>
+							!fractionUtils.isValueRadical(rhs.rhs.value)) {
+<span class="cstat-no" title="statement not covered" >							return operator['*'].evaluate(</span>
+								operator[rhs.op].evaluate(lhs, rhs.rhs),
+								rhs.lhs);
+						}
+					}
+				}
+				if (lhs.type !== 'number' || rhs.type !== 'number') {
+					return expression.createCompoundExpression(lhs, rhs, '*');
+				}
+				return operator['*'].evaluateValues(lhs.value, rhs.value);
+			}, function(lhsValue, rhsValue) {
+				var resultValue = null;
+				<span class="missing-if-branch" title="if path not taken"" >I</span>if (fractionUtils.isValueRadical(lhsValue) &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >!lhsValue.simplified)</span> {
+<span class="cstat-no" title="statement not covered" >					return operator['*'].evaluate(</span>
+						simplifyRadicalIntoNodePrivate(lhsValue),
+						makeNumber(rhsValue));
+				}
+				<span class="missing-if-branch" title="if path not taken"" >I</span>if (fractionUtils.isValueRadical(rhsValue) &amp;&amp; !rhsValue.simplified) {
+<span class="cstat-no" title="statement not covered" >					return operator['*'].evaluate(makeNumber(lhsValue),</span>
+						simplifyRadicalIntoNodePrivate(rhsValue));
+				}
+				if (fractionUtils.isValueRadical(lhsValue) ||
+					fractionUtils.isValueRadical(rhsValue)) {
+					return combineRadicals(expression.createCompoundExpression(
+						makeNumber(lhsValue), makeNumber(rhsValue), '*'));
+				}
+				return expression.createSimpleExpression('number',
+					fractionUtils.multiplyFractions(lhsValue, rhsValue));
+			}
+		),
+		'-' : new Operator(
+			function(lhs, rhs) {
+				if (lhs.type !== 'number' || rhs.type !== 'number' ||
+					(fractionUtils.isValueRadical(lhs.value) ||
+						fractionUtils.isValueRadical(rhs.value))) {
+					return expression.createCompoundExpression(lhs, rhs, '-');
+				}
+				return operator['-'].evaluateValues(lhs.value, rhs.value);
+			}, function(lhsValue, rhsValue) {
+				var resultValue = null;
+				if (!fractionUtils.isValueFraction(lhsValue) &amp;&amp;
+					!fractionUtils.isValueFraction(rhsValue)) {
+					resultValue = lhsValue - rhsValue;
+				} else {
+					return operator['+'].evaluateValues(lhsValue,
+						this.unaryEvaluateValue(rhsValue).value);
+				}
+				return expression.createSimpleExpression('number', resultValue);
+			}
+		),
+		'+' : new Operator(
+			function(lhs, rhs) {
+				if (lhs.type !== 'number' || rhs.type !== 'number') {
+					return expression.createCompoundExpression(lhs, rhs, '+');
+				} else if (fractionUtils.isValueRadical(lhs.value) ||
+						fractionUtils.isValueRadical(rhs.value)) {
+					<span class="missing-if-branch" title="if path not taken"" >I</span>if (lhs.syntacticEquals(rhs)) {
+<span class="cstat-no" title="statement not covered" >						var newNode = expression.createCompoundExpression(</span>
+							makeNumber(2), lhs, '*');
+<span class="cstat-no" title="statement not covered" >						newNode.simplified = true;</span>
+<span class="cstat-no" title="statement not covered" >						return newNode;</span>
+					}
+					return expression.createCompoundExpression(lhs, rhs, '+');
+				}
+				return operator['+'].evaluateValues(lhs.value, rhs.value);
+			}, function(lhsValue, rhsValue) {
+				var resultValue = null;
+				if (!fractionUtils.isValueFraction(lhsValue) &amp;&amp;
+					!fractionUtils.isValueFraction(rhsValue)) {
+					resultValue = lhsValue + rhsValue;
+				} else {
+					if (!fractionUtils.isValueFraction(lhsValue)) {
+						lhsValue = fractionUtils.createFractionValue(lhsValue, 1);
+					}
+					if (!fractionUtils.isValueFraction(rhsValue)) {
+						rhsValue = fractionUtils.createFractionValue(rhsValue, 1);
+					}
+					resultValue = fractionUtils.addFractions(lhsValue, rhsValue);
+				}
+				return expression.createSimpleExpression('number', resultValue);
+			}
+		),
+		'\\sqrt' : new Operator(
+			function(lhs, rhs) {
+				return operator['^'].evaluate(rhs,
+					operator['/'].evaluateValues(1, lhs.value));
+			}, <span class="fstat-no" title="function not covered" >function(lhsValue, rhsValue) {</span>
+				// Assumes lhs is the root, and rhs is the value under the sqrt.
+<span class="cstat-no" title="statement not covered" >				return operator['^'].evaluate(makeNumber(rhsValue),</span>
+					operator['/'].evaluateValues(1, lhsValue));
+			}
+		),
+		'\\log' : new Operator(noopEvaluation('\\log'), noopEvaluationValues('\\log')),
+		'|' : new Operator(),
+		pullOutRadical: pullOutRadicalPrivate,
+		rationalizeDenominator: function(node) {
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (node.type === 'number' &amp;&amp; fractionUtils.isValueFraction(node.value) &amp;&amp;
+				fractionUtils.isValueRadical(node.value.bottom)) {
+<span class="cstat-no" title="statement not covered" >				node = expression.createCompoundExpression(</span>
+					expression.createSimpleExpression('number', node.value.top),
+					expression.createSimpleExpression('number', node.value.bottom), '/');
+			}
+			if (!(node.type === 'compound' &amp;&amp; node.op === '/')) {
+				return node;
+			}
+			var radicalOnBottom = pullOutRadicalPrivate(node.rhs);
+&nbsp;
+			if (radicalOnBottom.radical === null) {
+				return node;
+			}
+			var rationalizingTerm = radicalOnBottom.radical;
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (rationalizingTerm.type === 'compound') {
+<span class="cstat-no" title="statement not covered" >				rationalizingTerm = combineRadicals(rationalizingTerm);</span>
+			}
+			rationalizingTerm.value.power = operator['-'].evaluateValues(1,
+				rationalizingTerm.value.power).value;
+			var bottom = makeNumber(rationalizingTerm.value.radicand);
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (radicalOnBottom.rest !== null) {
+<span class="cstat-no" title="statement not covered" >				bottom = operator['*'].evaluate(radicalOnBottom.rest, bottom);</span>
+			}
+			return operator['/'].evaluate(
+				operator['*'].evaluate(node.lhs, rationalizingTerm),
+				bottom);
+		},
+		simplifyRadicalIntoNode: simplifyRadicalIntoNodePrivate,
+		invertNode: invertNodePrivate,
+		multiplyNodesMaybeNull: multiplyNodesMaybeNullPrivate
+	};
+	/**
+	 * Add a unaryEvaluate function to '-' and '\\sqrt' (I don't do it in the constructor
+	 * since only a few have such a function).
+	 * @param {number} childValue The number to invert.
+	 * @return {number} The inverted number.
+	 */
+	self['-'].unaryEvaluate = function(child) {
+		return operator['*'].evaluate(
+			expression.createSimpleExpression('number', -1), child);
+	};
+&nbsp;
+	self['-'].unaryEvaluateValue = function(childValue) {
+		return operator['*'].evaluateValues(-1, childValue);
+	};
+&nbsp;
+	self['\\sqrt'].unaryEvaluate = <span class="fstat-no" title="function not covered" >function(child, expand) {</span>
+<span class="cstat-no" title="statement not covered" >		if (typeof expand === 'undefined') { <span class="cstat-no" title="statement not covered" >expand = false; </span>}</span>
+<span class="cstat-no" title="statement not covered" >		return operator['^'].evaluateValues(child.value,</span>
+			fractionUtils.createFractionValue(1, 2));
+	};
+&nbsp;
+	self['|'].unaryEvaluate = function(child) {
+		return makeNumber(fractionUtils.abs(child.value));
+	};
+&nbsp;
+	self['\\pm'].unaryEvaluate = function(child) {
+		return expression.createUnaryExpression(child, '\\pm');
+	};
+	
+	return self;
+}());
+&nbsp;
+<span class="missing-if-branch" title="if path not taken"" >I</span>if (typeof exports !== 'undefined') {
+<span class="cstat-no" title="statement not covered" >	exports.operator = operator;</span>
+}</pre></td></tr>
+</table></pre>
+
+</div>
+<div class='footer'>
+    <div class='meta'>Generated by <a href='http://istanbul-js.org' target='_blank'>istanbul</a> at Wed May 29 2013 13:40:53 GMT-0700 (PDT)</div>
+</div>
+</body>
+
+<script src="../prettify.js"></script>
+
+<script src="http://yui.yahooapis.com/3.6.0/build/yui/yui-min.js"></script>
+<script>
+
+    YUI().use('datatable', function (Y) {
+
+        var formatters = {
+          pct: function (o) {
+              o.className += o.record.get('classes')[o.column.key];
+              try {
+                  return o.value.toFixed(2) + '%';
+              } catch (ex) { return o.value + '%'; }
+          },
+          html: function (o) {
+              o.className += o.record.get('classes')[o.column.key];
+              return o.record.get(o.column.key + '_html');
+          }
+        },
+          defaultFormatter = function (o) {
+              o.className += o.record.get('classes')[o.column.key];
+              return o.value;
+          };
+
+        function getColumns(theadNode) {
+            var colNodes = theadNode.all('tr th'),
+                cols = [],
+                col;
+            colNodes.each(function (colNode) {
+                col = {
+                    key: colNode.getAttribute('data-col'),
+                    label: colNode.get('innerHTML') || ' ',
+                    sortable: !colNode.getAttribute('data-nosort'),
+                    className: colNode.getAttribute('class'),
+                    type: colNode.getAttribute('data-type'),
+                    allowHTML: colNode.getAttribute('data-html') === 'true' || colNode.getAttribute('data-fmt') === 'html'
+                };
+                col.formatter = formatters[colNode.getAttribute('data-fmt')] || defaultFormatter;
+                cols.push(col);
+            });
+            return cols;
+        }
+
+        function getRowData(trNode, cols) {
+            var tdNodes = trNode.all('td'),
+                    i,
+                    row = { classes: {} },
+                    node,
+                    name;
+            for (i = 0; i < cols.length; i += 1) {
+                name = cols[i].key;
+                node = tdNodes.item(i);
+                row[name] = node.getAttribute('data-value') || node.get('innerHTML');
+                row[name + '_html'] = node.get('innerHTML');
+                row.classes[name] = node.getAttribute('class');
+                //Y.log('Name: ' + name + '; Value: ' + row[name]);
+                if (cols[i].type === 'number') { row[name] = row[name] * 1; }
+            }
+            //Y.log(row);
+            return row;
+        }
+
+        function getData(tbodyNode, cols) {
+            var data = [];
+            tbodyNode.all('tr').each(function (trNode) {
+                data.push(getRowData(trNode, cols));
+            });
+            return data;
+        }
+
+        function replaceTable(node) {
+            if (!node) { return; }
+            var cols = getColumns(node.one('thead')),
+                data = getData(node.one('tbody'), cols),
+                table,
+                parent = node.get('parentNode');
+
+            table = new Y.DataTable({
+                columns: cols,
+                data: data,
+                sortBy: 'file'
+            });
+            parent.set('innerHTML', '');
+            table.render(parent);
+        }
+
+        Y.on('domready', function () {
+            replaceTable(Y.one('div.coverage-summary table'));
+            if (typeof prettyPrint === 'function') {
+                prettyPrint();
+            }
+        });
+    });
+</script>
+</html>

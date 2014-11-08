@@ -1,0 +1,5454 @@
+<!doctype html>
+<html>
+<head>
+    <title>Code coverage report for src/evaluation.js</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta http-equiv="content-language" content="en-gb">
+    
+        <link rel='stylesheet' href='../prettify.css'>
+    
+    <style type='text/css'>
+        body, html {
+            margin:0; padding: 0;
+        }
+        body {
+            font-family: "Helvetic Neue", Helvetica,Arial;
+            font-size: 10pt;
+        }
+        div.header, div.footer {
+            background: #eee;
+            padding: 1em;
+        }
+        div.header {
+            z-index: 100;
+            position: fixed;
+            top: 0;
+            border-bottom: 1px solid #666;
+            width: 100%;
+        }
+        div.footer {
+            border-top: 1px solid #666;
+        }
+        div.body {
+            margin-top: 10em;
+        }
+        div.meta {
+            font-size: 90%;
+            text-align: center;
+        }
+        h1, h2, h3 {
+            font-weight: normal;
+        }
+        h1 {
+            font-size: 12pt;
+        }
+        h2 {
+            font-size: 10pt;
+        }
+        pre {
+            font-family: consolas, menlo, monaco, monospace;
+            margin: 0;
+            padding: 0;
+            line-height: 14px;
+            font-size: 14px;
+        }
+
+        div.path { font-size: 110%; }
+        div.path a:link, div.path a:visited { color: #000; }
+        table.coverage { border-collapse: collapse; margin:0; padding: 0 }
+
+        table.coverage td {
+            margin: 0;
+            padding: 0;
+            color: #111;
+            vertical-align: top;
+        }
+        table.coverage td.line-count {
+            width: 50px;
+            text-align: right;
+            padding-right: 5px;
+        }
+        table.coverage td.line-coverage {
+            color: #777 !important;
+            text-align: right;
+            border-left: 1px solid #666;
+            border-right: 1px solid #666;
+        }
+
+        table.coverage td.text {
+        }
+
+        table.coverage td span.cline-any {
+            display: inline-block;
+            padding: 0 5px;
+            width: 40px;
+        }
+        table.coverage td span.cline-neutral {
+            background: #eee;
+        }
+        table.coverage td span.cline-yes {
+            background: #b5d592;
+            color: #999;
+        }
+        table.coverage td span.cline-no {
+            background: #fc8c84;
+        }
+
+        .cstat-yes { color: #111; }
+        .cstat-no { background: #fc8c84; color: #111; }
+        .fstat-no { background: #ffc520; color: #111 !important; }
+        .cbranch-no { background:  yellow !important; color: #111; }
+        .missing-if-branch {
+            display: inline-block;
+            margin-right: 10px;
+            position: relative;
+            padding: 0 4px;
+            background: black;
+            color: yellow;
+            xtext-decoration: line-through;
+        }
+        .missing-if-branch .typ {
+            color: inherit !important;
+        }
+
+        .entity, .metric { font-weight: bold; }
+        .metric { display: inline-block; border: 1px solid #333; padding: 0.3em; background: white; }
+        .metric small { font-size: 80%; font-weight: normal; color: #666; }
+
+        div.coverage-summary table { border-collapse: collapse; margin: 3em; font-size: 110%; }
+        div.coverage-summary td, div.coverage-summary table  th { margin: 0; padding: 0.25em 1em; border-top: 1px solid #666; border-bottom: 1px solid #666; }
+        div.coverage-summary th { text-align: left; border: 1px solid #666; background: #eee; font-weight: normal; }
+        div.coverage-summary th.file { border-right: none !important; }
+        div.coverage-summary th.pic { border-left: none !important; text-align: right; }
+        div.coverage-summary th.pct { border-right: none !important; }
+        div.coverage-summary th.abs { border-left: none !important; text-align: right; }
+        div.coverage-summary td.pct { text-align: right; border-left: 1px solid #666; }
+        div.coverage-summary td.abs { text-align: right; font-size: 90%; color: #444; border-right: 1px solid #666; }
+        div.coverage-summary td.file { text-align: right; border-left: 1px solid #666; white-space: nowrap;  }
+        div.coverage-summary td.pic { min-width: 120px !important;  }
+        div.coverage-summary a:link { text-decoration: none; color: #000; }
+        div.coverage-summary a:visited { text-decoration: none; color: #333; }
+        div.coverage-summary a:hover { text-decoration: underline; }
+        div.coverage-summary tfoot td { border-top: 1px solid #666; }
+
+        div.coverage-summary .yui3-datatable-sort-indicator, div.coverage-summary .dummy-sort-indicator {
+            height: 10px;
+            width: 7px;
+            display: inline-block;
+            margin-left: 0.5em;
+        }
+        div.coverage-summary .yui3-datatable-sort-indicator {
+            background: url("http://yui.yahooapis.com/3.6.0/build/datatable-sort/assets/skins/sam/sort-arrow-sprite.png") no-repeat scroll 0 0 transparent;
+        }
+        div.coverage-summary .yui3-datatable-sorted .yui3-datatable-sort-indicator {
+            background-position: 0 -20px;
+        }
+        div.coverage-summary .yui3-datatable-sorted-desc .yui3-datatable-sort-indicator {
+            background-position: 0 -10px;
+        }
+
+        .high { background: #b5d592 !important; }
+        .medium { background: #ffe87c !important; }
+        .low { background: #fc8c84 !important; }
+
+        span.cover-fill, span.cover-empty {
+            display:inline-block;
+            border:1px solid #444;
+            background: white;
+            height: 12px;
+        }
+        span.cover-fill {
+            background: #ccc;
+            border-right: 1px solid #444;
+        }
+        span.cover-empty {
+            background: white;
+            border-left: none;
+        }
+        span.cover-full {
+            border-right: none !important;
+        }
+        pre.prettyprint {
+            border: none !important;
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+        .com { color: #999 !important; }
+    </style>
+</head>
+<body>
+<div class='header high'>
+    <h1>Code coverage report for <span class='entity'>src/evaluation.js</span></h1>
+    <h2>
+        
+        Statements: <span class='metric'>86.31% <small>(977 / 1132)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+        
+        Branches: <span class='metric'>84.39% <small>(908 / 1076)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+        
+        Functions: <span class='metric'>86.96% <small>(60 / 69)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+        
+        Lines: <span class='metric'>88.32% <small>(900 / 1019)</small></span> &nbsp;&nbsp;&nbsp;&nbsp;
+        
+    </h2>
+    <div class="path"><a href="../index.html">All files</a> &#187; <a href="index.html">src/</a> &#187; evaluation.js</div>
+</div>
+<div class='body'>
+<pre><table class="coverage">
+<tr><td class="line-count">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177
+178
+179
+180
+181
+182
+183
+184
+185
+186
+187
+188
+189
+190
+191
+192
+193
+194
+195
+196
+197
+198
+199
+200
+201
+202
+203
+204
+205
+206
+207
+208
+209
+210
+211
+212
+213
+214
+215
+216
+217
+218
+219
+220
+221
+222
+223
+224
+225
+226
+227
+228
+229
+230
+231
+232
+233
+234
+235
+236
+237
+238
+239
+240
+241
+242
+243
+244
+245
+246
+247
+248
+249
+250
+251
+252
+253
+254
+255
+256
+257
+258
+259
+260
+261
+262
+263
+264
+265
+266
+267
+268
+269
+270
+271
+272
+273
+274
+275
+276
+277
+278
+279
+280
+281
+282
+283
+284
+285
+286
+287
+288
+289
+290
+291
+292
+293
+294
+295
+296
+297
+298
+299
+300
+301
+302
+303
+304
+305
+306
+307
+308
+309
+310
+311
+312
+313
+314
+315
+316
+317
+318
+319
+320
+321
+322
+323
+324
+325
+326
+327
+328
+329
+330
+331
+332
+333
+334
+335
+336
+337
+338
+339
+340
+341
+342
+343
+344
+345
+346
+347
+348
+349
+350
+351
+352
+353
+354
+355
+356
+357
+358
+359
+360
+361
+362
+363
+364
+365
+366
+367
+368
+369
+370
+371
+372
+373
+374
+375
+376
+377
+378
+379
+380
+381
+382
+383
+384
+385
+386
+387
+388
+389
+390
+391
+392
+393
+394
+395
+396
+397
+398
+399
+400
+401
+402
+403
+404
+405
+406
+407
+408
+409
+410
+411
+412
+413
+414
+415
+416
+417
+418
+419
+420
+421
+422
+423
+424
+425
+426
+427
+428
+429
+430
+431
+432
+433
+434
+435
+436
+437
+438
+439
+440
+441
+442
+443
+444
+445
+446
+447
+448
+449
+450
+451
+452
+453
+454
+455
+456
+457
+458
+459
+460
+461
+462
+463
+464
+465
+466
+467
+468
+469
+470
+471
+472
+473
+474
+475
+476
+477
+478
+479
+480
+481
+482
+483
+484
+485
+486
+487
+488
+489
+490
+491
+492
+493
+494
+495
+496
+497
+498
+499
+500
+501
+502
+503
+504
+505
+506
+507
+508
+509
+510
+511
+512
+513
+514
+515
+516
+517
+518
+519
+520
+521
+522
+523
+524
+525
+526
+527
+528
+529
+530
+531
+532
+533
+534
+535
+536
+537
+538
+539
+540
+541
+542
+543
+544
+545
+546
+547
+548
+549
+550
+551
+552
+553
+554
+555
+556
+557
+558
+559
+560
+561
+562
+563
+564
+565
+566
+567
+568
+569
+570
+571
+572
+573
+574
+575
+576
+577
+578
+579
+580
+581
+582
+583
+584
+585
+586
+587
+588
+589
+590
+591
+592
+593
+594
+595
+596
+597
+598
+599
+600
+601
+602
+603
+604
+605
+606
+607
+608
+609
+610
+611
+612
+613
+614
+615
+616
+617
+618
+619
+620
+621
+622
+623
+624
+625
+626
+627
+628
+629
+630
+631
+632
+633
+634
+635
+636
+637
+638
+639
+640
+641
+642
+643
+644
+645
+646
+647
+648
+649
+650
+651
+652
+653
+654
+655
+656
+657
+658
+659
+660
+661
+662
+663
+664
+665
+666
+667
+668
+669
+670
+671
+672
+673
+674
+675
+676
+677
+678
+679
+680
+681
+682
+683
+684
+685
+686
+687
+688
+689
+690
+691
+692
+693
+694
+695
+696
+697
+698
+699
+700
+701
+702
+703
+704
+705
+706
+707
+708
+709
+710
+711
+712
+713
+714
+715
+716
+717
+718
+719
+720
+721
+722
+723
+724
+725
+726
+727
+728
+729
+730
+731
+732
+733
+734
+735
+736
+737
+738
+739
+740
+741
+742
+743
+744
+745
+746
+747
+748
+749
+750
+751
+752
+753
+754
+755
+756
+757
+758
+759
+760
+761
+762
+763
+764
+765
+766
+767
+768
+769
+770
+771
+772
+773
+774
+775
+776
+777
+778
+779
+780
+781
+782
+783
+784
+785
+786
+787
+788
+789
+790
+791
+792
+793
+794
+795
+796
+797
+798
+799
+800
+801
+802
+803
+804
+805
+806
+807
+808
+809
+810
+811
+812
+813
+814
+815
+816
+817
+818
+819
+820
+821
+822
+823
+824
+825
+826
+827
+828
+829
+830
+831
+832
+833
+834
+835
+836
+837
+838
+839
+840
+841
+842
+843
+844
+845
+846
+847
+848
+849
+850
+851
+852
+853
+854
+855
+856
+857
+858
+859
+860
+861
+862
+863
+864
+865
+866
+867
+868
+869
+870
+871
+872
+873
+874
+875
+876
+877
+878
+879
+880
+881
+882
+883
+884
+885
+886
+887
+888
+889
+890
+891
+892
+893
+894
+895
+896
+897
+898
+899
+900
+901
+902
+903
+904
+905
+906
+907
+908
+909
+910
+911
+912
+913
+914
+915
+916
+917
+918
+919
+920
+921
+922
+923
+924
+925
+926
+927
+928
+929
+930
+931
+932
+933
+934
+935
+936
+937
+938
+939
+940
+941
+942
+943
+944
+945
+946
+947
+948
+949
+950
+951
+952
+953
+954
+955
+956
+957
+958
+959
+960
+961
+962
+963
+964
+965
+966
+967
+968
+969
+970
+971
+972
+973
+974
+975
+976
+977
+978
+979
+980
+981
+982
+983
+984
+985
+986
+987
+988
+989
+990
+991
+992
+993
+994
+995
+996
+997
+998
+999
+1000
+1001
+1002
+1003
+1004
+1005
+1006
+1007
+1008
+1009
+1010
+1011
+1012
+1013
+1014
+1015
+1016
+1017
+1018
+1019
+1020
+1021
+1022
+1023
+1024
+1025
+1026
+1027
+1028
+1029
+1030
+1031
+1032
+1033
+1034
+1035
+1036
+1037
+1038
+1039
+1040
+1041
+1042
+1043
+1044
+1045
+1046
+1047
+1048
+1049
+1050
+1051
+1052
+1053
+1054
+1055
+1056
+1057
+1058
+1059
+1060
+1061
+1062
+1063
+1064
+1065
+1066
+1067
+1068
+1069
+1070
+1071
+1072
+1073
+1074
+1075
+1076
+1077
+1078
+1079
+1080
+1081
+1082
+1083
+1084
+1085
+1086
+1087
+1088
+1089
+1090
+1091
+1092
+1093
+1094
+1095
+1096
+1097
+1098
+1099
+1100
+1101
+1102
+1103
+1104
+1105
+1106
+1107
+1108
+1109
+1110
+1111
+1112
+1113
+1114
+1115
+1116
+1117
+1118
+1119
+1120
+1121
+1122
+1123
+1124
+1125
+1126
+1127
+1128
+1129
+1130
+1131
+1132
+1133
+1134
+1135
+1136
+1137
+1138
+1139
+1140
+1141
+1142
+1143
+1144
+1145
+1146
+1147
+1148
+1149
+1150
+1151
+1152
+1153
+1154
+1155
+1156
+1157
+1158
+1159
+1160
+1161
+1162
+1163
+1164
+1165
+1166
+1167
+1168
+1169
+1170
+1171
+1172
+1173
+1174
+1175
+1176
+1177
+1178
+1179
+1180
+1181
+1182
+1183
+1184
+1185
+1186
+1187
+1188
+1189
+1190
+1191
+1192
+1193
+1194
+1195
+1196
+1197
+1198
+1199
+1200
+1201
+1202
+1203
+1204
+1205
+1206
+1207
+1208
+1209
+1210
+1211
+1212
+1213
+1214
+1215
+1216
+1217
+1218
+1219
+1220
+1221
+1222
+1223
+1224
+1225
+1226
+1227
+1228
+1229
+1230
+1231
+1232
+1233
+1234
+1235
+1236
+1237
+1238
+1239
+1240
+1241
+1242
+1243
+1244
+1245
+1246
+1247
+1248
+1249
+1250
+1251
+1252
+1253
+1254
+1255
+1256
+1257
+1258
+1259
+1260
+1261
+1262
+1263
+1264
+1265
+1266
+1267
+1268
+1269
+1270
+1271
+1272
+1273
+1274
+1275
+1276
+1277
+1278
+1279
+1280
+1281
+1282
+1283
+1284
+1285
+1286
+1287
+1288
+1289
+1290
+1291
+1292
+1293
+1294
+1295
+1296
+1297
+1298
+1299
+1300
+1301
+1302
+1303
+1304
+1305
+1306
+1307
+1308
+1309
+1310
+1311
+1312
+1313
+1314
+1315
+1316
+1317
+1318
+1319
+1320
+1321
+1322
+1323
+1324
+1325
+1326
+1327
+1328
+1329
+1330
+1331
+1332
+1333
+1334
+1335
+1336
+1337
+1338
+1339
+1340
+1341
+1342
+1343
+1344
+1345
+1346
+1347
+1348
+1349
+1350
+1351
+1352
+1353
+1354
+1355
+1356
+1357
+1358
+1359
+1360
+1361
+1362
+1363
+1364
+1365
+1366
+1367
+1368
+1369
+1370
+1371
+1372
+1373
+1374
+1375
+1376
+1377
+1378
+1379
+1380
+1381
+1382
+1383
+1384
+1385
+1386
+1387
+1388
+1389
+1390
+1391
+1392
+1393
+1394
+1395
+1396
+1397
+1398
+1399
+1400
+1401
+1402
+1403
+1404
+1405
+1406
+1407
+1408
+1409
+1410
+1411
+1412
+1413
+1414
+1415
+1416
+1417
+1418
+1419
+1420
+1421
+1422
+1423
+1424
+1425
+1426
+1427
+1428
+1429
+1430
+1431
+1432
+1433
+1434
+1435
+1436
+1437
+1438
+1439
+1440
+1441
+1442
+1443
+1444
+1445
+1446
+1447
+1448
+1449
+1450
+1451
+1452
+1453
+1454
+1455
+1456
+1457
+1458
+1459
+1460
+1461
+1462
+1463
+1464
+1465
+1466
+1467
+1468
+1469
+1470
+1471
+1472
+1473
+1474
+1475
+1476
+1477
+1478
+1479
+1480
+1481
+1482
+1483
+1484
+1485
+1486
+1487
+1488
+1489
+1490
+1491
+1492
+1493
+1494
+1495
+1496
+1497
+1498
+1499
+1500
+1501
+1502
+1503
+1504
+1505
+1506
+1507
+1508
+1509
+1510
+1511
+1512
+1513
+1514
+1515
+1516
+1517
+1518
+1519
+1520
+1521
+1522
+1523
+1524
+1525
+1526
+1527
+1528
+1529
+1530
+1531
+1532
+1533
+1534
+1535
+1536
+1537
+1538
+1539
+1540
+1541
+1542
+1543
+1544
+1545
+1546
+1547
+1548
+1549
+1550
+1551
+1552
+1553
+1554
+1555
+1556
+1557
+1558
+1559
+1560
+1561
+1562
+1563
+1564
+1565
+1566
+1567
+1568
+1569
+1570
+1571
+1572
+1573
+1574
+1575
+1576
+1577
+1578
+1579
+1580
+1581
+1582
+1583
+1584
+1585
+1586
+1587
+1588
+1589
+1590
+1591
+1592
+1593
+1594
+1595
+1596
+1597
+1598
+1599
+1600
+1601
+1602
+1603
+1604
+1605
+1606
+1607
+1608
+1609
+1610
+1611
+1612
+1613
+1614
+1615
+1616
+1617
+1618
+1619
+1620
+1621
+1622
+1623
+1624
+1625
+1626
+1627
+1628
+1629
+1630
+1631
+1632
+1633
+1634
+1635
+1636
+1637
+1638
+1639
+1640
+1641
+1642
+1643
+1644
+1645
+1646
+1647
+1648
+1649
+1650
+1651
+1652
+1653
+1654
+1655
+1656
+1657
+1658
+1659
+1660
+1661
+1662
+1663
+1664
+1665
+1666
+1667
+1668
+1669
+1670
+1671
+1672
+1673
+1674
+1675
+1676
+1677
+1678
+1679
+1680
+1681
+1682
+1683
+1684
+1685
+1686
+1687
+1688
+1689
+1690
+1691
+1692
+1693
+1694
+1695
+1696
+1697
+1698
+1699
+1700
+1701
+1702
+1703
+1704
+1705
+1706
+1707
+1708
+1709
+1710
+1711
+1712
+1713
+1714
+1715
+1716
+1717
+1718</td><td class="line-coverage"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">2222615</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">69</span>
+<span class="cline-any cline-yes">75</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">69</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">608</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">218</span>
+<span class="cline-any cline-yes">218</span>
+<span class="cline-any cline-yes">218</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">218</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">218</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">390</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">73616</span>
+<span class="cline-any cline-yes">46226</span>
+<span class="cline-any cline-yes">46222</span>
+<span class="cline-any cline-yes">50</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">46172</span>
+<span class="cline-any cline-yes">28793</span>
+<span class="cline-any cline-yes">26505</span>
+<span class="cline-any cline-yes">26505</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4623</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18</span>
+<span class="cline-any cline-yes">18</span>
+<span class="cline-any cline-yes">18</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18</span>
+<span class="cline-any cline-yes">4605</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">26487</span>
+<span class="cline-any cline-yes">26487</span>
+<span class="cline-any cline-yes">26487</span>
+<span class="cline-any cline-yes">26487</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">98</span>
+<span class="cline-any cline-yes">81</span>
+<span class="cline-any cline-yes">79</span>
+<span class="cline-any cline-yes">41</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">38</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">49907</span>
+<span class="cline-any cline-yes">49907</span>
+<span class="cline-any cline-yes">49907</span>
+<span class="cline-any cline-yes">121248</span>
+<span class="cline-any cline-yes">121248</span>
+<span class="cline-any cline-yes">121248</span>
+<span class="cline-any cline-yes">101129</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3047</span>
+<span class="cline-any cline-yes">3047</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">121248</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">49907</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">213390</span>
+<span class="cline-any cline-yes">127078</span>
+<span class="cline-any cline-yes">88849</span>
+<span class="cline-any cline-yes">88828</span>
+<span class="cline-any cline-yes">88680</span>
+<span class="cline-any cline-yes">88680</span>
+<span class="cline-any cline-yes">74617</span>
+<span class="cline-any cline-yes">74617</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1238</span>
+<span class="cline-any cline-yes">618</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">6822</span>
+<span class="cline-any cline-yes">6822</span>
+<span class="cline-any cline-yes">6822</span>
+<span class="cline-any cline-yes">4059</span>
+<span class="cline-any cline-yes">1371</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2688</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2098</span>
+<span class="cline-any cline-yes">2098</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">590</span>
+<span class="cline-any cline-yes">590</span>
+<span class="cline-any cline-yes">590</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">590</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">29</span>
+<span class="cline-any cline-yes">29</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">42870</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">13644</span>
+<span class="cline-any cline-yes">13644</span>
+<span class="cline-any cline-yes">13644</span>
+<span class="cline-any cline-yes">7800</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2822</span>
+<span class="cline-any cline-yes">2822</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4978</span>
+<span class="cline-any cline-yes">4978</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">13644</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">11422</span>
+<span class="cline-any cline-yes">11422</span>
+<span class="cline-any cline-yes">11422</span>
+<span class="cline-any cline-yes">11422</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11418</span>
+<span class="cline-any cline-yes">4131</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7287</span>
+<span class="cline-any cline-yes">465</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">465</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">465</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">465</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6822</span>
+<span class="cline-any cline-yes">6822</span>
+<span class="cline-any cline-yes">6822</span>
+<span class="cline-any cline-yes">2552</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6822</span>
+<span class="cline-any cline-yes">5368</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6822</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6822</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6822</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6822</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6822</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1269</span>
+<span class="cline-any cline-yes">1269</span>
+<span class="cline-any cline-yes">991</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">988</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">625</span>
+<span class="cline-any cline-yes">441</span>
+<span class="cline-any cline-yes">441</span>
+<span class="cline-any cline-yes">441</span>
+<span class="cline-any cline-yes">234</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">231</span>
+<span class="cline-any cline-yes">158</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">99</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">207</span>
+<span class="cline-any cline-yes">207</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">38</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">169</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">79098</span>
+<span class="cline-any cline-yes">79098</span>
+<span class="cline-any cline-yes">79098</span>
+<span class="cline-any cline-yes">192</span>
+<span class="cline-any cline-yes">192</span>
+<span class="cline-any cline-yes">192</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14</span>
+<span class="cline-any cline-yes">14</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">79098</span>
+<span class="cline-any cline-yes">49907</span>
+<span class="cline-any cline-yes">49907</span>
+<span class="cline-any cline-yes">49907</span>
+<span class="cline-any cline-yes">3037</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3037</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">79098</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">31875</span>
+<span class="cline-any cline-yes">31875</span>
+<span class="cline-any cline-yes">31875</span>
+<span class="cline-any cline-yes">337</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">31538</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">2192</span>
+<span class="cline-any cline-yes">2192</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">179</span>
+<span class="cline-any cline-yes">42</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">37</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">167</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">938</span>
+<span class="cline-any cline-yes">938</span>
+<span class="cline-any cline-yes">938</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">77719</span>
+<span class="cline-any cline-yes">77719</span>
+<span class="cline-any cline-yes">77719</span>
+<span class="cline-any cline-yes">70688</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">70680</span>
+<span class="cline-any cline-yes">70635</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">70511</span>
+<span class="cline-any cline-yes">65</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">70511</span>
+<span class="cline-any cline-yes">112</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">70511</span>
+<span class="cline-any cline-yes">938</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">69573</span>
+<span class="cline-any cline-yes">17486</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">52087</span>
+<span class="cline-any cline-yes">31875</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">20212</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">20212</span>
+<span class="cline-any cline-yes">20053</span>
+<span class="cline-any cline-yes">19875</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">19875</span>
+<span class="cline-any cline-yes">19874</span>
+<span class="cline-any cline-yes">19870</span>
+<span class="cline-any cline-yes">11693</span>
+<span class="cline-any cline-yes">2206</span>
+<span class="cline-any cline-yes">2178</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">28</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">28</span>
+<span class="cline-any cline-yes">26</span>
+<span class="cline-any cline-yes">26</span>
+<span class="cline-any cline-yes">14</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17664</span>
+<span class="cline-any cline-yes">17664</span>
+<span class="cline-any cline-yes">17664</span>
+<span class="cline-any cline-yes">17664</span>
+<span class="cline-any cline-yes">17664</span>
+<span class="cline-any cline-yes">20728</span>
+<span class="cline-any cline-yes">20728</span>
+<span class="cline-any cline-yes">20728</span>
+<span class="cline-any cline-yes">20728</span>
+<span class="cline-any cline-yes">20728</span>
+<span class="cline-any cline-yes">3208</span>
+<span class="cline-any cline-yes">3208</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17520</span>
+<span class="cline-any cline-yes">7216</span>
+<span class="cline-any cline-yes">7216</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10304</span>
+<span class="cline-any cline-yes">10304</span>
+<span class="cline-any cline-yes">4240</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1168</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">40329</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">13412</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">78</span>
+<span class="cline-any cline-yes">78</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">78</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">96343</span>
+<span class="cline-any cline-yes">15097</span>
+<span class="cline-any cline-yes">14995</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">81246</span>
+<span class="cline-any cline-yes">46706</span>
+<span class="cline-any cline-yes">110</span>
+<span class="cline-any cline-yes">110</span>
+<span class="cline-any cline-yes">110</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">46596</span>
+<span class="cline-any cline-yes">30119</span>
+<span class="cline-any cline-yes">30119</span>
+<span class="cline-any cline-yes">30119</span>
+<span class="cline-any cline-yes">29</span>
+<span class="cline-any cline-yes">29</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">30090</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">102191</span>
+<span class="cline-any cline-yes">102191</span>
+<span class="cline-any cline-yes">56451</span>
+<span class="cline-any cline-yes">13</span>
+<span class="cline-any cline-yes">11</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">56438</span>
+<span class="cline-any cline-yes">21</span>
+<span class="cline-any cline-yes">21</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">13</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">21</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">56417</span>
+<span class="cline-any cline-yes">37176</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">29914</span>
+<span class="cline-any cline-yes">29914</span>
+<span class="cline-any cline-yes">2067</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">27847</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">27837</span>
+<span class="cline-any cline-yes">27837</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">27837</span>
+<span class="cline-any cline-yes">27826</span>
+<span class="cline-any cline-yes">27826</span>
+<span class="cline-any cline-yes">27826</span>
+<span class="cline-any cline-yes">27826</span>
+<span class="cline-any cline-yes">27826</span>
+<span class="cline-any cline-yes">27826</span>
+<span class="cline-any cline-yes">14952</span>
+<span class="cline-any cline-yes">14952</span>
+<span class="cline-any cline-yes">14952</span>
+<span class="cline-any cline-yes">14952</span>
+<span class="cline-any cline-yes">14952</span>
+<span class="cline-any cline-yes">5011</span>
+<span class="cline-any cline-yes">203</span>
+<span class="cline-any cline-yes">203</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4808</span>
+<span class="cline-any cline-yes">4808</span>
+<span class="cline-any cline-yes">4808</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14952</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12874</span>
+<span class="cline-any cline-yes">17215</span>
+<span class="cline-any cline-yes">17118</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17215</span>
+<span class="cline-any cline-yes">17215</span>
+<span class="cline-any cline-yes">938</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16277</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16277</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">16276</span>
+<span class="cline-any cline-yes">255</span>
+<span class="cline-any cline-yes">16021</span>
+<span class="cline-any cline-yes">153</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15868</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15868</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15860</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15854</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15854</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15854</span>
+<span class="cline-any cline-yes">17215</span>
+<span class="cline-any cline-yes">17215</span>
+<span class="cline-any cline-yes">17215</span>
+<span class="cline-any cline-yes">17215</span>
+<span class="cline-any cline-yes">17215</span>
+<span class="cline-any cline-yes">17215</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">27826</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">88556</span>
+<span class="cline-any cline-yes">88556</span>
+<span class="cline-any cline-yes">39980</span>
+<span class="cline-any cline-yes">39082</span>
+<span class="cline-any cline-yes">39082</span>
+<span class="cline-any cline-yes">39082</span>
+<span class="cline-any cline-yes">39082</span>
+<span class="cline-any cline-yes">39082</span>
+<span class="cline-any cline-yes">39082</span>
+<span class="cline-any cline-yes">39082</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">38453</span>
+<span class="cline-any cline-yes">10310</span>
+<span class="cline-any cline-yes">10310</span>
+<span class="cline-any cline-yes">10310</span>
+<span class="cline-any cline-yes">10310</span>
+<span class="cline-any cline-yes">16161</span>
+<span class="cline-any cline-yes">19753</span>
+<span class="cline-any cline-yes">4968</span>
+<span class="cline-any cline-yes">4968</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10310</span>
+<span class="cline-any cline-yes">4194</span>
+<span class="cline-any cline-yes">4194</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4194</span>
+<span class="cline-any cline-yes">4194</span>
+<span class="cline-any cline-yes">4194</span>
+<span class="cline-any cline-yes">4194</span>
+<span class="cline-any cline-yes">4194</span>
+<span class="cline-any cline-yes">4194</span>
+<span class="cline-any cline-yes">4194</span>
+<span class="cline-any cline-yes">4194</span>
+<span class="cline-any cline-yes">4194</span>
+<span class="cline-any cline-yes">4194</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4194</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6116</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">6116</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">970</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">38453</span>
+<span class="cline-any cline-yes">38453</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">898</span>
+<span class="cline-any cline-yes">893</span>
+<span class="cline-any cline-yes">893</span>
+<span class="cline-any cline-yes">893</span>
+<span class="cline-any cline-yes">893</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">37392</span>
+<span class="cline-any cline-yes">37392</span>
+<span class="cline-any cline-yes">13</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">37379</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">23010</span>
+<span class="cline-any cline-yes">23010</span>
+<span class="cline-any cline-yes">23010</span>
+<span class="cline-any cline-yes">12728</span>
+<span class="cline-any cline-yes">12728</span>
+<span class="cline-any cline-yes">8534</span>
+<span class="cline-any cline-yes">8534</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12728</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12726</span>
+<span class="cline-any cline-yes">12726</span>
+<span class="cline-any cline-yes">12726</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14369</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">194005</span>
+<span class="cline-any cline-yes">194005</span>
+<span class="cline-any cline-yes">108146</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">85859</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">85849</span>
+<span class="cline-any cline-yes">84460</span>
+<span class="cline-any cline-yes">84460</span>
+<span class="cline-any cline-yes">84460</span>
+<span class="cline-any cline-yes">84460</span>
+<span class="cline-any cline-yes">84460</span>
+<span class="cline-any cline-yes">84460</span>
+<span class="cline-any cline-yes">84460</span>
+<span class="cline-any cline-yes">84460</span>
+<span class="cline-any cline-yes">84460</span>
+<span class="cline-any cline-yes">84460</span>
+<span class="cline-any cline-yes">83085</span>
+<span class="cline-any cline-yes">37379</span>
+<span class="cline-any cline-yes">37379</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">83085</span>
+<span class="cline-any cline-yes">82895</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">82885</span>
+<span class="cline-any cline-yes">22</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">82871</span>
+<span class="cline-any cline-yes">21</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">20</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">82864</span>
+<span class="cline-any cline-yes">11117</span>
+<span class="cline-any cline-yes">11</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">82853</span>
+<span class="cline-any cline-yes">53662</span>
+<span class="cline-any cline-yes">30710</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">30708</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">30708</span>
+<span class="cline-any cline-yes">51</span>
+<span class="cline-any cline-yes">51</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">51</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">30657</span>
+<span class="cline-any cline-yes">11</span>
+<span class="cline-any cline-yes">11</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">53598</span>
+<span class="cline-any cline-yes">71</span>
+<span class="cline-any cline-yes">71</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">53527</span>
+<span class="cline-any cline-yes">3812</span>
+<span class="cline-any cline-yes">3812</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">78906</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">80295</span>
+<span class="cline-any cline-yes">1389</span>
+<span class="cline-any cline-yes">1389</span>
+<span class="cline-any cline-yes">1389</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1382</span>
+<span class="cline-any cline-yes">1382</span>
+<span class="cline-any cline-yes">1361</span>
+<span class="cline-any cline-yes">1361</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">78906</span>
+<span class="cline-any cline-yes">78906</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">334</span>
+<span class="cline-any cline-yes">174</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">160</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">467</span>
+<span class="cline-any cline-yes">467</span>
+<span class="cline-any cline-yes">164</span>
+<span class="cline-any cline-yes">164</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">467</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">140</span>
+<span class="cline-any cline-yes">140</span>
+<span class="cline-any cline-yes">140</span>
+<span class="cline-any cline-yes">140</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">140</span>
+<span class="cline-any cline-yes">109</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">109</span>
+<span class="cline-any cline-yes">99</span>
+<span class="cline-any cline-yes">99</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">41</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">157</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">302</span>
+<span class="cline-any cline-yes">226</span>
+<span class="cline-any cline-yes">157</span>
+<span class="cline-any cline-yes">157</span>
+<span class="cline-any cline-yes">115</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">182</span>
+<span class="cline-any cline-yes">182</span>
+<span class="cline-any cline-yes">178</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">178</span>
+<span class="cline-any cline-yes">178</span>
+<span class="cline-any cline-yes">9</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">169</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">26</span>
+<span class="cline-any cline-yes">26</span>
+<span class="cline-any cline-yes">26</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">165</span>
+<span class="cline-any cline-yes">165</span>
+<span class="cline-any cline-yes">165</span>
+<span class="cline-any cline-yes">165</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">165</span>
+<span class="cline-any cline-yes">165</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">187</span>
+<span class="cline-any cline-yes">187</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">165</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">165</span>
+<span class="cline-any cline-yes">165</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">165</span>
+<span class="cline-any cline-yes">165</span>
+<span class="cline-any cline-yes">246</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">165</span>
+<span class="cline-any cline-yes">165</span>
+<span class="cline-any cline-yes">165</span>
+<span class="cline-any cline-yes">181</span>
+<span class="cline-any cline-yes">181</span>
+<span class="cline-any cline-yes">181</span>
+<span class="cline-any cline-yes">140</span>
+<span class="cline-any cline-yes">140</span>
+<span class="cline-any cline-yes">99</span>
+<span class="cline-any cline-yes">99</span>
+<span class="cline-any cline-yes">99</span>
+<span class="cline-any cline-yes">99</span>
+<span class="cline-any cline-yes">99</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">181</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">83</span>
+<span class="cline-any cline-yes">83</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">83</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">83</span>
+<span class="cline-any cline-yes">111</span>
+<span class="cline-any cline-yes">111</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">83</span>
+<span class="cline-any cline-yes">83</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">83</span>
+<span class="cline-any cline-yes">83</span>
+<span class="cline-any cline-yes">83</span>
+<span class="cline-any cline-yes">83</span>
+<span class="cline-any cline-yes">20</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">63</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">63</span>
+<span class="cline-any cline-yes">63</span>
+<span class="cline-any cline-yes">63</span>
+<span class="cline-any cline-yes">11</span>
+<span class="cline-any cline-yes">11</span>
+<span class="cline-any cline-yes">11</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">63</span>
+<span class="cline-any cline-yes">47</span>
+<span class="cline-any cline-yes">47</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">63</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">96993</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">139647</span>
+<span class="cline-any cline-yes">139647</span>
+<span class="cline-any cline-yes">445</span>
+<span class="cline-any cline-yes">445</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">139647</span>
+<span class="cline-any cline-yes">91390</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">48257</span>
+<span class="cline-any cline-yes">48257</span>
+<span class="cline-any cline-yes">48257</span>
+<span class="cline-any cline-yes">48257</span>
+<span class="cline-any cline-yes">48257</span>
+<span class="cline-any cline-yes">48236</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">21</span>
+<span class="cline-any cline-yes">21</span>
+<span class="cline-any cline-yes">21</span>
+<span class="cline-any cline-yes">21</span>
+<span class="cline-any cline-yes">21</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">21</span>
+<span class="cline-any cline-yes">21</span>
+<span class="cline-any cline-yes">21</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">21</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">13</span>
+<span class="cline-any cline-yes">13</span>
+<span class="cline-any cline-yes">13</span>
+<span class="cline-any cline-yes">13</span>
+<span class="cline-any cline-yes">13</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">13</span>
+<span class="cline-any cline-yes">13</span>
+<span class="cline-any cline-yes">13</span>
+<span class="cline-any cline-yes">13</span>
+<span class="cline-any cline-yes">13</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">37403</span>
+<span class="cline-any cline-yes">37398</span>
+<span class="cline-any cline-yes">37398</span>
+<span class="cline-any cline-yes">37398</span>
+<span class="cline-any cline-yes">37398</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">37398</span>
+<span class="cline-any cline-yes">37398</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">37398</span>
+<span class="cline-any cline-yes">16251</span>
+<span class="cline-any cline-yes">129</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16122</span>
+<span class="cline-any cline-yes">102</span>
+<span class="cline-any cline-yes">102</span>
+<span class="cline-any cline-yes">102</span>
+<span class="cline-any cline-yes">31</span>
+<span class="cline-any cline-yes">31</span>
+<span class="cline-any cline-yes">31</span>
+<span class="cline-any cline-yes">31</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">71</span>
+<span class="cline-any cline-yes">71</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16020</span>
+<span class="cline-any cline-yes">16020</span>
+<span class="cline-any cline-yes">16020</span>
+<span class="cline-any cline-yes">16020</span>
+<span class="cline-any cline-yes">16020</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16017</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">17215</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17215</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">34437</span>
+<span class="cline-any cline-yes">4013</span>
+<span class="cline-any cline-yes">13</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">13</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4000</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">34422</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">177</span>
+<span class="cline-any cline-yes">177</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">177</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">17</span>
+<span class="cline-any cline-yes">17</span>
+<span class="cline-any cline-yes">17</span>
+<span class="cline-any cline-yes">13</span>
+<span class="cline-any cline-yes">13</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11</span>
+<span class="cline-any cline-yes">11</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">33</span>
+<span class="cline-any cline-yes">24</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">23</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-yes">16</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-yes">265801</span>
+<span class="cline-any cline-yes">265801</span>
+<span class="cline-any cline-yes">214958</span>
+<span class="cline-any cline-yes">214958</span>
+<span class="cline-any cline-yes">214958</span>
+<span class="cline-any cline-yes">214957</span>
+<span class="cline-any cline-yes">115</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">115</span>
+<span class="cline-any cline-yes">115</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">214842</span>
+<span class="cline-any cline-yes">230</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">214612</span>
+<span class="cline-any cline-yes">2665</span>
+<span class="cline-any cline-yes">1589</span>
+<span class="cline-any cline-yes">1560</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1076</span>
+<span class="cline-any cline-yes">1076</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1075</span>
+<span class="cline-any cline-yes">675</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">400</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2635</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">211947</span>
+<span class="cline-any cline-yes">146150</span>
+<span class="cline-any cline-yes">146150</span>
+<span class="cline-any cline-yes">146150</span>
+<span class="cline-any cline-yes">146150</span>
+<span class="cline-any cline-yes">146150</span>
+<span class="cline-any cline-yes">146150</span>
+<span class="cline-any cline-yes">2295</span>
+<span class="cline-any cline-yes">28</span>
+<span class="cline-any cline-yes">2267</span>
+<span class="cline-any cline-yes">2267</span>
+<span class="cline-any cline-yes">1782</span>
+<span class="cline-any cline-yes">1782</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">144340</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">150</span>
+<span class="cline-any cline-yes">144190</span>
+<span class="cline-any cline-yes">486</span>
+<span class="cline-any cline-yes">486</span>
+<span class="cline-any cline-yes">486</span>
+<span class="cline-any cline-yes">143704</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-yes">143699</span>
+<span class="cline-any cline-yes">509</span>
+<span class="cline-any cline-yes">143190</span>
+<span class="cline-any cline-yes">3</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">143187</span>
+<span class="cline-any cline-yes">143187</span>
+<span class="cline-any cline-yes">38828</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">137</span>
+<span class="cline-any cline-yes">38691</span>
+<span class="cline-any cline-yes">13</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">144340</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">124904</span>
+<span class="cline-any cline-yes">124904</span>
+<span class="cline-any cline-yes">124904</span>
+<span class="cline-any cline-yes">124904</span>
+<span class="cline-any cline-yes">124904</span>
+<span class="cline-any cline-yes">124904</span>
+<span class="cline-any cline-yes">124904</span>
+<span class="cline-any cline-yes">3344</span>
+<span class="cline-any cline-yes">3344</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">23080</span>
+<span class="cline-any cline-yes">23080</span>
+<span class="cline-any cline-yes">23080</span>
+<span class="cline-any cline-yes">274</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">22806</span>
+<span class="cline-any cline-yes">512</span>
+<span class="cline-any cline-yes">512</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">512</span>
+<span class="cline-any cline-yes">22294</span>
+<span class="cline-any cline-yes">3930</span>
+<span class="cline-any cline-yes">18364</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3287</span>
+<span class="cline-any cline-yes">3287</span>
+<span class="cline-any cline-yes">2973</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">314</span>
+<span class="cline-any cline-yes">314</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">314</span>
+<span class="cline-any cline-yes">15077</span>
+<span class="cline-any cline-yes">5661</span>
+<span class="cline-any cline-yes">9416</span>
+<span class="cline-any cline-yes">2704</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6712</span>
+<span class="cline-any cline-yes">6712</span>
+<span class="cline-any cline-yes">2782</span>
+<span class="cline-any cline-yes">2782</span>
+<span class="cline-any cline-yes">2782</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3930</span>
+<span class="cline-any cline-yes">3930</span>
+<span class="cline-any cline-yes">3930</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3781</span>
+<span class="cline-any cline-yes">3781</span>
+<span class="cline-any cline-yes">3781</span>
+<span class="cline-any cline-yes">3781</span>
+<span class="cline-any cline-yes">3781</span>
+<span class="cline-any cline-yes">3781</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6986</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2974</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2974</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2974</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2974</span>
+<span class="cline-any cline-yes">2974</span>
+<span class="cline-any cline-yes">2974</span>
+<span class="cline-any cline-yes">2317</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">657</span>
+<span class="cline-any cline-yes">657</span>
+<span class="cline-any cline-yes">657</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">29</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">29</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">29</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">27</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5291</span>
+<span class="cline-any cline-yes">5290</span>
+<span class="cline-any cline-yes">5290</span>
+<span class="cline-any cline-yes">5290</span>
+<span class="cline-any cline-yes">5290</span>
+<span class="cline-any cline-yes">5290</span>
+<span class="cline-any cline-yes">5290</span>
+<span class="cline-any cline-yes">5290</span>
+<span class="cline-any cline-yes">5290</span>
+<span class="cline-any cline-yes">5290</span>
+<span class="cline-any cline-yes">5290</span>
+<span class="cline-any cline-yes">5290</span>
+<span class="cline-any cline-yes">5290</span>
+<span class="cline-any cline-yes">5290</span>
+<span class="cline-any cline-yes">5205</span>
+<span class="cline-any cline-yes">5205</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5290</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">115</span>
+<span class="cline-any cline-yes">115</span>
+<span class="cline-any cline-yes">115</span>
+<span class="cline-any cline-yes">115</span>
+<span class="cline-any cline-yes">114</span>
+<span class="cline-any cline-yes">106</span>
+<span class="cline-any cline-yes">106</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">69</span>
+<span class="cline-any cline-yes">69</span>
+<span class="cline-any cline-yes">67</span>
+<span class="cline-any cline-yes">22</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">45</span>
+<span class="cline-any cline-yes">5</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">40</span>
+<span class="cline-any cline-yes">40</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">40</span>
+<span class="cline-any cline-yes">26</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">14</span>
+<span class="cline-any cline-yes">8</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">6</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">11</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-yes">11</span>
+<span class="cline-any cline-yes">11</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-yes">7</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">34</span>
+<span class="cline-any cline-yes">24</span>
+<span class="cline-any cline-yes">22</span>
+<span class="cline-any cline-yes">13</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*global require:true exports:true */
+&nbsp;
+<span class="missing-if-branch" title="if path not taken"" >I</span>if (typeof module !== 'undefined' &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >typeof require !== 'undefined')</span> {
+<span class="cstat-no" title="statement not covered" >	var display = require('./display.js');</span>
+<span class="cstat-no" title="statement not covered" >	var parenMode = display.parenMode;</span>
+<span class="cstat-no" title="statement not covered" >	var outputType = display.outputType;</span>
+<span class="cstat-no" title="statement not covered" >	display = display.display;</span>
+<span class="cstat-no" title="statement not covered" >	var expr = require('./expr.js').expr;</span>
+<span class="cstat-no" title="statement not covered" >	var utils = require('./utils.js');</span>
+<span class="cstat-no" title="statement not covered" >	var errorNode = utils.errorNode;</span>
+<span class="cstat-no" title="statement not covered" >	utils = utils.utils;</span>
+<span class="cstat-no" title="statement not covered" >	var equality = require('./equality.js').equality;</span>
+<span class="cstat-no" title="statement not covered" >	var fractionUtils = require('./fractionUtils.js').fractionUtils;</span>
+<span class="cstat-no" title="statement not covered" >	var parser = require('./parser.js').parser;</span>
+<span class="cstat-no" title="statement not covered" >	var operator = require('./operator.js').operator;</span>
+<span class="cstat-no" title="statement not covered" >	var operatorProperties = require('./operatorProperties.js').operatorProperties;</span>
+<span class="cstat-no" title="statement not covered" >	var getPrecedence = operatorProperties.getPrecedence;</span>
+<span class="cstat-no" title="statement not covered" >	var expression = require('./expression.js').expression;</span>
+}
+&nbsp;
+var equalityType = {
+	'verbatim' : 0,
+	'commuteCo' : 1,
+	'commute' : 2,
+	'full' : 3,
+	'fullEq' : 4,
+	'none' : 5
+};
+&nbsp;
+var evaluate = (function() {
+	var debug = false;
+	var debugArith = false;
+	var debugMult = false;
+	var debugSolve = false;
+	var debugSort = false;
+	var debugSynth = false;
+	var debugGroup = false;
+	var debugSimp = false;
+	var debugCombine = false;
+	var debugCompare = false;
+	var debugCoeff = false;
+	var debugFullEq = false;
+	var debugCommonDiv = false;
+&nbsp;
+	function printDebug(preMessage, node, debugType) {
+		<span class="missing-if-branch" title="if path not taken"" >I</span>if (debugType) {
+<span class="cstat-no" title="statement not covered" >			console.log(preMessage +</span>
+				display.displayExpression(node, outputType.text, parenMode.full));
+		}
+	}
+	function invertNodes(nodeArray) {
+		for (var i = 0; i &lt; nodeArray.length; i++) {
+			nodeArray[i] = operator.invertNode(nodeArray[i]);
+		}
+		return nodeArray;
+	}
+	function makeCommutativeIfNecessaryRec(node, op) {
+		if ((node.type === 'compound' || node.type === 'ternary') &amp;&amp;
+			getPrecedence(node.op) === getPrecedence(op)) {
+			var newNode = node;
+			<span class="missing-if-branch" title="else path not taken"" >E</span>if (node.type === 'compound') {
+				newNode = expression.createCompoundExpression(
+					makeCommutativeIfNecessaryRec(node.lhs, op),
+					makeCommutativeIfNecessaryRec(node.rhs, op),
+					node.op);
+			}
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (node.type === 'ternary') {
+<span class="cstat-no" title="statement not covered" >				newNode = expression.createTernaryExpression(</span>
+					makeCommutativeIfNecessaryRec(node.left, op),
+					makeCommutativeIfNecessaryRec(node.middle, op),
+					makeCommutativeIfNecessaryRec(node.right, op),
+					node.op1,
+					node.op2);
+			}
+			return expr.makeCommutativeIfNecessary(newNode);
+		}
+		return node;
+	}
+&nbsp;
+	function getMultipliedIdentfiers(node) {
+		if (node.type === 'identifier') { return [node]; }
+		if (utils.isUnaryNegative(node)) { return getMultipliedIdentfiers(node.child); }
+		if (node.type === 'number' &amp;&amp; fractionUtils.isValueRadical(node.value)) {
+			return [node];
+		}
+		if (node.type !== 'compound') { return []; }
+		if (getPrecedence(node.op) &lt; 2) { return [node]; }
+		var identifiers = getMultipliedIdentfiers(node.lhs);
+		if (node.op === '^') {
+			// If it's something like x^2 or x^(3/2), we can pull out an x, so in those cases we
+			// ignore whatever is in the exponent and let that be dealt with when we try to pull out
+			// the base.
+			// But, if it's anything else, say a fraction smaller than 1 like x^(1/2), or it's a
+			// radical like x^{\sqrt{2}}, or the exponent contains an identifier like x^y, we can
+			// only pull it out as a unit so we want to look for repetitions of the full expression,
+			// not just the base (or bases, in the case of something like (xy)^2).
+			// So, if it is not a number, or it is a number that's a fraction &lt; 1
+			if (node.rhs.type !== 'number' || !(fractionUtils.isInteger(node.rhs.value) ||
+				(fractionUtils.isNodeFraction(node.rhs) &amp;&amp;
+					Math.abs(node.rhs.value.top) &gt; Math.abs(node.rhs.value.bottom)))) {
+				var resultIdentifiers = [];
+				for (var i = 0; i &lt; identifiers.length; i++) {
+					resultIdentifiers.push(expression.createCompoundExpression(identifiers[i],
+						node.rhs, '^'));
+				}
+				return resultIdentifiers;
+			} else <span class="missing-if-branch" title="if path not taken"" >I</span>if (fractionUtils.isNodeNegative(node.rhs)) {
+<span class="cstat-no" title="statement not covered" >				return invertNodes(identifiers);</span>
+			}
+		}
+		var rhsIdentifiers = getMultipliedIdentfiers(node.rhs);
+		if (node.op === '*') { identifiers = identifiers.concat(rhsIdentifiers); }
+		if (node.op === '/') { identifiers = identifiers.concat(invertNodes(rhsIdentifiers)); }
+		return identifiers;
+	}
+	function containsIdentifier(node, identifierNode) {
+		if (node.syntacticEquals(identifierNode)) { return true; }
+		if (node.type === 'unary') { return containsIdentifier(node.child, identifierNode); }
+		if (node.type === 'compound') {
+			return containsIdentifier(node.lhs, identifierNode) ||
+				containsIdentifier(node.rhs, identifierNode);
+		}
+		return false;
+	}
+	function findRepeats(array) {
+		array = array.sort();
+		var repeats = [];
+		while (array.length &gt; 0) {
+			var current = array.shift();
+			var found = false;
+			for (var i = 0; i &lt; array.length; i++) {
+				if (current.type === 'number' &amp;&amp; array[i].type === 'number' ||
+					current.syntacticEquals(array[i])) {
+					found = true;
+					array.splice(i--, 1);
+				}
+			}
+			if (found) { repeats.push(current); }
+		}
+		return repeats;
+	}
+	// includes those that are inverted
+	function getAllIdentifiersInMulitplication(node) {
+		if (node.type === 'identifier') { return [node]; }
+		if (node.type === 'number') { return [node]; }
+		if (utils.isUnaryNegative(node)) { return getAllIdentifiersInMulitplication(node.child); }
+		if (node.type !== 'compound' || getPrecedence(node.op) &lt; 2) { return []; }
+		var lhsIdenifiers = getAllIdentifiersInMulitplication(node.lhs);
+		if (node.op === '^') { return lhsIdenifiers; }
+		var rhsIdentifiers = getAllIdentifiersInMulitplication(node.rhs);
+		return lhsIdenifiers.concat(rhsIdentifiers);
+	}
+	// maybe also pass identifierNode and make sure the base is correct identifier?
+	function getPower(node) {
+		if (node.type === 'compound' &amp;&amp; node.op === '^') { return node.rhs; }
+		return expression.createSimpleExpression('number', 1);
+	}
+	function combineGroupedIdentifiers(nodeOne, nodeTwo, op, identifierNode) {
+		printDebug('in combineGroupedIdentifiers, nodeOne: ', nodeOne, debugCombine);
+		printDebug('                              nodeTwo: ', nodeTwo, debugCombine);
+		if (nodeTwo === null) { return nodeOne; }
+		if (nodeOne === null) {
+			if (op !== '/') { return nodeTwo; }
+			var power = getPower(nodeTwo);
+			return expression.createCompoundExpression(identifierNode,
+				arithmeticEvaluation(expression.createCompoundExpression(
+					expression.createSimpleExpression('number', -1), power, '*')),
+				'^');
+		}
+		if (nodeOne.type === 'identifier' &amp;&amp; nodeTwo.type === 'identifier' &amp;&amp;
+			nodeOne.value === nodeTwo.value) {
+			<span class="missing-if-branch" title="else path not taken"" >E</span>if (op === '*') {
+				return expression.createCompoundExpression(nodeOne,
+					expression.createSimpleExpression('number', 2), '^');
+			}
+<span class="cstat-no" title="statement not covered" >			if (op === '/') { <span class="cstat-no" title="statement not covered" >return expression.createSimpleExpression('number', 1); </span>}</span>
+		}
+		var onePower = getPower(nodeOne);
+		var twoPower = getPower(nodeTwo);
+		if (op === '/') { twoPower = arithmeticEvaluation(expression.createCompoundExpression(
+			expression.createSimpleExpression('number', -1), twoPower, '*')); }
+		return arithmeticEvaluation(
+			expression.createCompoundExpression(
+				identifierNode,
+				evaluate.evaluateRec(expression.createCompoundExpression(onePower, twoPower, '+')),
+				'^')
+			);
+	}
+	function multiplyNodesAndEvaluate(nodeOne, nodeTwo, op) {
+		var result = operator.multiplyNodesMaybeNull(nodeOne, nodeTwo, op);
+		return evaluate.evaluateRec(result);
+	}
+	function isIdentifierGroup(node, identifierNode) {
+		return (identifierNode.syntacticEquals(node) || (node.type === 'compound' &amp;&amp;
+			node.op === '^' &amp;&amp; identifierNode.syntacticEquals(node.lhs)));
+	}
+	function separateGroupedIdentifierAndRestOfExpression(node, identifierNode) {
+		var identifierGroup = node;
+		var restOfExpression = null;
+		if (!isIdentifierGroup(node, identifierNode)) {
+			if (node.type === 'compound' &amp;&amp; isIdentifierGroup(node.lhs, identifierNode) &amp;&amp;
+				getPrecedence(node.op) &gt; 1) {
+				identifierGroup = node.lhs;
+				restOfExpression = node.rhs;
+			} else {
+				identifierGroup = null;
+				restOfExpression = node;
+			}
+		}
+		return {
+			'identifierGroup' : identifierGroup,
+			'restOfExpression' : restOfExpression
+		};
+	}
+	function groupRepeatedIdentifierOnLhs(node, identifierNode) {
+		printDebug('pulling ', identifierNode, debugGroup);
+		printDebug(' to left of ', node, debugGroup);
+		<span class="missing-if-branch" title="if path not taken"" >I</span>if (isIdentifierGroup(node, identifierNode)) { <span class="cstat-no" title="statement not covered" >return node; </span>}
+		if (utils.isUnaryNegative(node)) {
+			return expression.createCompoundExpression(node.child,
+				expression.createSimpleExpression('number', -1), '*');
+		}
+		if (node.type !== 'compound' || getPrecedence(node.op) &lt; 2 || node.op === '\\log') {
+			return node;
+		}
+		if (node.op === '^' &amp;&amp; !identifierNode.syntacticEquals(node.lhs)) {
+			var newBase = groupRepeatedIdentifierOnLhs(
+				expr.makeCommutativeIfNecessary(node.lhs), identifierNode);
+&nbsp;
+			// should not ever happen, i think?
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (identifierNode.syntacticEquals(newBase)) {
+<span class="cstat-no" title="statement not covered" >				return groupRepeatedIdentifierOnLhs(</span>
+					expression.createCompoundExpression(newBase, node.rhs, '^'), identifierNode);
+			}
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (newBase.type === 'compound' &amp;&amp; newBase.op === '*') {
+<span class="cstat-no" title="statement not covered" >				var components =</span>
+					separateGroupedIdentifierAndRestOfExpression(newBase, identifierNode);
+<span class="cstat-no" title="statement not covered" >				if (components.identifierGroup !== null) {</span>
+<span class="cstat-no" title="statement not covered" >					var newLhs = expression.createCompoundExpression(</span>
+						components.identifierGroup, node.rhs, '^');
+<span class="cstat-no" title="statement not covered" >					if (components.identifierGroup.type === 'compound' &amp;&amp;</span>
+						components.identifierGroup.op === '^') {
+<span class="cstat-no" title="statement not covered" >						newLhs = expression.createCompoundExpression(components.identifierGroup.lhs,</span>
+							expression.createCompoundExpression(
+								components.identifierGroup.rhs, node.rhs, '*'),
+							'^');
+					}
+<span class="cstat-no" title="statement not covered" >					return expression.createCompoundExpression(newLhs,</span>
+						expression.createCompoundExpression(
+							components.restOfExpression, node.rhs, '^'), '*');
+				}
+			}
+			return node;
+		}
+		var leftGrouped = node.lhs;
+		var rightGrouped = node.rhs;
+		if (!isIdentifierGroup(leftGrouped, identifierNode)) {
+			leftGrouped = groupRepeatedIdentifierOnLhs(node.lhs, identifierNode);
+		}
+		if (!isIdentifierGroup(rightGrouped, identifierNode)) {
+			rightGrouped = groupRepeatedIdentifierOnLhs(node.rhs, identifierNode);
+		}
+		var leftComponents = separateGroupedIdentifierAndRestOfExpression(
+			leftGrouped, identifierNode);
+		var rightComponents = separateGroupedIdentifierAndRestOfExpression(
+			rightGrouped, identifierNode);
+&nbsp;
+		var identifierGroup = combineGroupedIdentifiers(leftComponents.identifierGroup,
+			rightComponents.identifierGroup, node.op, identifierNode);
+		var restOfExpression = operator.multiplyNodesMaybeNull(
+			leftComponents.restOfExpression, rightComponents.restOfExpression, node.op);
+		return operator.multiplyNodesMaybeNull(identifierGroup, restOfExpression, '*');
+	}
+	function getCommonCoefficient(node) {
+		printDebug('in getCommonCoefficient: ', node, debugCoeff);
+		if (node.type === 'number') { return node; }
+		if (utils.isUnaryNegative(node)) {
+			return equality.additiveInverseOfNumber(getCommonCoefficient(node.child));
+		}
+		if (node.type !== 'compound') { return null; }
+		// TODO(sdspikes) revisit this
+		if (node.op === '^') { return null; }
+		var left = getCommonCoefficient(node.lhs);
+		var right = getCommonCoefficient(node.rhs);
+		if (getPrecedence(node.op) === 2) {
+			if (left !== null &amp;&amp; right !== null) {
+				return arithmeticEvaluation(
+					expression.createCompoundExpression(left, right, node.op), false);
+			}
+			if (left !== null) { return left; }
+			if (right !== null) { return (node.op === '/') ? <span class="branch-0 cbranch-no" title="branch not covered" >operator.invertNode(right) </span>: right; }
+&nbsp;
+			return null;
+		}
+		<span class="missing-if-branch" title="else path not taken"" >E</span>if (getPrecedence(node.op) === 1) {
+			if (left !== null &amp;&amp; right !== null &amp;&amp;
+				left.type === 'number' &amp;&amp; right.type === 'number') {
+				return expression.createSimpleExpression('number',
+					fractionUtils.fractionGCD(left.value, right.value));
+			}
+			return null;
+		}
+<span class="cstat-no" title="statement not covered" >		return null;</span>
+	}
+&nbsp;
+	function groupRepeats(node, multiplyDivision) {
+		// If we could not factor anything out, we have our final answer (at
+		// least until node becomes part of a larger expression), so pretty it
+		// up by combining identifiers in multiplied terms.
+		printDebug('grouping ', node, debugGroup);
+		node = operator.rationalizeDenominator(node);
+		if (node.type === 'compound' &amp;&amp; node.op === '/') {
+			var topFactor = getCommonCoefficient(node.lhs);
+			var bottomFactor = getCommonCoefficient(node.rhs);
+			if (topFactor !== null &amp;&amp; bottomFactor !== null &amp;&amp; topFactor.type === 'number' &amp;&amp;
+				bottomFactor.type === 'number') {
+				var gcd = fractionUtils.fractionGCD(topFactor.value, bottomFactor.value);
+				if (gcd !== 1) {
+					gcd = operator.invertNode(expression.createSimpleExpression('number', gcd));
+					node = expression.createCompoundExpression(
+						fullMultiply(expression.createCompoundExpression(gcd, node.lhs, '*'),
+							multiplyDivision),
+						fullMultiply(expression.createCompoundExpression(gcd, node.rhs, '*'),
+							multiplyDivision),
+						node.op);
+				}
+			}
+		}
+		if (node.type === 'compound' &amp;&amp; getPrecedence(node.op) === 2) {
+			node = expr.makeCommutativeIfNecessary(node);
+			var repeatedIdentifiers = findRepeats(getAllIdentifiersInMulitplication(node));
+			while (repeatedIdentifiers.length &gt; 0) {
+				node = groupRepeatedIdentifierOnLhs(node, repeatedIdentifiers.shift());
+				// TODO(sdspikes): there has to be a better way than special casing this...
+				if (node.type === 'compound' &amp;&amp; node.op === '^' &amp;&amp; node.lhs.type === 'number' &amp;&amp;
+					getCoefficient(node.rhs) !== 1) {
+					node = evaluate.evaluateRec(node);
+				}
+			}
+		}
+		return node;
+	}
+&nbsp;
+	// Later in the list means it should be sorted earlier.  Callers of compareStrings (or
+	// comparison functions that use it) should fill this list before calling, then clear it
+	// afterward if they want non-alphabetic ordering for some or all identifiers.
+	var identifierPriority = [];
+	function compareStrings(a, b, mult) {
+		var priorityA = (a.type === 'identifier') ? identifierPriority.indexOf(a.value) : <span class="branch-1 cbranch-no" title="branch not covered" >-1;</span>
+		var priorityB = (b.type === 'identifier') ? identifierPriority.indexOf(b.value) : <span class="branch-1 cbranch-no" title="branch not covered" >-1;</span>
+		if (priorityA !== -1 || priorityB !== -1) {
+			return mult * (priorityB - priorityA);
+		}
+		return mult * ((a.value === b.value) ? <span class="branch-0 cbranch-no" title="branch not covered" >0 </span>: ((a.value &lt; b.value) ? -1 : 1));
+	}
+	function comparePairs(a, b, altA, altB, mult) {
+		var comp = compareTerms(a, b, mult);
+		return (comp === 0) ? compareTerms(altA, altB, mult) : comp;
+	}
+	function containsDivTerm(node, divTerm) {
+		if (node.type === 'compound') {
+			if (node.op === '/') {
+				return equality.equivalentModuloCommutativity(divTerm, node.rhs, false);
+			}
+			if (node.op === '*') {
+				return containsDivTerm(node.lhs, divTerm) || containsDivTerm(node.rhs, divTerm);
+			}
+		}
+		return false;
+	}
+	function compareNumbers(a, b) {
+		var sub = operator['-'].evaluateValues(a, b);
+		<span class="missing-if-branch" title="if path not taken"" >I</span>if (sub.value === 0) { <span class="cstat-no" title="statement not covered" >return 0; </span>}
+		return (fractionUtils.isNegative(sub.value)) ? -1 : 1;
+	}
+	function compareTerms(a, b, mult) {
+		printDebug('checking ', a, debugCompare);
+		printDebug(' against ', b, debugCompare);
+		if (equality.equivalentModuloCommutativity(a, b, false)) { return 0; }
+		if (a.type === 'compound' &amp;&amp; b.type === 'compound' &amp;&amp; a.op === '/' &amp;&amp; b.op === '/') {
+			return compareTerms(a.rhs, b.rhs, mult);
+		}
+		if (a.type === 'compound' &amp;&amp; a.op === '/') { return (containsDivTerm(b, a.rhs)) ? 0 : -1; }
+		if (b.type === 'compound' &amp;&amp; b.op === '/') { return (containsDivTerm(a, b.rhs)) ? <span class="branch-0 cbranch-no" title="branch not covered" >0 </span>: 1; }
+		// We want to treat number node radicals the same way as non-number radicals, so convert
+		// them before doing any comparison.
+		if (a.type === 'number' &amp;&amp; fractionUtils.isValueRadical(a.value)) {
+			a = convertRadicalNumberNodeToSqrt(a);
+		}
+		if (b.type === 'number' &amp;&amp; fractionUtils.isValueRadical(b.value)) {
+			b = convertRadicalNumberNodeToSqrt(b);
+		}
+		if (a.type === 'number' &amp;&amp; b.type === 'number') {
+			return compareNumbers(a.value, b.value);
+		}
+		if (a.type === 'number' || b.type === 'number') {
+			return (a.type === 'number') ? -1 : 1;
+		}
+		if (a.type === 'identifier' &amp;&amp; b.type === 'identifier') {
+			return compareStrings(a, b, mult);
+		}
+		<span class="missing-if-branch" title="if path not taken"" >I</span>if ((a.type === 'number' &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >b.type === 'identifier')</span> ||
+			(b.type === 'number' &amp;&amp; <span class="branch-3 cbranch-no" title="branch not covered" >a.type === 'identifier')</span>) {
+<span class="cstat-no" title="statement not covered" >			return (a.type === 'number') ? -1 : 1;</span>
+		}
+		if (utils.isUnaryNegative(a)) { return compareTerms(a.child, b, mult); }
+		if (utils.isUnaryNegative(b)) { return compareTerms(a, b.child, mult); }
+		<span class="missing-if-branch" title="if path not taken"" >I</span>if (a.type === 'unary' &amp;&amp; b.type === 'unary') {
+<span class="cstat-no" title="statement not covered" >			if (a.op === b.op) { <span class="cstat-no" title="statement not covered" >return compareTerms(a.child, b.child); </span>}</span>
+<span class="cstat-no" title="statement not covered" >			return (a.op === '|') ? -1 : 1;</span>
+		}
+		if (a.type === 'unary') { return -1; }
+		if (b.type === 'unary') { return 1; }
+		if (a.type === 'compound' &amp;&amp; b.type === 'compound') {
+			if (getPrecedence(a.op) !== 2 &amp;&amp; getPrecedence(b.op) !== 2) {
+				if (a.op === '^' &amp;&amp; b.op === '^') {
+					return comparePairs(a.lhs, b.lhs, a.rhs, b.rhs, mult);
+				}
+				<span class="missing-if-branch" title="if path not taken"" >I</span>if (getPrecedence(a.op) === 1 &amp;&amp; getPrecedence(b.op) === 1) {
+<span class="cstat-no" title="statement not covered" >					a = sortTerms(a, false);</span>
+<span class="cstat-no" title="statement not covered" >					b = sortTerms(b, false);</span>
+<span class="cstat-no" title="statement not covered" >					return comparePairs(a.lhs, b.lhs, a.rhs, b.rhs, mult);</span>
+				}
+				if (getPrecedence(a.op) === 1) { return 1; }
+				<span class="missing-if-branch" title="if path not taken"" >I</span>if (getPrecedence(b.op) === 1) { <span class="cstat-no" title="statement not covered" >return -1; </span>}
+				if (a.op === '\\sqrt' &amp;&amp; b.op === '\\sqrt') {
+					return comparePairs(a.rhs, b.rhs, a.lhs, b.lhs, mult);
+				}
+				if (a.op === '\\sqrt') { return -1; }
+				<span class="missing-if-branch" title="else path not taken"" >E</span>if (b.op === '\\sqrt') { return 1; }
+			}
+		}
+		var termsA = getAllTermsAtLevelNoSort(a, '*', false);
+		var termsB = getAllTermsAtLevelNoSort(b, '*', false);
+		termsA = termsA.sort(compareMultiplication);
+		termsB = termsB.sort(compareMultiplication);
+		while (termsA.length &gt; 0 &amp;&amp; termsB.length &gt; 0) {
+			a = termsA.shift();
+			b = termsB.shift();
+			printDebug('checking nth terms ', a, debugCompare);
+			printDebug(' against ', b, debugCompare);
+			if (a.type === 'identifier' &amp;&amp; b.type === 'compound') {
+				var compRight = (b.op === '^') ? compareTerms(a, b.lhs, mult) : 1 * mult;
+				return (compRight !== 0) ? compRight : 1 * mult;
+			}
+			if (a.type === 'compound' &amp;&amp; b.type === 'identifier') {
+				var compLeft = (a.op === '^') ? compareTerms(a.lhs, b, mult) : -1 * mult;
+				return (compLeft !== 0) ? compLeft : -1 * mult;
+			}
+			var comp = compareTerms(a, b, mult);
+			if (comp !== 0) { return comp; }
+			if (a.type === 'compound' &amp;&amp; a.op === '/') { return 0; }
+		}
+		return (termsA.length &gt; 0) ? mult : (termsB.length &gt; 0) ? -1 * mult : 0;
+	}
+&nbsp;
+<span class="fstat-no" title="function not covered" >	function compareMultiplicationDivFirst(a, b) {</span>
+<span class="cstat-no" title="statement not covered" >		if (utils.isOneOverSomething(a) &amp;&amp; utils.isOneOverSomething(b)) {</span>
+<span class="cstat-no" title="statement not covered" >			return compareMultiplication(a, b);</span>
+		}
+<span class="cstat-no" title="statement not covered" >		if (utils.isOneOverSomething(a)) {</span>
+<span class="cstat-no" title="statement not covered" >			return -1;</span>
+		}
+<span class="cstat-no" title="statement not covered" >		if (utils.isOneOverSomething(b)) {</span>
+<span class="cstat-no" title="statement not covered" >			return 1;</span>
+		}
+<span class="cstat-no" title="statement not covered" >		return compareMultiplication(a, b);</span>
+	}
+&nbsp;
+	function compareMultiplication(a, b) {
+		return compareTerms(a, b, 1);
+	}
+	function compareAddition(a, b) {
+		return -1 * compareTerms(a, b, -1);
+	}
+&nbsp;
+	function makeUnaryOfEach(nodeArray, op) {
+		for (var i = 0; i &lt; nodeArray.length; i++) {
+			nodeArray[i] = expression.createUnaryExpression(nodeArray[i], op);
+		}
+		return nodeArray;
+	}
+&nbsp;
+	function getAllTermsAtLevelNoSort(node, op, coefficients) {
+		if (node.type === 'number') {
+			if (fractionUtils.isValueRadical(node.value)) { return [node]; }
+			return (coefficients) ? [node] : [];
+		}
+		if (node.type === 'identifier') { return [node]; }
+		if (node.type === 'unary') {
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (node.op !== '-' &amp;&amp; node.op !== op) { <span class="cstat-no" title="statement not covered" >return [node]; </span>}
+			var allUnary = getAllTermsAtLevelNoSort(node.child, op, coefficients);
+			return (coefficients &amp;&amp; node.op !== op) ? makeUnaryOfEach(allUnary, node.op) : allUnary;
+		}
+		if (getPrecedence(node.op) !== getPrecedence(op)) { return [node]; }
+		var identifiers = getAllTermsAtLevelNoSort(node.lhs, op, coefficients);
+		var rhsIdentifiers = getAllTermsAtLevelNoSort(node.rhs, op, coefficients);
+		if (node.op === '/') {
+			<span class="missing-if-branch" title="else path not taken"" >E</span>if (node.op !== op &amp;&amp; utils.isOneOverSomething(node)) {
+				return invertNodes(rhsIdentifiers);
+			}
+<span class="cstat-no" title="statement not covered" >			return identifiers.concat(invertNodes(rhsIdentifiers));</span>
+		}
+		return identifiers.concat(rhsIdentifiers);
+	}
+&nbsp;
+	function getAllTermsAtLevelSorted(node, op, associateRight) {
+		printDebug('getAllTermsAtLevelSorted:', node, debugSort);
+		if (utils.isSimpleExpression(node)) { return [node]; }
+		if (utils.isUnaryNegative(node)) {
+			if (getPrecedence(op) !== 2) {
+				return [expression.createUnaryExpression(
+					sortTerms(node.child, associateRight), '-')];
+			} else {
+				return getAllTermsAtLevelSorted(node.child, associateRight).concat(
+					[expression.createSimpleExpression('number', -1)]);
+			}
+		}
+		if (node.type === 'unary') {
+			var sorted = sortTerms(node.child, associateRight);
+			if (node.op === '|') {
+				// If the leading term is negative (or has a negative coefficient), invert the whole
+				// term inside the absolute value by making it unary negative and multiplying it out.
+				// This allows for seeing |a-b| and |b-a| as the same thing.
+				// Only need to do this once, so check that associateRight is true before checking.
+				if (associateRight &amp;&amp;
+					fractionUtils.isNodeNegative(leftMostTermInMult(leftMostTerm(sorted)))) {
+					sorted = fullMultiply(expression.createUnaryExpression(sorted, '-'), true);
+				}
+			}
+			return [expression.createUnaryExpression(sorted, node.op)];
+		}
+		if (node.op !== op) { return [sortTerms(node, associateRight)]; }
+		return getAllTermsAtLevelSorted(node.lhs, op, associateRight).concat(
+			getAllTermsAtLevelSorted(node.rhs, op, associateRight));
+	}
+&nbsp;
+&nbsp;
+	/**
+	 * Should only be called with minus always converted to + -, but not / to * 1/.
+	 */
+	function sortTerms(node, associateRight) {
+		printDebug('sorting:', node, debugSort);
+		if (node === errorNode || utils.isSimpleExpression(node)) {
+			return node;
+		}
+		if (node.type === 'ternary') {
+			return expression.createTernaryExpression(sortTerms(node.left, associateRight),
+				sortTerms(node.middle, associateRight), sortTerms(node.right, associateRight),
+				node.op1, node.op2);
+		}
+&nbsp;
+		var precedence = getPrecedence(node.op);
+		var terms = getAllTermsAtLevelSorted(node, node.op, associateRight);
+		/*
+		for (var q = 0; q &lt; terms.length; q++) {
+			printDebug(q + 'th ', terms[q], debugSort);
+		}*/
+		if (terms.length === 1) { return terms[0]; }
+		var compareFunc = null;
+		if (precedence === 1) { compareFunc = compareAddition; }
+		if (precedence === 2 &amp;&amp; node.op !== '/') { compareFunc = compareMultiplication; }
+		if (compareFunc !== null) { terms = terms.sort(compareFunc); }
+		var result = terms[0];
+		if (associateRight) {
+			result = terms[terms.length-1];
+			<span class="missing-if-branch" title="else path not taken"" >E</span>if (terms.length &gt; 1) {
+				var currentLevel = terms[terms.length-2];
+				var currentLeft = currentLevel;
+				for (var i = terms.length - 3; i &gt;= 0; i--) {
+					if (compareFunc !== null &amp;&amp; compareFunc(currentLeft, terms[i]) === 0) {
+						currentLeft = terms[i];
+						currentLevel = expression.createCompoundExpression(
+							terms[i], currentLevel, node.op);
+					} else {
+						result = expression.createCompoundExpression(currentLevel, result, node.op);
+						currentLeft = terms[i];
+						currentLevel = terms[i];
+					}
+				}
+				result = expression.createCompoundExpression(currentLevel, result, node.op);
+			}
+		} else {
+			for (var j = 1; j &lt; terms.length; j++) {
+				if (getPrecedence(node.op) !== 0) {
+					terms[j] = equality.normalizeTermSign(terms[j]);
+				}
+				terms[j] = convertFractionalExponentToSqrt(terms[j]);
+				if (node.op === '+' &amp;&amp; utils.isUnaryPlusMinusOrNegative(terms[j])) {
+					result = expression.createCompoundExpression(
+						result, terms[j].child, terms[j].op);
+				} else <span class="missing-if-branch" title="if path not taken"" >I</span>if (node.op === '+' &amp;&amp; terms[j].type === 'number' &amp;&amp;
+					fractionUtils.isNegative(terms[j].value)) {
+<span class="cstat-no" title="statement not covered" >					result = expression.createCompoundExpression(</span>
+						result, equality.additiveInverseOfNumber(terms[j]), '-');
+				} else if (getPrecedence(node.op) === 2 &amp;&amp; utils.isNegativeOne(terms[j])) {
+					result = expression.createUnaryExpression(result, '-');
+				} else if (node.op === '*' &amp;&amp; utils.isNegativeOne(result)) {
+					result = expression.createUnaryExpression(terms[j], '-');
+				} else if (node.op === '*' &amp;&amp; utils.isUnaryPlusMinusOrNegative(result)) {
+					result = expression.createUnaryExpression(expression.createCompoundExpression(
+						result.child, terms[j], node.op), result.op);
+				} else <span class="missing-if-branch" title="if path not taken"" >I</span>if (node.op === '*' &amp;&amp; utils.isUnaryPlusMinusOrNegative(terms[j])) {
+<span class="cstat-no" title="statement not covered" >					result = expression.createUnaryExpression(expression.createCompoundExpression(</span>
+						result, terms[j].child, node.op), terms[j].op);
+				} else if (node.op === '*' &amp;&amp; result.type === 'compound' &amp;&amp; result.op === '/') {
+					result = expression.createCompoundExpression(arithmeticEvaluation(
+						expression.createCompoundExpression(result.lhs, terms[j], '*')),
+					result.rhs, '/');
+				} else if (node.op === '/' &amp;&amp; result.type === 'compound' &amp;&amp; result.op === '/') {
+					result = expression.createCompoundExpression(result.lhs,
+						evaluate.evaluateRec(
+							expression.createCompoundExpression(result.rhs, terms[j], '*')),
+						'/');
+				} else <span class="missing-if-branch" title="if path not taken"" >I</span>if (node.op === '/' &amp;&amp; terms[j].type === 'compound' &amp;&amp;
+					terms[j].op === '/') {
+<span class="cstat-no" title="statement not covered" >					result = arithmeticEvaluation(</span>
+						expression.createCompoundExpression(result, terms[j].rhs, '*'));
+<span class="cstat-no" title="statement not covered" >					if (terms[j].lhs !== 'number' || terms[j].lhs !== 1) {</span>
+<span class="cstat-no" title="statement not covered" >						result = expression.createCompoundExpression(result, terms[j].lhs, '/');</span>
+					}
+				} else <span class="missing-if-branch" title="if path not taken"" >I</span>if (terms[j].type === 'compound'  &amp;&amp; terms[j].op === '^' &amp;&amp;
+					(utils.isUnaryNegative(terms[j].rhs) || (terms[j].rhs.type === 'number' &amp;&amp;
+						fractionUtils.isNegative(terms[j].rhs.value)))) {
+<span class="cstat-no" title="statement not covered" >					if (node.op === '/') {</span>
+<span class="cstat-no" title="statement not covered" >						result = expression.createCompoundExpression(result,</span>
+							invertExponent(terms[j]), '*');
+					} else {
+<span class="cstat-no" title="statement not covered" >						result = expression.createCompoundExpression(result,</span>
+							flipNegativePowerIntoOneOver(terms[j]), node.op);
+					}
+				} else { result = expression.createCompoundExpression(result, terms[j], node.op); }
+				result = flipNegativePowerIntoOneOver(result);
+				printDebug('after flip: ', result, debugSort);
+				result = convertFractionalExponentToSqrt(result);
+				printDebug('after sqrt: ', result, debugSort);
+				result = arithmeticEvaluation(result, false);
+				printDebug('after arith: ', result, debugSort);
+			}
+		}
+		return result;
+	}
+&nbsp;
+	/**
+	 * Takes in a node that's had all the subexpressions multiplied out as far as possible, then
+	 * sorted, so that the like terms are near one another.  It looks for common identifiers
+	 */
+	function simplifyNode(node) {
+		printDebug('simplifying node: ', node, debugSimp);
+		if (node.type === 'identifier' || node.type === 'number') { return node; }
+		if (node.type === 'compound') {
+			node = expr.makeCommutativeIfNecessary(node);
+			var lhsNode = simplifyNode(node.lhs);
+			var rhsNode = simplifyNode(node.rhs);
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (lhsNode === errorNode || rhsNode === errorNode) { <span class="cstat-no" title="statement not covered" >return errorNode; </span>}
+			node = expression.createCompoundExpression(lhsNode, rhsNode, node.op);
+			var newNode = self.evaluateArithmetic(node, true);
+			if (newNode !== null) { return newNode; }
+&nbsp;
+			// If there was no simple arithmetic operation, see if you can find any identifiers
+			// on both sides, and if there is one, move it over so that you can factor it out.
+			if (node.op === '+') {
+				var leftIdentifiers = getMultipliedIdentfiers(node.lhs);
+				var rightIdentifiers = getMultipliedIdentfiers(node.rhs);
+				var commonIdentifier = null;
+				for (var i = 0; i &lt; leftIdentifiers.length; i++) {
+					for(var j = 0; j &lt; rightIdentifiers.length; j++) {
+						if (leftIdentifiers[i].syntacticEquals(rightIdentifiers[j])) {
+							commonIdentifier = leftIdentifiers[i];
+							break;
+						}
+					}
+				}
+				if (commonIdentifier !== null) {
+					printDebug('commonIdentifier: ', commonIdentifier, debugSimp);
+					var newLhs = node.lhs;
+					// In case we had a-(-x), we'd like to have the two sides be
+					// a and x, not a and -(-x)
+					var newRhs = arithmeticEvaluation(node.rhs);
+					printDebug('commLhs: ', newLhs, debugSimp);
+					printDebug('commRhs: ', newRhs, debugSimp);
+					newLhs = self.pullIdentfierToLhs(newLhs, commonIdentifier);
+					<span class="missing-if-branch" title="if path not taken"" >I</span>if (newLhs.type === 'compound' &amp;&amp; newLhs.op === '^') { <span class="cstat-no" title="statement not covered" >return node; </span>}
+					newRhs = self.pullIdentfierToLhs(newRhs, commonIdentifier);
+					<span class="missing-if-branch" title="if path not taken"" >I</span>if (newRhs.type === 'compound' &amp;&amp; newRhs.op === '^') { <span class="cstat-no" title="statement not covered" >return node; </span>}
+					newRhs = expression.createCompoundExpression(newLhs.rhs, newRhs.rhs, node.op);
+					printDebug('newLhs: ', newLhs, debugSimp);
+					printDebug('newRhs: ', newRhs, debugSimp);
+&nbsp;
+					node = simplifyNode(expression.createCompoundExpression(
+						newLhs.lhs, evaluate.evaluateRec(newRhs), '*'));
+				} else <span class="missing-if-branch" title="if path not taken"" >I</span>if (node.op === '+' &amp;&amp; utils.isUnaryNegative(node.rhs)) {
+<span class="cstat-no" title="statement not covered" >					node = expression.createCompoundExpression(node.lhs, node.rhs.child, '-');</span>
+				} else if (node.op === '+' &amp;&amp; node.rhs.type === 'number' &amp;&amp;
+					fractionUtils.isNegative(node.rhs.value)) {
+					node = expression.createCompoundExpression(
+						node.lhs, equality.additiveInverseOfNumber(node.rhs), '-');
+				}
+			}
+			printDebug('returning simplified: ', node, debugSimp);
+			return node;
+		}
+		if (node.type === 'unary') {
+			var childNode = simplifyNode(node.child);
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (childNode === errorNode) { <span class="cstat-no" title="statement not covered" >return errorNode; </span>}
+			node = expression.createUnaryExpression(childNode, node.op);
+			return arithmeticEvaluation(node, true);
+		}
+		<span class="missing-if-branch" title="else path not taken"" >E</span>if (node.type === 'ternary') {
+			var left = simplifyNode(node.left);
+			var middle = simplifyNode(node.middle);
+			var right = simplifyNode(node.right);
+			return expression.createTernaryExpression(left, middle, right, node.op1, node.op2);
+		}
+<span class="cstat-no" title="statement not covered" >		console.error('about to return errorNode');</span>
+<span class="cstat-no" title="statement not covered" >		return errorNode;</span>
+	}
+&nbsp;
+<span class="fstat-no" title="function not covered" >	function expandFraction(node) {</span>
+<span class="cstat-no" title="statement not covered" >		return expression.createCompoundExpression(</span>
+			expression.createSimpleExpression('number', node.value.top),
+			expression.createSimpleExpression('number', node.value.bottom),
+			'/');
+	}
+&nbsp;
+	function combineWithCoefficients(node, op) {
+		printDebug('combining ', node, debugCoeff);
+		if (node.type === 'compound' &amp;&amp; op === '/' &amp;&amp; node.rhs.type === 'number') {
+			return combineWithCoefficients(expression.createCompoundExpression(
+				operator.invertNode(node.rhs), node.lhs, '*'), '*');
+		}
+		if (node.type === 'compound' &amp;&amp; getPrecedence(op) === 2 &amp;&amp;
+			!utils.isOneOverSomething(node)) {
+			var lhsSplit = equality.splitCoefficientFromRest(node.lhs);
+			var rhsNode = equality.splitCoefficientFromRest(node.rhs);
+			if (lhsSplit === null || rhsNode === null) { return node; }
+			var coefficient = operator.multiplyNodesMaybeNull(lhsSplit.co, rhsNode.co, op);
+			if (coefficient !== null) {
+				coefficient = arithmeticEvaluation(coefficient);
+				printDebug('coefficient: ', coefficient, debugCoeff);
+			}
+			if (op === '/' &amp;&amp; lhsSplit.rest === null &amp;&amp; rhsNode.rest !== null) {
+				return operator.multiplyNodesMaybeNull(coefficient, rhsNode.rest, '/');
+			}
+			var rest = operator.multiplyNodesMaybeNull(lhsSplit.rest, rhsNode.rest, op);
+			printDebug('rest: ', rest, debugCoeff);
+			return operator.multiplyNodesMaybeNull(coefficient, rest, '*');
+		}
+		return node;
+	}
+	function fullMultiply(node, multiplyDivision) {
+		printDebug('fullMultiplying: ', node, debugMult);
+		if (node.type === 'identifier' || node.type === 'number') {
+			return arithmeticEvaluation(node);
+		}
+		if (node.type === 'ternary') {
+			return expression.createTernaryExpression(fullMultiply(node.left, multiplyDivision),
+				fullMultiply(node.middle, multiplyDivision),
+				fullMultiply(node.right, multiplyDivision), node.op1, node.op2);
+		}
+		if (node.type === 'compound') {
+			node = expr.makeAdditionCommutative(node);
+			var lhsNode = fullMultiply(node.lhs, multiplyDivision);
+			var rhsNode = fullMultiply(node.rhs, multiplyDivision);
+			printDebug('left: ', lhsNode, debugMult);
+			printDebug('right: ', rhsNode, debugMult);
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (lhsNode === errorNode || rhsNode === errorNode) { <span class="cstat-no" title="statement not covered" >return errorNode; </span>}
+			node = expression.createCompoundExpression(lhsNode, rhsNode, node.op);
+			var newNode = self.evaluateArithmetic(node, true);
+			printDebug('arithmetic: ', newNode, debugMult);
+			if (newNode !== null) { return newNode; }
+			if (multiplyDivision) {
+				node = combineWithCoefficients(node, node.op);
+				printDebug('combineWithCoefficients: ', node, debugMult);
+			}
+			if (node.op === '/') { return groupRepeats(node, multiplyDivision); }
+			if (node.op === '\\sqrt') {
+				return fullMultiply(expression.createCompoundExpression(
+					node.rhs, operator.invertNode(node.lhs), '^'), multiplyDivision);
+			}
+			//*
+			if (multiplyDivision &amp;&amp; node.op === '^' &amp;&amp; node.rhs.type === 'compound') {
+				if (getPrecedence(node.rhs.op) === 1) {
+					var rightExp = node.rhs.rhs;
+					<span class="missing-if-branch" title="if path not taken"" >I</span>if (node.rhs.op === '-') {
+<span class="cstat-no" title="statement not covered" >						rightExp = equality.additiveInverseOfNumber(rightExp);</span>
+					}
+					return expression.createCompoundExpression(
+						fullMultiply(
+							expression.createCompoundExpression(node.lhs, node.rhs.lhs, '^'),
+							multiplyDivision),
+						fullMultiply(expression.createCompoundExpression(node.lhs, rightExp, '^'),
+							multiplyDivision), '*');
+				} else if (node.rhs.op === '*' &amp;&amp; node.lhs.type === 'number' &amp;&amp;
+					getCoefficient(node.rhs) !== 1) {
+					//TODO(sdspikes) : think about /
+					return fullMultiply(expression.createCompoundExpression(fullMultiply(
+						expression.createCompoundExpression(node.lhs, node.rhs.lhs, '^'),
+						multiplyDivision), node.rhs.rhs, '^'), multiplyDivision);
+&nbsp;
+				}
+			}//*/
+			if (node.op === '^' &amp;&amp; node.lhs.type === 'compound') {
+				if (node.lhs.op === '^') {
+					return fullMultiply(expression.createCompoundExpression(node.lhs.lhs,
+						fullMultiply(
+							expression.createCompoundExpression(node.lhs.rhs, node.rhs, '*'),
+							multiplyDivision), '^'), multiplyDivision);
+				} else if (getPrecedence(node.lhs.op) === 2) {
+					return fullMultiply(expression.createCompoundExpression(
+						fullMultiply(
+							expression.createCompoundExpression(node.lhs.lhs, node.rhs, '^'),
+							multiplyDivision),
+						fullMultiply(
+							expression.createCompoundExpression(node.lhs.rhs, node.rhs, '^'),
+							multiplyDivision),
+						node.lhs.op), multiplyDivision);
+				} else if (getPrecedence(node.lhs.op) === 1 &amp;&amp;
+					node.rhs.type === 'number' &amp;&amp; !fractionUtils.isValueFraction(node.rhs.value) &amp;&amp;
+					!fractionUtils.isValueRadical(node.rhs.value)) {
+					return fullMultiply(evaluate.splitPowerNumberExponent(node), multiplyDivision);
+				}
+			}
+			// Allows for x^(-2)-x^(-2) evaluating to 0
+			if (node.op === '^') {
+				if (fractionUtils.isNodeNegative(node.rhs)) {
+					return operator.invertNode(fullMultiply(
+						expression.createCompoundExpression(node.lhs,
+							fullMultiply(expression.createUnaryExpression(node.rhs, '-'),
+								multiplyDivision), '^'),
+						multiplyDivision));
+				}
+			}
+			if (node.op === '*') {
+				if (!multiplyDivision) {
+					if (node.lhs.type === 'compound' &amp;&amp; node.lhs.op === '/' &amp;&amp;
+						fractionUtils.isNodeFraction(node.rhs)) {
+						return groupRepeats(expression.createCompoundExpression(fullMultiply(
+							expression.createCompoundExpression(node.lhs.lhs,
+								expression.createSimpleExpression('number', node.rhs.value.top),
+								'*'),
+							multiplyDivision),
+							fullMultiply(expression.createCompoundExpression(node.lhs.rhs,
+								expression.createSimpleExpression('number', node.rhs.value.bottom),
+								'*'),
+							multiplyDivision),
+							'/'), multiplyDivision);
+					}
+					<span class="missing-if-branch" title="if path not taken"" >I</span>if (node.rhs.type === 'compound' &amp;&amp; node.rhs.op === '/' &amp;&amp;
+						fractionUtils.isNodeFraction(node.lhs)) {
+<span class="cstat-no" title="statement not covered" >						return groupRepeats(expression.createCompoundExpression(fullMultiply(</span>
+							expression.createCompoundExpression(node.rhs.lhs,
+								expression.createSimpleExpression('number', node.lhs.value.top),
+								'*'),
+							multiplyDivision),
+							fullMultiply(expression.createCompoundExpression(node.rhs.rhs,
+								expression.createSimpleExpression('number', node.lhs.value.bottom),
+								'*'),
+							multiplyDivision),
+							'/'), multiplyDivision);
+					}
+					/*
+					if (fractionUtils.isNodeFraction(node.lhs)) {
+						node.lhs = expandFraction(node.lhs);
+					}*/
+					if (node.lhs.type === 'compound' &amp;&amp; node.lhs.op === '/') {
+						var leftLeft = node.rhs;
+						<span class="missing-if-branch" title="if path not taken"" >I</span>if (!(node.lhs.lhs.type === 'number' &amp;&amp; node.lhs.lhs.value === 1)) {
+<span class="cstat-no" title="statement not covered" >							leftLeft = fullMultiply(expression.createCompoundExpression(</span>
+								node.lhs.lhs, node.rhs, '*'), multiplyDivision);
+						}
+						return expression.createCompoundExpression(leftLeft, node.lhs.rhs, '/');
+					}
+					if (node.rhs.type === 'compound' &amp;&amp; node.rhs.op === '/') {
+						var rightLeft = node.lhs;
+						if (!(node.rhs.lhs.type === 'number' &amp;&amp; node.rhs.lhs.value === 1)) {
+							rightLeft = fullMultiply(expression.createCompoundExpression(
+								node.lhs, node.rhs.lhs, '*'), multiplyDivision);
+						}
+						return expression.createCompoundExpression(rightLeft, node.rhs.rhs, '/');
+					}
+				}
+				if (node.lhs.type === 'compound' &amp;&amp; getPrecedence(node.lhs.op) === 1) {
+					node.lhs = expr.makeCommutativeIfNecessary(node.lhs);
+					return fullMultiply(expression.createCompoundExpression(
+						fullMultiply(
+							expression.createCompoundExpression(node.lhs.lhs, node.rhs, '*'),
+							multiplyDivision),
+						fullMultiply(
+							expression.createCompoundExpression(node.lhs.rhs, node.rhs, '*'),
+							multiplyDivision),
+						node.lhs.op), multiplyDivision);
+				}
+				if (node.rhs.type === 'compound' &amp;&amp; getPrecedence(node.rhs.op) === 1) {
+					node.rhs = expr.makeCommutativeIfNecessary(node.rhs);
+					return fullMultiply(expression.createCompoundExpression(
+						fullMultiply(
+							expression.createCompoundExpression(node.lhs, node.rhs.lhs, '*'),
+							multiplyDivision),
+						fullMultiply(
+							expression.createCompoundExpression(node.lhs, node.rhs.rhs, '*'),
+							multiplyDivision),
+						node.rhs.op), multiplyDivision);
+				}
+			}
+			node = groupRepeats(node, multiplyDivision);
+		}
+		if (node.type === 'unary') {
+			var childNode = fullMultiply(node.child, multiplyDivision);
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (childNode === errorNode) { <span class="cstat-no" title="statement not covered" >return errorNode; </span>}
+			if (node.op === '\\sqrt') {
+				var power = expression.createSimpleExpression('number',
+					fractionUtils.createFractionValue(1, 2));
+				return fullMultiply(
+					expression.createCompoundExpression(childNode, power, '^'), multiplyDivision);
+			}
+			node = expression.createUnaryExpression(childNode, node.op);
+			if (node.op !== '-') { return node;}
+			var arith = self.evaluateArithmetic(node, multiplyDivision);
+			return (arith !== null) ? fullMultiply(arith, multiplyDivision) : node;
+		}
+		printDebug('returning: ', node, debugMult);
+		return node;
+	}
+&nbsp;
+	function leftMostTerm(node) {
+		if (node.type !== 'compound' || getPrecedence(node.op) !== 1) {
+			return node;
+		}
+		return leftMostTerm(node.lhs);
+	}
+&nbsp;
+	function getExponentiation(node) {
+		var exponentiation = { base : node, power : 1 };
+		if (node.type === 'compound' &amp;&amp; node.op === '^' &amp;&amp; node.rhs.type === 'number') {
+			exponentiation.base = node.lhs;
+			exponentiation.power = node.rhs.value;
+		}
+		return exponentiation;
+	}
+	function divideTermsIfCommonBase(dividend, divisor) {
+		printDebug('checking: ', dividend, debugSynth);
+		printDebug(' and ', divisor, debugSynth);
+		var divisorExponentiation = getExponentiation(divisor);
+		var dividendExponentiation = getExponentiation(dividend);
+&nbsp;
+		if (divisorExponentiation.base.syntacticEquals(dividendExponentiation.base)) {
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (debugSynth) {
+<span class="cstat-no" title="statement not covered" >				console.log('bases are the same! powers: ' + dividendExponentiation.power +</span>
+					' and ' + divisorExponentiation.power);
+			}
+			if (dividendExponentiation.power &gt;= divisorExponentiation.power) {
+				<span class="missing-if-branch" title="if path not taken"" >I</span>if (debugSynth) { <span class="cstat-no" title="statement not covered" >console.log('powers right!'); </span>}
+				return arithmeticEvaluation(
+					expression.createCompoundExpression(divisorExponentiation.base,
+					expression.createSimpleExpression('number',
+						(dividendExponentiation.power - divisorExponentiation.power)),
+					'^'), false);
+			}
+		}
+		return null;
+	}
+<span class="fstat-no" title="function not covered" >	function leftTerm(node) {</span>
+<span class="cstat-no" title="statement not covered" >		if (utils.isSimpleExpression(node) || node.type === 'unary') { <span class="cstat-no" title="statement not covered" >return node; </span>}</span>
+<span class="cstat-no" title="statement not covered" >		if (node.type === 'compound') { <span class="cstat-no" title="statement not covered" >return node.lhs; </span>}</span>
+	}
+	function isExpandedFraction(node) {
+		return (node.type === 'compound' &amp;&amp; node.op === '/' &amp;&amp;
+<span class="branch-2 cbranch-no" title="branch not covered" >			node.lhs.type === 'number' </span>&amp;&amp; <span class="branch-3 cbranch-no" title="branch not covered" >node.rhs.type === 'number')</span>;
+	}
+	function leftMostTermInMult(node) {
+		if (node.numeric) { return node; }
+		if (node.type !== 'compound') { return node; }
+		<span class="missing-if-branch" title="if path not taken"" >I</span>if (isExpandedFraction(node)) { <span class="cstat-no" title="statement not covered" >return operator['/'].evaluate(node.lhs, node.rhs); </span>}
+		if (getPrecedence(node.op) !== 2) { return node; }
+		return leftMostTermInMult(node.lhs);
+	}
+	/**
+	 * Take a numeric expression and evaluates it, ignoring any radicals that may exist.  Only does
+	 * anything for all-multiplication or unary nodes, since there's no simple way to evaluate
+	 * something like 1+\sqrt{2}
+	 * @param  {Expression} node The numeric expression which may contain a radical.
+	 * @return {Expression}      The value of all
+	 */
+	function allButRadical(node) {
+		if (node.type === 'number') {
+			if (fractionUtils.isValueRadical(node.value)) {
+				return expression.createSimpleExpression('number', 1);
+			}
+		} else if (utils.isUnaryNegative(node)) {
+			return arithmeticEvaluation(
+				expression.createUnaryExpression(allButRadical(node.child), '-'));
+		} else <span class="missing-if-branch" title="else path not taken"" >E</span>if (node.type === 'compound' &amp;&amp; getPrecedence(node.op) === 2) {
+			return arithmeticEvaluation(expression.createCompoundExpression(
+				allButRadical(node.lhs), allButRadical(node.rhs), node.op));
+		}
+		return node;
+	}
+	function getCoefficient(node, includeRadical) {
+		if (typeof includeRadical !== 'boolean') { includeRadical = true; }
+		if (node.numeric) { return (includeRadical) ? <span class="branch-0 cbranch-no" title="branch not covered" >node </span>: allButRadical(node); }
+		<span class="missing-if-branch" title="if path not taken"" >I</span>if (node.type === 'compound' &amp;&amp; node.op === '/') {
+<span class="cstat-no" title="statement not covered" >			return operator['/'].evaluate(</span>
+				getCoefficient(node.lhs, includeRadical), getCoefficient(node.rhs, includeRadical));
+		}
+		var left = leftMostTermInMult(node);
+		if (utils.isUnaryNegative(left)) {
+			return equality.additiveInverseOfNumber(getCoefficient(left.child, includeRadical));
+		}
+		return (left.type === 'number' &amp;&amp;
+			(includeRadical || !fractionUtils.isValueRadical(left.value))) ?
+			left : expression.createSimpleExpression('number', 1);
+	}
+&nbsp;
+	function compareDegree(a, b) {
+		var powerA = getPower(a);
+		var powerB = getPower(b);
+		return compareMultiplication(powerA, powerB);
+	}
+&nbsp;
+	function syntheticDivision(dividend, divisor, remainder) {
+		printDebug('dividend: ', dividend, debugSynth);
+		printDebug(' divisor: ', divisor, debugSynth);
+		var leadingTermBottom = leftMostTerm(divisor);
+		var termsBottom = getAllTermsAtLevelNoSort(leadingTermBottom, '*', false);
+&nbsp;
+		var identifiersInLeadingTermBottom = getAllTermsAtLevelNoSort(leadingTermBottom, '*', false);
+		identifierPriority = identifiersInLeadingTermBottom.sort(compareDegree).reverse()
+			.map(function(node) {
+				var base = getExponentiation(node).base;
+				if (base.type === 'identifier') { return base.value; }
+				return '';
+			});
+&nbsp;
+		var topTerms = getAllTermsAtLevelNoSort(
+			makeCommutativeIfNecessaryRec(dividend, dividend.op), '+', true);
+		topTerms.sort(compareAddition);
+		identifierPriority = [];
+&nbsp;
+		var leadingTermTop = topTerms[0];
+		var identifiersInLeadingTermTop = getAllIdentifiersInMulitplication(leadingTermTop)
+			.map(function(elem) { return elem.value; });
+&nbsp;
+		var termsTop = getAllTermsAtLevelNoSort(leadingTermTop, '*', false);
+		var dividedTerms = [];
+		while (termsBottom.length &gt; 0) {
+			var bottomTerm = termsBottom.shift();
+			var found = false;
+			for (var i = 0; i &lt; termsTop.length; i++) {
+				var quo = divideTermsIfCommonBase(termsTop[i], bottomTerm);
+				if (quo !== null) {
+					printDebug('quo: ', quo, debugSynth);
+					dividedTerms.push(quo);
+					termsTop.splice(i, 1);
+					found = true;
+					break;
+				}
+			}
+			if (!found) { return { result: null, success: false }; }
+		}
+		// We found all the terms that were in the divisor's leading term in the dividend's leading
+		// term, so now we just need to put the leftover terms from dividend's leading term, and
+		// divide the coeffients (if any) to get the multiplier for the divisor.
+		dividedTerms = dividedTerms.concat(termsTop);
+		var multTerm = operator['/'].evaluate(
+				getCoefficient(leadingTermTop, false), getCoefficient(leadingTermBottom, false));
+		<span class="missing-if-branch" title="if path not taken"" >I</span>if (debugSynth) {
+<span class="cstat-no" title="statement not covered" >			printDebug('leadingTermTop: ', leadingTermTop, debugSynth);</span>
+<span class="cstat-no" title="statement not covered" >			printDebug('leadingTermBottom: ', leadingTermBottom, debugSynth);</span>
+<span class="cstat-no" title="statement not covered" >			console.log('top: ' + getCoefficient(leadingTermTop, false).value + ' bottom: ' +</span>
+				getCoefficient(leadingTermBottom, false).value);
+<span class="cstat-no" title="statement not covered" >			printDebug('coefficients: ', multTerm, debugSynth);</span>
+		}
+		while (dividedTerms.length &gt; 0) {
+			multTerm = expression.createCompoundExpression(multTerm, dividedTerms.shift(), '*');
+			multTerm = arithmeticEvaluation(multTerm, false);
+		}
+		printDebug('multTerm: ', multTerm, debugSynth);
+		var mult = evaluate.evaluateRec(
+			expression.createCompoundExpression(multTerm, divisor, '*'), false);
+		printDebug('mult: ', mult, debugSynth);
+		var sub = evaluate.evaluateRec(expression.createCompoundExpression(dividend, mult, '-'));
+		printDebug('sub: ', sub, debugSynth);
+		if (sub.type === 'number' &amp;&amp; sub.value === 0) {
+			return { result: multTerm, success: true };
+		}
+		<span class="missing-if-branch" title="if path not taken"" >I</span>if (sub.syntacticEquals(dividend)) {
+<span class="cstat-no" title="statement not covered" >			console.log('somehow got back to myself?');</span>
+<span class="cstat-no" title="statement not covered" >			return { result: null, success: false };</span>
+		}
+		// If it didn't go in, try again with what we have left.
+		var attempt = syntheticDivision(sub, divisor, remainder);
+		var newTerm = attempt.result;
+		if (!attempt.success &amp;&amp; remainder) {
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (debugSynth) { <span class="cstat-no" title="statement not covered" >console.log('there was a remainder'); </span>}
+			newTerm = evaluate.evaluateRec(expression.createCompoundExpression(sub, divisor, '/'));
+			attempt.success = true;
+		}
+		if (attempt.success) {
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (debugSynth) { <span class="cstat-no" title="statement not covered" >console.log('no remainder'); </span>}
+			attempt.result = expression.createCompoundExpression(multTerm, newTerm, '+');
+		}
+		return attempt;
+	}
+	function isFractionRhsNotNumber(node) {
+		return (node.type === 'compound' &amp;&amp; node.op === '/' &amp;&amp; node.rhs.type !== 'number');
+	}
+	function pullAllTermsOverCommonDivisor(node) {
+		printDebug('in commonDivisor: ', node, debugCommonDiv);
+		if (node.type === 'unary') {
+			var gathered = pullAllTermsOverCommonDivisor(node.child);
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (isFractionRhsNotNumber(gathered)) {
+<span class="cstat-no" title="statement not covered" >				return expression.createCompoundExpression(</span>
+					expression.createUnaryExpression(gathered.lhs, node.op), gathered.rhs, '/');
+			}
+		}
+		if (node.type !== 'compound' || getPrecedence(node.op) === 0 || node.op === '^') {
+			return node;
+		}
+		var gatheredLhs = pullAllTermsOverCommonDivisor(node.lhs);
+		var gatheredRhs = pullAllTermsOverCommonDivisor(node.rhs);
+		printDebug('gatheredLhs: ', gatheredLhs, debugCommonDiv);
+		printDebug('gatheredRhs: ', gatheredRhs, debugCommonDiv);
+		if (!isFractionRhsNotNumber(gatheredLhs) &amp;&amp; !isFractionRhsNotNumber(gatheredRhs)) {
+			return node;
+		}
+		var topLeft = gatheredLhs;
+		var topRight = gatheredRhs;
+		var bottomLeft = null;
+		var bottomRight = null;
+		if (isFractionRhsNotNumber(gatheredLhs)) {
+			topLeft = gatheredLhs.lhs;
+			bottomLeft = gatheredLhs.rhs;
+		}
+		<span class="missing-if-branch" title="else path not taken"" >E</span>if (isFractionRhsNotNumber(gatheredRhs)) {
+			topRight = gatheredRhs.lhs;
+			bottomRight = gatheredRhs.rhs;
+		}
+		if (getPrecedence(node.op) === 2) {
+			<span class="missing-if-branch" title="else path not taken"" >E</span>if (node.op === '/') {
+				printDebug('in commonDivisor, divided! ', node, debugCommonDiv);
+&nbsp;
+				var temp = topRight;
+				topRight = bottomRight;
+				bottomRight = temp;
+			}
+			result = expression.createCompoundExpression(
+				multiplyNodesAndEvaluate(topLeft, topRight, '*'),
+				multiplyNodesAndEvaluate(bottomLeft, bottomRight, '*'), '/');
+			printDebug('result: ', result, debugCommonDiv);
+			return result;
+		}
+		<span class="missing-if-branch" title="else path not taken"" >E</span>if (getPrecedence(node.op) === 1) {
+			var bottom = multiplyNodesAndEvaluate(bottomLeft, bottomRight, '*');
+			topLeft = operator.multiplyNodesMaybeNull(topLeft, bottomRight, '*');
+			topRight = operator.multiplyNodesMaybeNull(bottomLeft, topRight, '*');
+			var top = evaluate.evaluateRec(
+				expression.createCompoundExpression(topLeft, topRight, node.op));
+			printDebug('top: ', top, debugSynth);
+			printDebug('bottom: ', bottom, debugSynth);
+			result = expression.createCompoundExpression(top, bottom, '/');
+			printDebug('result: ', result, debugCommonDiv);
+			return result;
+		}
+<span class="cstat-no" title="statement not covered" >		printDebug('returning node: ', node, debugCommonDiv);</span>
+<span class="cstat-no" title="statement not covered" >		return node;</span>
+	}
+&nbsp;
+<span class="fstat-no" title="function not covered" >	function hasNonMultiplication(node) {</span>
+<span class="cstat-no" title="statement not covered" >		if (node.type !== 'compound') { <span class="cstat-no" title="statement not covered" >return false; </span>}</span>
+<span class="cstat-no" title="statement not covered" >		if (getPrecedence(node.op) &lt; 2) { <span class="cstat-no" title="statement not covered" >return true; </span>}</span>
+<span class="cstat-no" title="statement not covered" >		var left = hasNonMultiplication(node.lhs);</span>
+<span class="cstat-no" title="statement not covered" >		if (node.op === '^') { <span class="cstat-no" title="statement not covered" >return left; </span>}</span>
+<span class="cstat-no" title="statement not covered" >		return left &amp;&amp; hasNonMultiplication(node.rhs);</span>
+	}
+&nbsp;
+&nbsp;
+	function trySyntheticDivision(node, remainder) {
+		if (node.type === 'ternary') { return node; }
+		var origNode = node;
+		node = expr.copyNode(node);
+		var before = 0;
+		<span class="missing-if-branch" title="if path not taken"" >I</span>if (debugSynth) {
+<span class="cstat-no" title="statement not covered" >			before = 'before: ' + display.displayExpression(node, 0, 2);</span>
+		}
+		node = pullAllTermsOverCommonDivisor(node);
+		<span class="missing-if-branch" title="if path not taken"" >I</span>if (debugSynth &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >!origNode.syntacticEquals(node))</span> {
+<span class="cstat-no" title="statement not covered" >			console.log(before);</span>
+<span class="cstat-no" title="statement not covered" >			printDebug('after: ', node, debugSynth);</span>
+		}
+&nbsp;
+		if (node === errorNode || utils.isSimpleExpression(node)) { return node; }
+		if (node.type === 'unary') {
+			return expression.createUnaryExpression(
+				trySyntheticDivision(node.child, remainder), node.op);
+		}
+		if (node.op === '/') {
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (node.rhs.type === 'number') { <span class="cstat-no" title="statement not covered" >return node; </span>}
+			var result = syntheticDivision(node.lhs, node.rhs, remainder);
+			if (result.success === true) {
+				<span class="missing-if-branch" title="if path not taken"" >I</span>if (debugSynth) { <span class="cstat-no" title="statement not covered" >console.log('dividing whole thing worked!'); </span>}
+				result.result = sortTerms(result.result);
+				printDebug('result: ', result.result, debugSynth);
+				return result.result;
+			}
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (debugSynth) { <span class="cstat-no" title="statement not covered" >console.log('dividing whole thing did not work :('); </span>}
+			return origNode;
+		}
+		var leftOrig = expr.copyNode(node.lhs);
+		var rightOrig = expr.copyNode(node.rhs);
+		var left = trySyntheticDivision(node.lhs, remainder);
+		var right = trySyntheticDivision(node.rhs, remainder);
+		if (!left.syntacticEquals(leftOrig) || !right.syntacticEquals(rightOrig)) {
+			return self.evaluateRec(expression.createCompoundExpression(left, right, node.op));
+		}
+		return node;
+	}
+&nbsp;
+<span class="fstat-no" title="function not covered" >	function invertExponent(node) {</span>
+<span class="cstat-no" title="statement not covered" >		var result = node;</span>
+<span class="cstat-no" title="statement not covered" >		if (node.type === 'compound' &amp;&amp; node.op === '^' &amp;&amp; node.rhs.type === 'number' &amp;&amp;</span>
+			fractionUtils.isNegative(node.rhs.value)) {
+<span class="cstat-no" title="statement not covered" >			result = expression.createCompoundExpression(</span>
+				node.lhs, equality.additiveInverseOfNumber(node.rhs), '^');
+		}
+<span class="cstat-no" title="statement not covered" >		if (node.type === 'compound' &amp;&amp; node.op === '^' &amp;&amp; utils.isUnaryNegative(node.rhs)) {</span>
+<span class="cstat-no" title="statement not covered" >			result = expression.createCompoundExpression(node.lhs, node.rhs.child, '^');</span>
+		}
+<span class="cstat-no" title="statement not covered" >		return arithmeticEvaluation(result);</span>
+	}
+	function flipNegativePowerIntoOneOver(node) {
+		<span class="missing-if-branch" title="if path not taken"" >I</span>if (node.type === 'compound' &amp;&amp; node.op === '^' &amp;&amp; (utils.isUnaryNegative(node.rhs) ||
+			(node.rhs.type === 'number' &amp;&amp; fractionUtils.isNegative(node.rhs.value)))) {
+<span class="cstat-no" title="statement not covered" >			return expression.createCompoundExpression(</span>
+				expression.createSimpleExpression('number', 1),
+				invertExponent(node), '/');
+		}
+		return node;
+	}
+	function convertFractionalExponentToSqrt(node) {
+		if (node.type === 'compound' &amp;&amp; node.op === '^') {
+			if (node.rhs.type === 'number' &amp;&amp; fractionUtils.isValueFraction(node.rhs.value)) {
+				<span class="missing-if-branch" title="if path not taken"" >I</span>if (node.rhs.value === fractionUtils.createFractionValue(1, 2)) {
+<span class="cstat-no" title="statement not covered" >					return expression.createUnaryExpression(node.lhs, '\\sqrt');</span>
+				}
+				return expression.createCompoundExpression(
+					expression.createSimpleExpression('number', node.rhs.value.bottom),
+					arithmeticEvaluation(expression.createCompoundExpression(node.lhs,
+						expression.createSimpleExpression('number', node.rhs.value.top), '^')),
+					'\\sqrt');
+			}
+			if (node.rhs.type === 'compound' &amp;&amp; node.rhs.op === '/') {
+				return expression.createCompoundExpression(node.rhs.rhs,
+					arithmeticEvaluation(expression.createCompoundExpression(node.lhs,
+						node.rhs.lhs, '^')),
+					'\\sqrt');
+			}
+		}
+		return node;
+	}
+	function convertRadicalNumberNodeToSqrt(node) {
+		<span class="missing-if-branch" title="else path not taken"" >E</span>if (node.type === 'number' &amp;&amp; fractionUtils.isValueRadical(node.value)) {
+			node = expression.createCompoundExpression(
+				expression.createSimpleExpression('number', node.value.power),
+				expression.createSimpleExpression('number', node.value.radicand),
+				'\\sqrt');
+		}
+		return node;
+	}
+	/**
+	 *  Assumes node and other have already been run through evaluateRec.
+	 */
+	function equivalentEquationOrInequalityHelper(node, other) {
+		printDebug('node:',  node, debugFullEq);
+		printDebug('other:',  node, debugFullEq);
+		if (node.type === 'compound' &amp;&amp; other.type === 'compound') {
+			var originalOp = '+';
+			if (getPrecedence(node.op) === 0 &amp;&amp; getPrecedence(other.op) === 0) {
+				<span class="missing-if-branch" title="if path not taken"" >I</span>if (node.op !== other.op &amp;&amp;
+					operatorProperties.getInverseInequality(node.op) !== other.op) {
+<span class="cstat-no" title="statement not covered" >					return false;</span>
+				}
+				originalOp = node.op;
+				var otherLeft = other.lhs;
+				var otherRight = other.rhs;
+				if (operatorProperties.getInverseInequality(node.op) === other.op) {
+					otherLeft = other.rhs;
+					otherRight = other.lhs;
+				}
+&nbsp;
+				node = evaluate.evaluateRec(
+					expression.createCompoundExpression(node.lhs, node.rhs, '-'));
+				other = evaluate.evaluateRec(
+					expression.createCompoundExpression(otherLeft, otherRight, '-'));
+				if (equality.equivalentModuloCommutativity(node, other, false)) { return true; }
+			}
+			var quotient = self.doSyntheticDivision(node, other, true);
+			return (quotient.type === 'number' &amp;&amp; (originalOp === '=' ||
+				(getPrecedence(originalOp) !== 0 &amp;&amp; quotient.value === 1) ||
+				(getPrecedence(originalOp) === 0 &amp;&amp; !fractionUtils.isNegative(quotient.value))));
+		}
+		if (node.type === 'ternary' &amp;&amp; other.type === 'ternary') {
+			return equivalentEquationOrInequalityHelper(
+				expression.createCompoundExpression(node.left, node.middle, node.op1),
+				expression.createCompoundExpression(other.left, other.middle, other.op1)) &amp;&amp;
+			equivalentEquationOrInequalityHelper(
+				expression.createCompoundExpression(node.middle, node.right, node.op2),
+				expression.createCompoundExpression(other.middle, other.right, other.op2));
+		}
+		return false;
+	}
+&nbsp;
+	function putTermsWithoutIdentifierOnRhs(node, identifierNode) {
+		if (node.lhs.syntacticEquals(identifierNode)) { return [node]; }
+		if (node.lhs.type === 'unary') {
+			<span class="missing-if-branch" title="else path not taken"" >E</span>if (node.lhs.op === '-') {
+				// Flip direction of inequality, and make the other side negative instead
+				return putTermsWithoutIdentifierOnRhs(
+					expression.createCompoundExpression(node.lhs.child,
+						expression.createUnaryExpression(node.rhs, '-'),
+						operatorProperties.getInverseInequality(node.op)),
+					identifierNode);
+			}
+		}
+		if (node.lhs.op === '\\sqrt' || node.lhs.op === '^') {
+			var newLhs = convertFractionalExponentToSqrt(node.lhs);
+			if (newLhs.op === '\\sqrt') {
+				var power = newLhs.lhs;
+				var base = newLhs.rhs;
+				<span class="missing-if-branch" title="if path not taken"" >I</span>if (newLhs.type === 'unary') {
+<span class="cstat-no" title="statement not covered" >					base = node.child;</span>
+<span class="cstat-no" title="statement not covered" >					power = expression.createSimpleExpression('number', 2);</span>
+				}
+				return putTermsWithoutIdentifierOnRhs(expression.createCompoundExpression(base,
+					expression.createCompoundExpression(node.rhs, power, '^'), node.op),
+					identifierNode);
+			}
+			// So it's a straight up exponent.
+			if (node.lhs.rhs.type === 'number') {
+				var newRhs = expression.createCompoundExpression(node.lhs.rhs, node.rhs, '\\sqrt');
+				if (fractionUtils.isEven(node.lhs.rhs.value)) {
+					return putTermsWithoutIdentifierOnRhs(expression.createCompoundExpression(
+							node.lhs.lhs, newRhs, node.op), identifierNode).concat(
+						putTermsWithoutIdentifierOnRhs(expression.createCompoundExpression(
+							node.lhs.lhs, expression.createUnaryExpression(newRhs, '-'), node.op),
+						identifierNode));
+				} else {
+					return putTermsWithoutIdentifierOnRhs(expression.createCompoundExpression(
+						node.lhs.lhs, newRhs, node.op), identifierNode);
+				}
+			}
+			// If the exponent is not a number, not sure what to do... just leave it.
+			return [node];
+		}
+		<span class="missing-if-branch" title="else path not taken"" >E</span>if (node.lhs.type === 'compound') {
+			if (!containsIdentifier(node.lhs.rhs, identifierNode)) {
+				return putTermsWithoutIdentifierOnRhs(
+					expression.createCompoundExpression(node.lhs.lhs,
+					expression.createCompoundExpression(
+						node.rhs, node.lhs.rhs, operatorProperties.inverseOp(node.lhs.op)),
+					node.op), identifierNode);
+			}
+			if (!containsIdentifier(node.lhs.lhs, identifierNode)) {
+				<span class="missing-if-branch" title="if path not taken"" >I</span>if (utils.isOneOverSomething(node.lhs)) {
+<span class="cstat-no" title="statement not covered" >					return putTermsWithoutIdentifierOnRhs(</span>
+						expression.createCompoundExpression(node.lhs.rhs, operator.invertNode(node.rhs),
+							operatorProperties.getInverseInequality(node.op)),
+						identifierNode);
+				}
+				var newLeft = expr.makeCommutativeIfNecessary(node.lhs);
+				return putTermsWithoutIdentifierOnRhs(
+					expression.createCompoundExpression(newLeft.rhs,
+						expression.createCompoundExpression(
+							node.rhs, newLeft.lhs, operatorProperties.inverseOp(node.lhs.op)),
+					node.op), identifierNode);
+			}
+		}
+		return [node];
+	}
+&nbsp;
+	function arithmeticEvaluation(node, expand) {
+		printDebug('arithmeticEvaluation: ', node, debugArith);
+		if (node.simplified) { return node; }
+		var newNode = operator.rationalizeDenominator(node);
+		printDebug('newNode: ', node, debugArith);
+		if (!node.syntacticEquals(newNode)) { return newNode; }
+		if (node.type === 'number' &amp;&amp; fractionUtils.isValueFraction(node.value)) {
+			newNode = expression.createSimpleExpression('number',
+				fractionUtils.simplifyFraction(node.value));
+			newNode.simplified = true;
+			return newNode;
+		}
+		if (node.type === 'number' &amp;&amp; fractionUtils.isValueRadical(node.value)) {
+			return operator.simplifyRadicalIntoNode(node.value);
+		}
+		if (node.type === 'unary') {
+			if (node.child.type === 'number') {
+				if (fractionUtils.isValueRadical(node.child.value)) { return newNode; }
+				else { newNode = operator[node.op].unaryEvaluate(node.child); }
+			} else {
+				var newChild = arithmeticEvaluation(node.child);
+				if (utils.isUnaryNegative(node) &amp;&amp; utils.isUnaryNegative(newChild)) {
+					return newChild.child;
+				}
+				if (expand &amp;&amp; utils.isUnaryNegative(node)) {
+					newNode = expression.createCompoundExpression(
+						expression.createSimpleExpression('number', -1),
+						newChild, '*');
+				} else {
+					newNode = expression.createUnaryExpression(newChild, node.op);
+				}
+			}
+			return newNode;
+		}
+		if (node.type !== 'compound' || getPrecedence(node.op) === 0) { return node; }
+		node.lhs = expr.makeIntoFractionNodeIfApplicable(node.lhs);
+		node.rhs = expr.makeIntoFractionNodeIfApplicable(node.rhs);
+		<span class="missing-if-branch" title="if path not taken"" >I</span>if (node.lhs === errorNode || node.rhs === errorNode) { <span class="cstat-no" title="statement not covered" >return errorNode; </span>}
+		newNode = expression.createCompoundExpression(node.lhs, node.rhs, node.op);
+		printDebug('newNode2: ', node, debugArith);
+		if (node.lhs.numeric &amp;&amp; node.rhs.numeric) {
+			if ((node.lhs.type !== 'number' &amp;&amp; node.rhs.type !== 'number') &amp;&amp;
+				(!node.lhs.simplified || <span class="branch-3 cbranch-no" title="branch not covered" >!node.rhs.simplified)</span>) { return newNode; }
+			newNode = operator[node.op].evaluate(node.lhs, node.rhs);
+			if (!newNode.syntacticEquals(node)) {
+				newNode.simplified = true;
+				return newNode;
+			}
+		}
+		if (node.rhs.type === 'number' &amp;&amp;
+			node.rhs.value === operatorProperties[node.op].identity) {
+			newNode = node.lhs;
+		} else if (node.rhs.type === 'number' &amp;&amp; node.rhs.value === 0) {
+			if (node.op === '*') { newNode = node.rhs; }
+			if (node.op === '^') { newNode = expression.createSimpleExpression('number', 1); }
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (node.op === '/') { <span class="cstat-no" title="statement not covered" >return errorNode; </span>}
+		} else if (getPrecedence(node.op) === 2 &amp;&amp; utils.isNegativeOne(node.rhs) &amp;&amp; !expand) {
+			newNode = expression.createUnaryExpression(node.lhs, '-');
+		} else if (node.op === '*' &amp;&amp; utils.isNegativeOne(node.lhs) &amp;&amp; !expand) {
+			newNode = expression.createUnaryExpression(node.rhs, '-');
+		} else if (node.op === '^' &amp;&amp; utils.isNegativeOne(node.rhs) &amp;&amp; !expand) {
+			newNode = expression.createCompoundExpression(
+				expression.createSimpleExpression('number', 1), node.lhs, '/');
+		} else {
+			node = expr.makeCommutativeIfNecessary(node);
+			if (node.lhs.type === 'number') {
+				if (operatorProperties[node.op].commutative &amp;&amp;
+					node.lhs.value === operatorProperties[node.op].identity) {
+					newNode = node.rhs;
+				} else if (node.lhs.value === 0 &amp;&amp; getPrecedence(node.op) &gt; 1) {
+					newNode = node.lhs;
+				}
+			}
+		}
+		return newNode;
+	}
+&nbsp;
+	var self = {
+		evaluateArithmetic: function(exp, expand) {
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (exp.simplified) { <span class="cstat-no" title="statement not covered" >return null; </span>}
+			var parent = exp.parent;
+			var side = utils.getSide(exp);
+			var copy = expr.copyNode(exp);
+			var node = arithmeticEvaluation(exp, expand);
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (node === errorNode) { <span class="cstat-no" title="statement not covered" >return errorNode; </span>}
+			if (node.syntacticEquals(copy)) { return null; }
+			utils.setChild(node, parent, side);
+			return node;
+		},
+		/**
+		 * This function is used by simplify to factor out a known common identifier using the
+		 * distributive property of multiplication over addition.
+		 *
+		 * Public for testing purposes only.
+		 */
+		pullIdentfierToLhs: function(node, identifierNode) {
+			printDebug('Pulling ', identifierNode, debugSimp);
+			printDebug(' to the left of ', node, debugSimp);
+			if (node.syntacticEquals(identifierNode)) {
+				node = expression.createCompoundExpression(
+					node, expression.createSimpleExpression('number', 1), '*');
+			} else if (utils.isUnaryNegative(node)) {
+				var newChild = self.pullIdentfierToLhs(node.child, identifierNode);
+				node = expression.createCompoundExpression(
+					newChild, expression.createSimpleExpression('number', -1), '*');
+				return self.pullIdentfierToLhs(node, identifierNode);
+			} else if (node.type !== 'compound') {
+				return node;
+			} else if (node.op === '^' &amp;&amp; node.rhs.type === 'number' &amp;&amp;
+				!fractionUtils.isValueRadical(node.rhs.value)) {
+				var base = node.lhs;
+				if (base.syntacticEquals(identifierNode)) {
+					return self.splitPowerNumberExponent(node);
+				}
+				base = self.pullIdentfierToLhs(node.lhs, identifierNode);
+				<span class="missing-if-branch" title="if path not taken"" >I</span>if (base.type === 'compound' &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >identifierNode.syntacticEquals(base.lhs))</span> {
+<span class="cstat-no" title="statement not covered" >					return expression.createCompoundExpression(</span>
+						self.splitPowerNumberExponent(expression.createCompoundExpression(
+							base.lhs, node.rhs, '^')),
+						expression.createCompoundExpression(base.rhs, node.rhs, '^'),
+						'*');
+				}
+				return node;
+			} else if (identifierNode.syntacticEquals(node.lhs)) {
+				return node;
+			} else if (node.op === '*' &amp;&amp; identifierNode.syntacticEquals(node.rhs)) {
+				return self.pullIdentfierToLhs(expr.commute(node), identifierNode);
+			} else {
+				var newLhs = self.pullIdentfierToLhs(node.lhs, identifierNode);
+				if (newLhs.type === 'compound' &amp;&amp; identifierNode.syntacticEquals(newLhs.lhs)) {
+					newLhs = expr.makeCommutativeIfNecessary(newLhs);
+					node = expr.makeCommutativeIfNecessary(node);
+					node = expression.createCompoundExpression(newLhs.lhs,
+						expression.createCompoundExpression(newLhs.rhs, node.rhs, '*'), '*');
+				} else { // pulling left failed, must be in the right
+					if (node.op === '/') { identifierNode = operator.invertNode(identifierNode); }
+					var newRhs = self.pullIdentfierToLhs(node.rhs, identifierNode);
+					if (newRhs.type === 'compound' &amp;&amp; identifierNode.syntacticEquals(newRhs.lhs) &amp;&amp;
+						(node.op !== '^' || (<span class="branch-3 cbranch-no" title="branch not covered" >!fractionUtils.isNodeFraction(newRhs.rhs) </span>&amp;&amp;
+<span class="branch-4 cbranch-no" title="branch not covered" >						!fractionUtils.isValueRadical(newRhs.rhs))</span>)) {
+						printDebug('we have found it and newRhs is: ', newRhs, debugSimp);
+						printDebug('at this point, node is: ', node, debugSimp);
+						newLhs = newRhs.lhs;
+						newRhs = expr.makeCommutativeIfNecessary(newRhs);
+						if (node.op === '/') { newLhs = operator.invertNode(newLhs); }
+						node = expression.createCompoundExpression(newLhs,
+							expression.createCompoundExpression(node.lhs, newRhs.rhs, node.op),
+							'*');
+					}
+				}
+			}
+			return node;
+		},
+&nbsp;
+		// Public methods
+		splitPowerNumberExponent: function(node) {
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (node.op !== '^' || node.rhs.type !== 'number' ||
+				fractionUtils.isValueRadical(node.rhs.value)) { <span class="cstat-no" title="statement not covered" >return node; </span>}
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (node.rhs.value === -1) {
+<span class="cstat-no" title="statement not covered" >				return expression.createCompoundExpression(</span>
+					expression.createSimpleExpression('number', 1), node.lhs, '/');
+			}
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (node.rhs.value &lt; -1) {
+<span class="cstat-no" title="statement not covered" >				return flipNegativePowerIntoOneOver(node);</span>
+			}
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (node.rhs.value === 0) { <span class="cstat-no" title="statement not covered" >return expression.createSimpleExpression('number', 1); </span>}
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (node.rhs.value === 1) { <span class="cstat-no" title="statement not covered" >return node.lhs; </span>}
+			if (node.rhs.value === 2) {
+				return expression.createCompoundExpression(node.lhs, node.lhs, '*');
+			}
+			var newExponent = operator['-'].evaluateValues(node.rhs.value, 1);
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (fractionUtils.isNodeNegative(newExponent)) { <span class="cstat-no" title="statement not covered" >return node; </span>}
+			return expression.createCompoundExpression(node.lhs,
+				expression.createCompoundExpression(node.lhs,
+					newExponent, '^'), '*');
+		},
+&nbsp;
+		fullEquality : <span class="fstat-no" title="function not covered" >function(node, other) {</span>
+<span class="cstat-no" title="statement not covered" >			return equality.equivalentModuloCommutativity(self.evaluateRec(expr.copyNode(node)),</span>
+				self.evaluateRec(expr.copyNode(other), false));
+		},
+		// The following functions destructively modify the expression tree.
+		doSyntheticDivision: function(dividend, divisor, remainder) {
+			var node = expression.createCompoundExpression(
+				dividend, divisor, '/');
+			var newNode = trySyntheticDivision(expression.createCompoundExpression(
+				dividend, divisor, '/'), remainder);
+			if (node.syntacticEquals(newNode)) {
+				// if it didn't work, just evaluate it like normal, but skip the synth step since
+				// we already tried it once.
+				return evaluate.evaluateRec(node, false);
+			}
+			return newNode;
+		},
+		evaluateRec: function(node, doSynth) {
+			if (node === errorNode) { return errorNode; }
+			printDebug('init:', node, debug);
+			node = fullMultiply(node, true);
+			printDebug('mult1:', node, debug);
+			node = sortTerms(node, true);
+			printDebug('sort1:', node, debug);
+			node = simplifyNode(node);
+			printDebug('simp:', node, debug);
+			node = fullMultiply(node, false);
+			printDebug('mult2:', node, debug);
+			node = sortTerms(node, false);
+			printDebug('sort2:', node, debug);
+			node = pullAllTermsOverCommonDivisor(node);
+			if (typeof doSynth === 'undefined' || doSynth === true) {
+				node = trySyntheticDivision(node, false);
+				printDebug('synth:', node, debug);
+			}
+			return node;
+		},
+		evaluateFull : function(node) {
+			var parent = node.parent;
+			var side = utils.getSide(node);
+			var newNode = self.evaluateRec(node);
+			if (newNode === errorNode) { return newNode; }
+			if (newNode.syntacticEquals(node)) { return null; }
+			utils.setChild(newNode, parent, side);
+			return newNode;
+		},
+		equivalentEquationOrInequality: <span class="fstat-no" title="function not covered" >function(node, other) {</span>
+<span class="cstat-no" title="statement not covered" >			node = self.evaluateRec(node);</span>
+<span class="cstat-no" title="statement not covered" >			other = self.evaluateRec(other);</span>
+<span class="cstat-no" title="statement not covered" >			if (equality.equivalentModuloCommutativity(node, other)) { <span class="cstat-no" title="statement not covered" >return true; </span>}</span>
+<span class="cstat-no" title="statement not covered" >			return equivalentEquationOrInequalityHelper(node, other);</span>
+		},
+		strictestEqualityType: function(node, other, fullEq) {
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (node === errorNode || other === errorNode) { <span class="cstat-no" title="statement not covered" >return equalityType.none; </span>}
+			if (node.syntacticEquals(other)) { return equalityType.verbatim; }
+			if (equality.equivalentModuloCommutativity(node, other, true)) {
+				return equalityType.commuteCo;
+			}
+			if (equality.equivalentModuloCommutativity(node, other, false)) {
+				return equalityType.commute;
+			}
+			node = self.evaluateRec(node);
+			other = self.evaluateRec(other);
+&nbsp;
+			if (equality.equivalentModuloCommutativity(node, other, false)) {
+				return equalityType.full;
+			}
+			if (fullEq &amp;&amp; equivalentEquationOrInequalityHelper(node, other)) {
+				return equalityType.fullEq;
+			}
+			return equalityType.none;
+		},
+		// Does not destructively modify anything, returns a totally new expression with no shared
+		// nodes.
+		substituteNodeForOtherNode: <span class="fstat-no" title="function not covered" >function(expression, node, other) {</span>
+<span class="cstat-no" title="statement not covered" >			if (expression === errorNode || node === errorNode || other === errorNode) {</span>
+<span class="cstat-no" title="statement not covered" >				return errorNode;</span>
+			}
+<span class="cstat-no" title="statement not covered" >			if (expression.syntacticEquals(node)) {</span>
+<span class="cstat-no" title="statement not covered" >				return expr.copyNode(other);</span>
+			}
+<span class="cstat-no" title="statement not covered" >			if (utils.isSimpleExpression(expression)) { <span class="cstat-no" title="statement not covered" >return expr.copyNode(expression); </span>}</span>
+<span class="cstat-no" title="statement not covered" >			if (expression.type === 'unary') {</span>
+<span class="cstat-no" title="statement not covered" >				return expression.createUnaryExpression(</span>
+					self.substituteNodeForOtherNode(expression.child, node, other), expression.op);
+			}
+<span class="cstat-no" title="statement not covered" >			if (expression.type === 'compound') {</span>
+<span class="cstat-no" title="statement not covered" >				return expression.createCompoundExpression(</span>
+					self.substituteNodeForOtherNode(expression.lhs, node, other),
+					self.substituteNodeForOtherNode(expression.rhs, node, other),
+					expression.op);
+			}
+		},
+		expandExponent: <span class="fstat-no" title="function not covered" >function(node) {</span>
+<span class="cstat-no" title="statement not covered" >			var newNode = null;</span>
+<span class="cstat-no" title="statement not covered" >			if (node !== errorNode &amp;&amp; node.op === '^' &amp;&amp; node.rhs.type === 'number') {</span>
+<span class="cstat-no" title="statement not covered" >				var parent = node.parent;</span>
+<span class="cstat-no" title="statement not covered" >				var side = utils.getSide(node);</span>
+<span class="cstat-no" title="statement not covered" >				newNode = self.splitPowerNumberExponent(node);</span>
+<span class="cstat-no" title="statement not covered" >				utils.setChild(newNode, parent, side);</span>
+			}
+<span class="cstat-no" title="statement not covered" >			return newNode;</span>
+		},
+		solveForIdentifier: function(exp, identifier) {
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (debugSolve) {
+<span class="cstat-no" title="statement not covered" >				console.log(display.displayExpression(exp, 0, 2));</span>
+<span class="cstat-no" title="statement not covered" >				console.log(display.displayExpression(identifier, 0, 2));</span>
+			}
+			// Only try if it's an equation (no double ineqality solving for now).
+			if (exp.type !== 'compound' || getPrecedence(exp.op) !== 0 ||
+				!containsIdentifier(exp, identifier)) {
+				return [exp];
+			}
+			// First put everything on one side
+			var result = expr.copyNode(exp);
+			result = evaluate.evaluateRec(expression.createCompoundExpression(
+				expression.createCompoundExpression(result.lhs, result.rhs, '-'),
+				expression.createSimpleExpression('number', 0),
+				exp.op));
+&nbsp;
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (debugSolve) { <span class="cstat-no" title="statement not covered" >console.log(display.displayExpression(result, 0, 2)); </span>}
+			// Now put terms containing identifier on the left and those that don't on the right,
+			// as much as possible.  Returns an array in case there are multiple solutions.
+			var resultArray = putTermsWithoutIdentifierOnRhs(result, identifier);
+			result = [];
+			for (var i = 0; i &lt; resultArray.length; i++) {
+				<span class="missing-if-branch" title="if path not taken"" >I</span>if (debugSolve) { <span class="cstat-no" title="statement not covered" >console.log(display.displayExpression(resultArray[i], 0, 2)); </span>}
+				result.push(evaluate.evaluateRec(resultArray[i]));
+			}
+			return result;
+		},
+		getAllTermsAtLevel: function(node, sort) {
+			node = makeCommutativeIfNecessaryRec(node, node.op);
+			var terms = getAllTermsAtLevelNoSort(node, node.op, true);
+			<span class="missing-if-branch" title="else path not taken"" >E</span>if (sort) { terms = terms.sort(compareAddition); }
+			return {
+				operator : node.op,
+				terms : terms
+			};
+		},
+		getAllIdentifiers: function(node) {
+			if (node.type === 'identifier') { return [node.value]; }
+			if (node.type === 'unary') { return self.getAllIdentifiers(node.child); }
+			if (node.type === 'compound') {
+				return self.getAllIdentifiers(node.lhs).concat(self.getAllIdentifiers(node.rhs));
+			}
+			<span class="missing-if-branch" title="if path not taken"" >I</span>if (node.type === 'ternary') {
+<span class="cstat-no" title="statement not covered" >				return self.getAllIdentifiers(node.left).concat(</span>
+					self.getAllIdentifiers(node.middle).concat(self.getAllIdentifiers(node.right)));
+			}
+			return [];
+		}
+	};
+&nbsp;
+	return self;
+}());
+&nbsp;
+<span class="missing-if-branch" title="if path not taken"" >I</span>if (typeof module !== 'undefined' &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >typeof exports !== 'undefined')</span> {
+<span class="cstat-no" title="statement not covered" >	exports.evaluate = evaluate;</span>
+<span class="cstat-no" title="statement not covered" >	exports.equalityType = equalityType;</span>
+}</pre></td></tr>
+</table></pre>
+
+</div>
+<div class='footer'>
+    <div class='meta'>Generated by <a href='http://istanbul-js.org' target='_blank'>istanbul</a> at Wed May 29 2013 13:40:53 GMT-0700 (PDT)</div>
+</div>
+</body>
+
+<script src="../prettify.js"></script>
+
+<script src="http://yui.yahooapis.com/3.6.0/build/yui/yui-min.js"></script>
+<script>
+
+    YUI().use('datatable', function (Y) {
+
+        var formatters = {
+          pct: function (o) {
+              o.className += o.record.get('classes')[o.column.key];
+              try {
+                  return o.value.toFixed(2) + '%';
+              } catch (ex) { return o.value + '%'; }
+          },
+          html: function (o) {
+              o.className += o.record.get('classes')[o.column.key];
+              return o.record.get(o.column.key + '_html');
+          }
+        },
+          defaultFormatter = function (o) {
+              o.className += o.record.get('classes')[o.column.key];
+              return o.value;
+          };
+
+        function getColumns(theadNode) {
+            var colNodes = theadNode.all('tr th'),
+                cols = [],
+                col;
+            colNodes.each(function (colNode) {
+                col = {
+                    key: colNode.getAttribute('data-col'),
+                    label: colNode.get('innerHTML') || ' ',
+                    sortable: !colNode.getAttribute('data-nosort'),
+                    className: colNode.getAttribute('class'),
+                    type: colNode.getAttribute('data-type'),
+                    allowHTML: colNode.getAttribute('data-html') === 'true' || colNode.getAttribute('data-fmt') === 'html'
+                };
+                col.formatter = formatters[colNode.getAttribute('data-fmt')] || defaultFormatter;
+                cols.push(col);
+            });
+            return cols;
+        }
+
+        function getRowData(trNode, cols) {
+            var tdNodes = trNode.all('td'),
+                    i,
+                    row = { classes: {} },
+                    node,
+                    name;
+            for (i = 0; i < cols.length; i += 1) {
+                name = cols[i].key;
+                node = tdNodes.item(i);
+                row[name] = node.getAttribute('data-value') || node.get('innerHTML');
+                row[name + '_html'] = node.get('innerHTML');
+                row.classes[name] = node.getAttribute('class');
+                //Y.log('Name: ' + name + '; Value: ' + row[name]);
+                if (cols[i].type === 'number') { row[name] = row[name] * 1; }
+            }
+            //Y.log(row);
+            return row;
+        }
+
+        function getData(tbodyNode, cols) {
+            var data = [];
+            tbodyNode.all('tr').each(function (trNode) {
+                data.push(getRowData(trNode, cols));
+            });
+            return data;
+        }
+
+        function replaceTable(node) {
+            if (!node) { return; }
+            var cols = getColumns(node.one('thead')),
+                data = getData(node.one('tbody'), cols),
+                table,
+                parent = node.get('parentNode');
+
+            table = new Y.DataTable({
+                columns: cols,
+                data: data,
+                sortBy: 'file'
+            });
+            parent.set('innerHTML', '');
+            table.render(parent);
+        }
+
+        Y.on('domready', function () {
+            replaceTable(Y.one('div.coverage-summary table'));
+            if (typeof prettyPrint === 'function') {
+                prettyPrint();
+            }
+        });
+    });
+</script>
+</html>
