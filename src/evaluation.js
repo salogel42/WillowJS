@@ -38,7 +38,7 @@ var evaluate = (function() {
 	var debugSimp = false;
 	var debugCombine = false;
 	var debugCompare = false;
-	var debugCoeff = false;
+	var debugCoeff = true;
 	var debugFullEq = false;
 	var debugCommonDiv = false;
 
