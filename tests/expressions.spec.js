@@ -407,7 +407,7 @@ describe("WillowJS tests", function() {
 		var exp = parser.parseExpressionWrapper(exprressionString);
 		var otherExp = parser.parseExpressionWrapper(otherExpString);
 		if (exp === null || otherExp === null) { expect(null).toBe(expectedResult); }
-		expect(exp.syntacticEquals(otherExp)).toBe(expectedResult);
+		else { expect(exp.syntacticEquals(otherExp)).toBe(expectedResult); }
 	}
 	function testCommuteEquals(exprressionString, otherExpString, expectedResult) {
 		var exp = parser.parseExpressionWrapper(exprressionString);
@@ -771,4 +771,7 @@ describe("WillowJS tests", function() {
 		testNodeWrapper('simplify',['10/2^n', 'a/2^n', 'x/(3*a)'],
 			'\\frac{10}{2^n},\\frac{a}{2^n},\\frac{x}{3a}');
 	});
+	it("ternary", function() {
+		testSyntacticEquals('2<x<4', '2<x<4', true);
+	})
 });

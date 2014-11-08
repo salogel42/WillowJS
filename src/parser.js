@@ -198,21 +198,38 @@ var parser = (function() {
 	// Get the next subexpression.  Could be number, identifier, or (parenthesized expression), or
 	// any of the above preceded by a '-'
 	function parseSubExpression(expressionString) {
+		// When we return, the expression attribute should be the expression we just parsed out,
+		// and expressionString should be what's left in the string after doing so.
+		//
+		// If we're passed in 2+x, by the time we return, expression should contain a number node
+		// with value 2 and expressionString should contain the string '+x'
 		var result = {
 			'expression' : null,
 			'expressionString' : expressionString
 		};
 		var closingLocation = -1;
-		// First check for unary operator
+		// First check for unary operator (i.e, the - in -1 or -x, or the \sqrt in \sqrt{x})
 		var op = getNextOp(expressionString);
+		// If there was an operator there, deal with it
 		if (op !== null) {
+			// get the rest of the expression not including the operator (i.e. chop the operator off
+			// the front)
 			expressionString = expressionString.substring(op.length);
 			// unary - has same precedence as * and / since it is the same as -1*
 			var precedence = (/\d/.test(expressionString.charAt(0))) ? 2 : 1;
+			// parse the first thing in the string
 			var exp = parseExpression(expressionString, precedence);
+			// if we got an error, the whole thing is messed up so return the errorNode
 			if (exp.expression === errorNode) { return errorNode; }
+			// otherwise, the expressionString we want to return is whatever was left after parsing
+			// out the subexpression
 			result.expressionString = exp.expressionString;
+			// and the expression we want is whatever the subexpression was, but with the operator
+			// that preceded it as the unary parent
 			result.expression = expression.createUnaryExpression(exp.expression, op);
+			// if the operator is - and the subexpression is a number, we actually want to store it
+			// as the number -1 or -5 or whatever rather than a unary negative node with the value
+			// as the child.
 			if (op === '-' && exp.expression.type === 'number') {
 				if (!fractionUtils.isNegative(exp.expression.value) &&
 					(typeof exp.expression.value === 'number')) {
@@ -220,13 +237,17 @@ var parser = (function() {
 						'number', -1 * exp.expression.value);
 				}
 			}
-		} else if (expressionString.charAt(0) === 'i') {
+		} else if (expressionString.charAt(0) === 'i') { // special case for i
 			result.expression = makeSqrtIntoNumber(-1);
 			result.expressionString = expressionString.substring(1);
 		} else if (expressionString.charAt(0) === '(' || expressionString.charAt(0) === '{') {
+			// if it's the beginning of a parenthetical, figure out where it ends and parse the
+			// thing between
 			closingLocation = findClosingBrace(expressionString, expressionString.charAt(0));
 			result = getSubExpressionAtSubstring(expressionString, closingLocation);
-		} else if (expressionString.charAt(0) === '\\') { // it is probably LaTeX
+		} else if (expressionString.charAt(0) === '\\') {
+			// if it starts with a backslash, it is probably LaTeX, so check for the LaTeX functions
+			// we know how to deal with
 			var latex = expressionString.match(/^\\[a-z]+/i);
 			if (latex === null || (latex = latex[0]).length === 0) {
 				console.error('Invalid syntax at: ' + expressionString);
@@ -317,7 +338,7 @@ var parser = (function() {
 					return errorNode;
 				}
 				result.expressionString = expressionString.substring(match[0].length);
-			} else {
+			} else { // if it wasn't a number, it must be an identifier!
 				// TODO(sdspikes): add support for functions?
 				result.expressionString = expressionString.substring(1);
 				if (!IDENTIFIER.test(value)) {
@@ -327,12 +348,17 @@ var parser = (function() {
 			}
 			result.expression = expression.createSimpleExpression(type, value);
 		}
-		// If the T is followed by a starting char for another T, assume explicit multiplication.
+		// Make sure nothing weird happened
 		if (result === null || result === errorNode || result.expression === errorNode) {
 			return errorNode;
 		}
 		if (result.expression === errorNode) { return errorNode; }
+
+		// cut out all the whitespace at the beginning
 		result.expressionString = result.expressionString.replace(STARTING_SPACE,'');
+
+		// If the T is followed by a starting char for another T, assume implicit multiplication,
+		// and make it explicit.
 		if (IMPLICIT.test(result.expressionString) && !OPERATOR.test(result.expressionString)) {
 			result.expressionString = '*' + result.expressionString;
 		}
