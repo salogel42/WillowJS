@@ -5,10 +5,11 @@ module.exports = function(grunt) {
       banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
     }
   };
-  u.each(grunt.file.expandMapping('*.js', 'build', {cwd: 'src/'}), function (fileMap) {
-    uglifyObj[fileMap.src] = fileMap;
-  });
-
+  // u.each(grunt.file.expandMapping('*.js', 'build', {cwd: 'src/'}), function (fileMap) {
+  //   uglifyObj[fileMap.src] = fileMap;
+  // });
+  uglifyObj['willowjs'] = { src: ['src/*.js'], dest: 'manual/willowjs.min.js' };
+  uglifyObj['quizzes'] = { src: ['quizzes/*.js'], dest: 'manual/math_quizzes.min.js' };
 
   // Project configuration.
   grunt.initConfig({

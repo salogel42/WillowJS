@@ -440,4 +440,6 @@ var parser = (function() {
 	return self;
 }());
 
+console.log(parser.parseEquationOrExpression('2x+5'));
+
 if (typeof exports !== 'undefined') { exports.parser = parser; }
